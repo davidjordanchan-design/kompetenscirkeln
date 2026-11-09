@@ -1,0 +1,37 @@
+{
+  "_om": "Egna tillägg till Arbetsförmedlingens kompetenslista. 'tillagg' är kompetenser som saknas helt i taxonomin. 'synonymer' ger extra söktermer (och ev. nytt visningsnamn, 'visa') till en kompetens som finns, nyckeln är taxonomins id. Termer i 'cs' matchas skiftlägeskänsligt. Listan bör granskas av vägledare och stämmas av med JobTech.",
+  "tillagg": [
+    {"label": "Kubernetes", "headline": "Applikationsplattformar", "termer": ["K8s", "k8s"]},
+    {"label": "OpenShift", "headline": "Applikationsplattformar"},
+    {"label": "Terraform", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "Ansible", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "GitHub", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "GitLab", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "Grafana", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "Prometheus", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": ["Prometheus"]},
+    {"label": "DevOps", "headline": "Styr- och utvecklingsmodeller"},
+    {"label": "SAFe", "headline": "Styr- och utvecklingsmodeller", "cs": ["SAFe"]},
+    {"label": "MLOps", "headline": "Styr- och utvecklingsmodeller"},
+    {"label": "React", "headline": "Ramverk", "termer": ["React.js", "ReactJS"], "cs": ["React"]},
+    {"label": "Next.js", "headline": "Ramverk", "termer": ["NextJS"]},
+    {"label": "GraphQL", "headline": "Datorspråk"},
+    {"label": "Power BI", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": ["PowerBI"]},
+    {"label": "Databricks", "headline": "Applikationsplattformar"},
+    {"label": "Snowflake", "headline": "Databaser", "cs": ["Snowflake"]},
+    {"label": "dbt", "headline": "Programmerings- och systemutvecklingsverktyg"},
+    {"label": "Airflow", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": ["Airflow"]},
+    {"label": "Apache Spark", "headline": "Applikationsplattformar", "termer": ["Spark", "PySpark"], "cs": ["Spark"]},
+    {"label": "PyTorch", "headline": "Ramverk"},
+    {"label": "TensorFlow", "headline": "Ramverk"},
+    {"label": "Språkmodeller", "headline": "Övriga kompetenser", "termer": ["LLM", "LLMs", "LLM:er", "språkmodeller", "large language models"]},
+    {"label": "Figma", "headline": "Programvara för digitalt skapande"},
+    {"label": "Entra ID", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": ["Microsoft Entra", "Azure AD", "Azure Active Directory"]},
+    {"label": "Microsoft 365", "headline": "Applikationsplattformar", "termer": ["M365", "Office 365", "O365"]},
+    {"label": "ServiceNow", "headline": "Applikationsplattformar"}
+  ],
+  "synonymer": {
+    "HKgZ_SWa_vn8": {"visa": "Azure", "termer": ["Azure", "Microsoft Azure"]},
+    "hYyY_NPi_H65": {"visa": "Kafka", "termer": ["Kafka"]},
+    "c6uA_XkH_gpt": {"visa": "Intune", "termer": ["Intune"]}
+  }
+}

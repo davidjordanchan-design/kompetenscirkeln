@@ -1,0 +1,2336 @@
+{
+ "meta": {
+  "demo": true,
+  "generated": "2026-11-06T00:00:00Z",
+  "field": {
+   "id": "apaJ_2ja_LuF",
+   "label": "Data/IT"
+  },
+  "barometerOmgang": "DEMO",
+  "adsAnalyzed": 0,
+  "method": "DEMODATA: Yrkesgrupper och de flesta yrkesbenämningar är verkliga taxonomi-ID:n, men kompetensvikter, utbytbarhet och prognoser är illustrativa. Kör `npm run data` för riktiga data.",
+  "sources": [
+   "Illustrativ demodata"
+  ]
+ },
+ "groups": [
+  {
+   "id": "DJh5_yyF_hEM",
+   "label": "Mjukvaru- och systemutvecklare m.fl.",
+   "ssyk": "2512",
+   "adCount": 1268,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "UXKZ_3zZ_ipB",
+   "label": "Systemanalytiker och IT-arkitekter m.fl.",
+   "ssyk": "2511",
+   "adCount": 610,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "D9SL_mtn_vGM",
+   "label": "Systemtestare och testledare",
+   "ssyk": "2514",
+   "adCount": 240,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "BAeH_eg8_T2d",
+   "label": "IT-säkerhetsspecialister",
+   "ssyk": "2516",
+   "adCount": 310,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "UxT1_tPF_Kbg",
+   "label": "Övriga IT-specialister",
+   "ssyk": "2519",
+   "adCount": 420,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "hmaC_cfi_UKg",
+   "label": "Supporttekniker, IT",
+   "ssyk": "3512",
+   "adCount": 520,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "MYAz_x9m_2LJ",
+   "label": "Systemadministratörer",
+   "ssyk": "3513",
+   "adCount": 330,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "13md_uyV_BNG",
+   "label": "Drifttekniker, IT",
+   "ssyk": "3511",
+   "adCount": 180,
+   "adsAnalyzed": 0,
+   "external": false
+  },
+  {
+   "id": "VCpu_5EN_bBt",
+   "label": "Nätverks- och systemtekniker m.fl.",
+   "ssyk": "3514",
+   "adCount": 260,
+   "adsAnalyzed": 0,
+   "external": false
+  }
+ ],
+ "occupations": [
+  {
+   "id": "7wdX_4rv_33z",
+   "label": "Backend-utvecklare",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 210,
+   "substitutes": [
+    {
+     "id": "71Ji_irM_rSJ",
+     "pct": 75
+    },
+    {
+     "id": "GDHs_eoz_uKx",
+     "pct": 25
+    },
+    {
+     "id": "demo-devops",
+     "pct": 25
+    }
+   ]
+  },
+  {
+   "id": "GDHs_eoz_uKx",
+   "label": "Frontend-utvecklare",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 150,
+   "substitutes": [
+    {
+     "id": "71Ji_irM_rSJ",
+     "pct": 75
+    },
+    {
+     "id": "iwJU_gW4_SxT",
+     "pct": 25
+    }
+   ]
+  },
+  {
+   "id": "71Ji_irM_rSJ",
+   "label": "Fullstack-utvecklare",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 180,
+   "substitutes": [
+    {
+     "id": "7wdX_4rv_33z",
+     "pct": 75
+    },
+    {
+     "id": "GDHs_eoz_uKx",
+     "pct": 75
+    }
+   ]
+  },
+  {
+   "id": "n2kJ_qFK_x2K",
+   "label": "Mobilutvecklare/Apputvecklare",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 60,
+   "substitutes": []
+  },
+  {
+   "id": "rz2m_96d_vyF",
+   "label": "Databasutvecklare",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 40,
+   "substitutes": []
+  },
+  {
+   "id": "z5AM_ayf_WcL",
+   "label": "Projektledare, IT",
+   "groupId": "DJh5_yyF_hEM",
+   "adCount": 120,
+   "substitutes": []
+  },
+  {
+   "id": "demo-data-scientist",
+   "label": "Data scientist",
+   "groupId": "UXKZ_3zZ_ipB",
+   "adCount": 95,
+   "substitutes": []
+  },
+  {
+   "id": "demo-it-arkitekt",
+   "label": "IT-arkitekt",
+   "groupId": "UXKZ_3zZ_ipB",
+   "adCount": 110,
+   "substitutes": []
+  },
+  {
+   "id": "demo-kravanalytiker",
+   "label": "Kravanalytiker",
+   "groupId": "UXKZ_3zZ_ipB",
+   "adCount": 70,
+   "substitutes": []
+  },
+  {
+   "id": "TU7g_mwa_VzB",
+   "label": "Testutvecklare",
+   "groupId": "D9SL_mtn_vGM",
+   "adCount": 70,
+   "substitutes": [
+    {
+     "id": "7wdX_4rv_33z",
+     "pct": 25
+    }
+   ]
+  },
+  {
+   "id": "sUih_DqP_zQP",
+   "label": "Testledare/QA lead",
+   "groupId": "D9SL_mtn_vGM",
+   "adCount": 45,
+   "substitutes": []
+  },
+  {
+   "id": "FHwx_yXu_FAd",
+   "label": "IT-säkerhetsanalytiker",
+   "groupId": "BAeH_eg8_T2d",
+   "adCount": 90,
+   "substitutes": []
+  },
+  {
+   "id": "9yMK_8ep_D1K",
+   "label": "IT-säkerhetstekniker",
+   "groupId": "BAeH_eg8_T2d",
+   "adCount": 60,
+   "substitutes": []
+  },
+  {
+   "id": "fZoS_si8_SFg",
+   "label": "IT-säkerhetsansvarig",
+   "groupId": "BAeH_eg8_T2d",
+   "adCount": 55,
+   "substitutes": []
+  },
+  {
+   "id": "iwJU_gW4_SxT",
+   "label": "UX-designer",
+   "groupId": "UxT1_tPF_Kbg",
+   "adCount": 80,
+   "substitutes": []
+  },
+  {
+   "id": "pm44_MPD_1wd",
+   "label": "Produktägare, IT",
+   "groupId": "UxT1_tPF_Kbg",
+   "adCount": 90,
+   "substitutes": []
+  },
+  {
+   "id": "1UTZ_bS9_kUD",
+   "label": "Scrum master",
+   "groupId": "UxT1_tPF_Kbg",
+   "adCount": 40,
+   "substitutes": []
+  },
+  {
+   "id": "nTwt_VnS_Z2x",
+   "label": "Supporttekniker IT",
+   "groupId": "hmaC_cfi_UKg",
+   "adCount": 300,
+   "substitutes": [
+    {
+     "id": "Lxas_8K9_W1o",
+     "pct": 25
+    },
+    {
+     "id": "demo-drifttekniker",
+     "pct": 25
+    }
+   ]
+  },
+  {
+   "id": "Lxas_8K9_W1o",
+   "label": "Systemadministratör",
+   "groupId": "MYAz_x9m_2LJ",
+   "adCount": 160,
+   "substitutes": [
+    {
+     "id": "demo-drifttekniker",
+     "pct": 75
+    },
+    {
+     "id": "9yMK_8ep_D1K",
+     "pct": 25
+    }
+   ]
+  },
+  {
+   "id": "y763_SQh_71J",
+   "label": "Databasadministratör",
+   "groupId": "MYAz_x9m_2LJ",
+   "adCount": 35,
+   "substitutes": []
+  },
+  {
+   "id": "demo-drifttekniker",
+   "label": "Drifttekniker, IT",
+   "groupId": "13md_uyV_BNG",
+   "adCount": 120,
+   "substitutes": []
+  },
+  {
+   "id": "demo-devops",
+   "label": "DevOps-ingenjör",
+   "groupId": "13md_uyV_BNG",
+   "adCount": 85,
+   "substitutes": []
+  },
+  {
+   "id": "demo-natverkstekniker",
+   "label": "Nätverkstekniker",
+   "groupId": "VCpu_5EN_bBt",
+   "adCount": 130,
+   "substitutes": []
+  }
+ ],
+ "skills": [
+  {
+   "id": "demo-python",
+   "label": "Python",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-java",
+   "label": "Java",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-c-",
+   "label": "C#",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-javascript",
+   "label": "JavaScript",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-typescript",
+   "label": "TypeScript",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-sql",
+   "label": "SQL",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-kotlin",
+   "label": "Kotlin",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-swift",
+   "label": "Swift",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-go",
+   "label": "Go",
+   "headline": "Programmeringsspråk"
+  },
+  {
+   "id": "demo-react",
+   "label": "React",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-angular",
+   "label": "Angular",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo--net",
+   "label": ".NET",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-spring",
+   "label": "Spring",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-node-js",
+   "label": "Node.js",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-rest-api",
+   "label": "REST-API",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-git",
+   "label": "Git",
+   "headline": "Ramverk och plattformar"
+  },
+  {
+   "id": "demo-aws",
+   "label": "AWS",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-azure",
+   "label": "Azure",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-docker",
+   "label": "Docker",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-kubernetes",
+   "label": "Kubernetes",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-linux",
+   "label": "Linux",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-windows-server",
+   "label": "Windows Server",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-terraform",
+   "label": "Terraform",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-ci-cd",
+   "label": "CI/CD",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-övervakning",
+   "label": "Övervakning",
+   "headline": "Moln och drift"
+  },
+  {
+   "id": "demo-power-bi",
+   "label": "Power BI",
+   "headline": "Data och analys"
+  },
+  {
+   "id": "demo-maskininlärning",
+   "label": "Maskininlärning",
+   "headline": "Data och analys"
+  },
+  {
+   "id": "demo-statistik",
+   "label": "Statistik",
+   "headline": "Data och analys"
+  },
+  {
+   "id": "demo-databasdesign",
+   "label": "Databasdesign",
+   "headline": "Data och analys"
+  },
+  {
+   "id": "demo-datamodellering",
+   "label": "Datamodellering",
+   "headline": "Data och analys"
+  },
+  {
+   "id": "demo-informationssäkerhet",
+   "label": "Informationssäkerhet",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-iso-27001",
+   "label": "ISO 27001",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-penetrationstestning",
+   "label": "Penetrationstestning",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-siem",
+   "label": "SIEM",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-incidenthantering",
+   "label": "Incidenthantering",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-nätverkssäkerhet",
+   "label": "Nätverkssäkerhet",
+   "headline": "Säkerhet"
+  },
+  {
+   "id": "demo-cisco",
+   "label": "Cisco",
+   "headline": "Nätverk"
+  },
+  {
+   "id": "demo-tcp-ip",
+   "label": "TCP/IP",
+   "headline": "Nätverk"
+  },
+  {
+   "id": "demo-brandväggar",
+   "label": "Brandväggar",
+   "headline": "Nätverk"
+  },
+  {
+   "id": "demo-testautomatisering",
+   "label": "Testautomatisering",
+   "headline": "Test och kvalitet"
+  },
+  {
+   "id": "demo-selenium",
+   "label": "Selenium",
+   "headline": "Test och kvalitet"
+  },
+  {
+   "id": "demo-istqb",
+   "label": "ISTQB",
+   "headline": "Test och kvalitet"
+  },
+  {
+   "id": "demo-testledning",
+   "label": "Testledning",
+   "headline": "Test och kvalitet"
+  },
+  {
+   "id": "demo-agila-metoder",
+   "label": "Agila metoder",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-scrum",
+   "label": "Scrum",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-itil",
+   "label": "ITIL",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-kravhantering",
+   "label": "Kravhantering",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-projektledning",
+   "label": "Projektledning",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-verksamhetsutveckling",
+   "label": "Verksamhetsutveckling",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-arkitektur",
+   "label": "Arkitektur",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-riskanalys",
+   "label": "Riskanalys",
+   "headline": "Metod och ledning"
+  },
+  {
+   "id": "demo-ux-design",
+   "label": "UX-design",
+   "headline": "Design"
+  },
+  {
+   "id": "demo-figma",
+   "label": "Figma",
+   "headline": "Design"
+  },
+  {
+   "id": "demo-användartester",
+   "label": "Användartester",
+   "headline": "Design"
+  },
+  {
+   "id": "demo-tjänstedesign",
+   "label": "Tjänstedesign",
+   "headline": "Design"
+  },
+  {
+   "id": "demo-kundservice",
+   "label": "Kundservice",
+   "headline": "Support"
+  },
+  {
+   "id": "demo-felsökning",
+   "label": "Felsökning",
+   "headline": "Support"
+  },
+  {
+   "id": "demo-microsoft-365",
+   "label": "Microsoft 365",
+   "headline": "Support"
+  },
+  {
+   "id": "demo-active-directory",
+   "label": "Active Directory",
+   "headline": "Support"
+  },
+  {
+   "id": "demo-ärendehantering",
+   "label": "Ärendehantering",
+   "headline": "Support"
+  }
+ ],
+ "groupSkills": {
+  "DJh5_yyF_hEM": [
+   {
+    "skillId": "demo-sql",
+    "share": 0.283
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.263
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.213
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.193
+   },
+   {
+    "skillId": "demo-react",
+    "share": 0.175
+   },
+   {
+    "skillId": "demo-typescript",
+    "share": 0.165
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.135
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.133
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.132
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.112
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.103
+   },
+   {
+    "skillId": "demo--net",
+    "share": 0.093
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.092
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.092
+   },
+   {
+    "skillId": "demo-node-js",
+    "share": 0.087
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.083
+   },
+   {
+    "skillId": "demo-databasdesign",
+    "share": 0.083
+   },
+   {
+    "skillId": "demo-kotlin",
+    "share": 0.08
+   },
+   {
+    "skillId": "demo-swift",
+    "share": 0.077
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.075
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.058
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.055
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.045
+   },
+   {
+    "skillId": "demo-angular",
+    "share": 0.037
+   },
+   {
+    "skillId": "demo-power-bi",
+    "share": 0.037
+   },
+   {
+    "skillId": "demo-spring",
+    "share": 0.033
+   },
+   {
+    "skillId": "demo-figma",
+    "share": 0.033
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.03
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.025
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.02
+   },
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.017
+   },
+   {
+    "skillId": "demo-användartester",
+    "share": 0.013
+   },
+   {
+    "skillId": "demo-statistik",
+    "share": 0.013
+   }
+  ],
+  "UXKZ_3zZ_ipB": [
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.367
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.267
+   },
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.233
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.21
+   },
+   {
+    "skillId": "demo-maskininlärning",
+    "share": 0.207
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.19
+   },
+   {
+    "skillId": "demo-statistik",
+    "share": 0.183
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.183
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.167
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.083
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.067
+   },
+   {
+    "skillId": "demo-power-bi",
+    "share": 0.06
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.06
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.06
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.04
+   },
+   {
+    "skillId": "demo-testledning",
+    "share": 0.04
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.033
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.033
+   }
+  ],
+  "D9SL_mtn_vGM": [
+   {
+    "skillId": "demo-testautomatisering",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-testledning",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-istqb",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-selenium",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.175
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.175
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.125
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.125
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.09
+   }
+  ],
+  "BAeH_eg8_T2d": [
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.683
+   },
+   {
+    "skillId": "demo-incidenthantering",
+    "share": 0.367
+   },
+   {
+    "skillId": "demo-nätverkssäkerhet",
+    "share": 0.333
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-iso-27001",
+    "share": 0.267
+   },
+   {
+    "skillId": "demo-siem",
+    "share": 0.233
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.233
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.217
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.127
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-cisco",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.083
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.083
+   },
+   {
+    "skillId": "demo-penetrationstestning",
+    "share": 0.067
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.067
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.04
+   }
+  ],
+  "UxT1_tPF_Kbg": [
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.567
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.333
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.267
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.233
+   },
+   {
+    "skillId": "demo-figma",
+    "share": 0.217
+   },
+   {
+    "skillId": "demo-användartester",
+    "share": 0.167
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.167
+   },
+   {
+    "skillId": "demo-tjänstedesign",
+    "share": 0.14
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.04
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.027
+   }
+  ],
+  "hmaC_cfi_UKg": [
+   {
+    "skillId": "demo-kundservice",
+    "share": 0.65
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-microsoft-365",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-ärendehantering",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.08
+   }
+  ],
+  "MYAz_x9m_2LJ": [
+   {
+    "skillId": "demo-linux",
+    "share": 0.425
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.425
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.225
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.225
+   },
+   {
+    "skillId": "demo-microsoft-365",
+    "share": 0.175
+   },
+   {
+    "skillId": "demo-databasdesign",
+    "share": 0.175
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.125
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.075
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.06
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.05
+   },
+   {
+    "skillId": "demo-terraform",
+    "share": 0.04
+   }
+  ],
+  "13md_uyV_BNG": [
+   {
+    "skillId": "demo-linux",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.375
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.36
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.325
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.325
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.225
+   },
+   {
+    "skillId": "demo-terraform",
+    "share": 0.225
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-ärendehantering",
+    "share": 0.125
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-go",
+    "share": 0.05
+   }
+  ],
+  "VCpu_5EN_bBt": [
+   {
+    "skillId": "demo-cisco",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-nätverkssäkerhet",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.12
+   }
+  ]
+ },
+ "occSkills": {
+  "7wdX_4rv_33z": [
+   {
+    "skillId": "demo-sql",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.42
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.38
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo--net",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.28
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-spring",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.15
+   }
+  ],
+  "GDHs_eoz_uKx": [
+   {
+    "skillId": "demo-javascript",
+    "share": 0.62
+   },
+   {
+    "skillId": "demo-typescript",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-react",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.28
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-angular",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-node-js",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-figma",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-användartester",
+    "share": 0.08
+   }
+  ],
+  "71Ji_irM_rSJ": [
+   {
+    "skillId": "demo-javascript",
+    "share": 0.48
+   },
+   {
+    "skillId": "demo-typescript",
+    "share": 0.44
+   },
+   {
+    "skillId": "demo-react",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-node-js",
+    "share": 0.32
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.28
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.28
+   },
+   {
+    "skillId": "demo--net",
+    "share": 0.26
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.24
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.18
+   }
+  ],
+  "n2kJ_qFK_x2K": [
+   {
+    "skillId": "demo-kotlin",
+    "share": 0.48
+   },
+   {
+    "skillId": "demo-swift",
+    "share": 0.46
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.28
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-react",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-figma",
+    "share": 0.08
+   }
+  ],
+  "rz2m_96d_vyF": [
+   {
+    "skillId": "demo-sql",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-databasdesign",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-power-bi",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-statistik",
+    "share": 0.08
+   }
+  ],
+  "z5AM_ayf_WcL": [
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.8
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.1
+   }
+  ],
+  "demo-data-scientist": [
+   {
+    "skillId": "demo-python",
+    "share": 0.8
+   },
+   {
+    "skillId": "demo-maskininlärning",
+    "share": 0.62
+   },
+   {
+    "skillId": "demo-statistik",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.22
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-power-bi",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.12
+   }
+  ],
+  "demo-it-arkitekt": [
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.75
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.1
+   }
+  ],
+  "demo-kravanalytiker": [
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-datamodellering",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.18
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-testledning",
+    "share": 0.12
+   }
+  ],
+  "TU7g_mwa_VzB": [
+   {
+    "skillId": "demo-testautomatisering",
+    "share": 0.8
+   },
+   {
+    "skillId": "demo-selenium",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-java",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-c-",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-istqb",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-rest-api",
+    "share": 0.2
+   }
+  ],
+  "sUih_DqP_zQP": [
+   {
+    "skillId": "demo-testledning",
+    "share": 0.8
+   },
+   {
+    "skillId": "demo-istqb",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-testautomatisering",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.18
+   }
+  ],
+  "FHwx_yXu_FAd": [
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.7
+   },
+   {
+    "skillId": "demo-incidenthantering",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-siem",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-nätverkssäkerhet",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-iso-27001",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-penetrationstestning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.2
+   }
+  ],
+  "9yMK_8ep_D1K": [
+   {
+    "skillId": "demo-nätverkssäkerhet",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-cisco",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-incidenthantering",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-siem",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.18
+   }
+  ],
+  "fZoS_si8_SFg": [
+   {
+    "skillId": "demo-informationssäkerhet",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-riskanalys",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-iso-27001",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-incidenthantering",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-arkitektur",
+    "share": 0.12
+   }
+  ],
+  "iwJU_gW4_SxT": [
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-figma",
+    "share": 0.65
+   },
+   {
+    "skillId": "demo-användartester",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-tjänstedesign",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-javascript",
+    "share": 0.12
+   }
+  ],
+  "pm44_MPD_1wd": [
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.65
+   },
+   {
+    "skillId": "demo-scrum",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-ux-design",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-tjänstedesign",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-sql",
+    "share": 0.08
+   }
+  ],
+  "1UTZ_bS9_kUD": [
+   {
+    "skillId": "demo-scrum",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-agila-metoder",
+    "share": 0.8
+   },
+   {
+    "skillId": "demo-projektledning",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-verksamhetsutveckling",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-kravhantering",
+    "share": 0.15
+   }
+  ],
+  "nTwt_VnS_Z2x": [
+   {
+    "skillId": "demo-kundservice",
+    "share": 0.65
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-microsoft-365",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-ärendehantering",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.08
+   }
+  ],
+  "Lxas_8K9_W1o": [
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.5
+   },
+   {
+    "skillId": "demo-active-directory",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-microsoft-365",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.1
+   },
+   {
+    "skillId": "demo-terraform",
+    "share": 0.08
+   }
+  ],
+  "y763_SQh_71J": [
+   {
+    "skillId": "demo-sql",
+    "share": 0.85
+   },
+   {
+    "skillId": "demo-databasdesign",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.12
+   }
+  ],
+  "demo-drifttekniker": [
+   {
+    "skillId": "demo-linux",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-ärendehantering",
+    "share": 0.25
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.12
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.1
+   }
+  ],
+  "demo-devops": [
+   {
+    "skillId": "demo-ci-cd",
+    "share": 0.65
+   },
+   {
+    "skillId": "demo-kubernetes",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-docker",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-terraform",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-aws",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-azure",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-git",
+    "share": 0.4
+   },
+   {
+    "skillId": "demo-python",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.3
+   },
+   {
+    "skillId": "demo-go",
+    "share": 0.1
+   }
+  ],
+  "demo-natverkstekniker": [
+   {
+    "skillId": "demo-cisco",
+    "share": 0.6
+   },
+   {
+    "skillId": "demo-tcp-ip",
+    "share": 0.55
+   },
+   {
+    "skillId": "demo-brandväggar",
+    "share": 0.45
+   },
+   {
+    "skillId": "demo-nätverkssäkerhet",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-felsökning",
+    "share": 0.35
+   },
+   {
+    "skillId": "demo-övervakning",
+    "share": 0.2
+   },
+   {
+    "skillId": "demo-linux",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-windows-server",
+    "share": 0.15
+   },
+   {
+    "skillId": "demo-itil",
+    "share": 0.12
+   }
+  ]
+ },
+ "barometer": {
+  "2511": {
+   "00": {
+    "yrke": "Systemanalytiker och IT-arkitekter m.fl.",
+    "jobbmojligheter": "medelstora",
+    "rekrytering": "balans",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara medelstora och väntas öka på fem års sikt."
+   }
+  },
+  "2512": {
+   "25": {
+    "yrke": "Mjukvaru- och systemutvecklare m.fl.",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas öka på fem års sikt."
+   },
+   "00": {
+    "yrke": "Mjukvaru- och systemutvecklare m.fl.",
+    "jobbmojligheter": "medelstora",
+    "rekrytering": "balans",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara medelstora och väntas öka på fem års sikt."
+   },
+   "01": {
+    "yrke": "Mjukvaru- och systemutvecklare m.fl.",
+    "jobbmojligheter": "medelstora",
+    "rekrytering": "balans",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara medelstora och väntas öka på fem års sikt."
+   }
+  },
+  "2514": {
+   "00": {
+    "yrke": "Systemtestare och testledare",
+    "jobbmojligheter": "små",
+    "rekrytering": "överskott",
+    "prognos": "vara oförändrad",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara små och väntas vara oförändrad på fem års sikt."
+   }
+  },
+  "2516": {
+   "00": {
+    "yrke": "IT-säkerhetsspecialister",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas öka på fem års sikt."
+   },
+   "01": {
+    "yrke": "IT-säkerhetsspecialister",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas öka på fem års sikt."
+   }
+  },
+  "2519": {
+   "00": {
+    "yrke": "Övriga IT-specialister",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas öka på fem års sikt."
+   }
+  },
+  "3511": {
+   "00": {
+    "yrke": "Drifttekniker, IT",
+    "jobbmojligheter": "medelstora",
+    "rekrytering": "balans",
+    "prognos": "vara oförändrad",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara medelstora och väntas vara oförändrad på fem års sikt."
+   }
+  },
+  "3512": {
+   "00": {
+    "yrke": "Supporttekniker, IT",
+    "jobbmojligheter": "små",
+    "rekrytering": "överskott",
+    "prognos": "minska",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara små och väntas minska på fem års sikt."
+   },
+   "01": {
+    "yrke": "Supporttekniker, IT",
+    "jobbmojligheter": "små",
+    "rekrytering": "överskott",
+    "prognos": "minska",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara små och väntas minska på fem års sikt."
+   }
+  },
+  "3513": {
+   "00": {
+    "yrke": "Systemadministratörer",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "vara oförändrad",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas vara oförändrad på fem års sikt."
+   }
+  },
+  "3514": {
+   "00": {
+    "yrke": "Nätverks- och systemtekniker m.fl.",
+    "jobbmojligheter": "stora",
+    "rekrytering": "brist",
+    "prognos": "öka",
+    "text": "DEMO: Jobbmöjligheterna bedöms vara stora och väntas öka på fem års sikt."
+   }
+  }
+ }
+}

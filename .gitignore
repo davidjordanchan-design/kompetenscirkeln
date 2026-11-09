@@ -1,0 +1,14 @@
+node_modules/
+dist/
+shots/
+__pycache__/
+*.pyc
+.DS_Store
+
+# rådata med annonstexter: kan innehålla namn och kontaktuppgifter, delas inte
+data/raw/
+
+# interna arbetsdokument (strategi, historik): finns bara lokalt
+HANDOFF.md
+CLAUDE.md
+docs/plan.md

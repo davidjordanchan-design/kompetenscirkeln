@@ -1,0 +1,14 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});const errs=[];
+p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&!/fonts|ERR_TUNNEL/.test(m.text())&&errs.push(m.text()));
+await p.goto('http://127.0.0.1:8811/index.html',{waitUntil:'networkidle'});
+await p.evaluate(()=>document.querySelector('#app').scrollIntoView());await p.waitForTimeout(400);
+const q=async(sel,list,txt)=>{await p.fill(sel,'');await p.type(sel,txt,{delay:10});await p.waitForTimeout(150);return (await p.$$eval(list+' .kc-find__opt .t',els=>els.map(e=>e.textContent))).slice(0,4).join(' | ')||(await p.textContent(list));};
+for(const t of ['bakend','programerare','suport','nätverk','datascientist','säkerhet','utvecklre','ux','moln','testare','sysadmin','projekledare'])console.log('YRKE',t.padEnd(14),'->',await q('#kc-occ','#kc-occ-list',t));
+await p.click('#kc-occ');await p.fill('#kc-occ','');await p.type('#kc-occ','suport',{delay:10});await p.waitForTimeout(150);await p.keyboard.press('Enter');await p.waitForTimeout(800);
+console.log('picked ->',await p.inputValue('#kc-occ'),'| card:',(await p.textContent('.kc__title')));
+for(const t of ['kubernets','pyton','javscript','azur','scrum','itil','powershel'])console.log('SKILL',t.padEnd(12),'->',await q('#kc-add','#kc-add-list',t));
+await p.fill('#kc-add','');await p.click('#kc-add');await p.waitForTimeout(250);
+await p.screenshot({path:'shots/f-skill.png'});
+await p.click('#kc-occ');await p.waitForTimeout(250);await p.screenshot({path:'shots/f-occ.png'});
+console.log('ERR',errs);await b.close();})();

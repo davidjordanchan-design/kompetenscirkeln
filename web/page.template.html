@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="sv" data-type="software" data-radius="soft" data-ground="sky" data-buttons="arrow" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kompetenscirkeln</title>
+<meta name="description" content="Kompetenskarta för IT-yrken: välj ditt yrke, markera vad du kan och se vilka närliggande yrken du når och vilka kompetenser som saknas.">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400..700&family=JetBrains+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<style>
+:root {
+  --p-bg: #f8f8f8; --p-surface: #eeeeee; --p-ink: #0a0a0a; --p-muted: #6a6a6a;
+  --p-accent: #1f6b3a; --p-accent-ink: #ffffff; --p-action: #1f6b3a; --p-action-ink: #ffffff;
+  --p-inv-bg: #0a0a0a; --p-inv-surface: #171717; --p-inv-ink: #f8f8f8; --p-inv-muted: #939393;
+  --p-inv-accent: #1f6b3a; --p-inv-accent-ink: #ffffff; --p-inv-action: #1f6b3a; --p-inv-action-ink: #ffffff;
+  --font-display: "Onest", system-ui, sans-serif;
+  --font-text: "Onest", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 400;
+  --display-tracking: -0.035em;
+  --display-tracking-xl: -0.04em;
+}
+</style>
+<link rel="stylesheet" href="assets/ui/base.css">
+<link rel="stylesheet" href="assets/ui/search/fragment.css">
+<link rel="stylesheet" href="assets/ui/checklist/fragment.css">
+<link rel="stylesheet" href="assets/ui/notify/fragment.css">
+<link rel="stylesheet" href="assets/diagrams/diagram.css">
+<script src="assets/backgrounds/backgrounds.js"></script>
+<style>
+/* page CSS: only inside visuals (the product window, the map) and one --p-h per card group */
+#steg .panel { --p-h: 320px; }
+@media (min-width: 640px) and (max-width: 1279px) { #steg { --h: 2 } }
+#data .frame--split { aspect-ratio: 5 / 4; height: auto; }
+@media (max-width: 1023px) { #data .frame--split { aspect-ratio: 16 / 10; } .kc-hide-sm { display: none; } }
+@media (max-width: 639px) { #data .rows p { display: none; } .nav__logo { font-size: 15px; } }
+.hero--centred .hero__lead { color: var(--ink); }
+
+/* the product's colours inside its own window: have, missing, and the Yrkesbarometer's three levels */
+
+
+/* hero window: the product as it opens */
+.d-win { background: #fff; color: #16181a; border-radius: 14px; overflow: hidden; font: 400 14px/1.4 var(--font-text);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / .08), 0 30px 70px -30px rgb(0 0 0 / .35); }
+.d-win__bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; background: #f4f5f4; font-size: 13px; color: #5d6268; }
+.d-win__bar b { color: #16181a; font-weight: 500; } .d-win__bar .sp { flex: 1; }
+.d-win__dots { display: flex; gap: 6px; } .d-win__dots i { width: 10px; height: 10px; border-radius: 50%; background: #dcdfe2; }
+.d-win__body { display: grid; grid-template-columns: 236px 1fr; min-height: 430px; }
+.hw-list { border-right: 1px solid rgb(0 0 0 / .07); padding: 12px; display: grid; align-content: start; gap: 2px; }
+.hw-list .q { font-size: 13px; color: #6a6e73; padding: 4px 8px 8px; }
+.hw-list .t { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 8px; border-radius: 9px; font-size: 13px; }
+.hw-list .t.is-on { background: #f1f3f1; }
+.hw-list .t b { font-weight: 500; } .hw-list .t span { color: #6a6e73; grid-column: 1 / -1; font-size: 12px; } .hw-list .t b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hw-list .t em { white-space: nowrap; font-style: normal; font-variant-numeric: tabular-nums; }
+.hw-map svg { display: block; width: 100%; height: auto; }
+@media (max-width: 639px) { .d-win__body { grid-template-columns: 1fr; } .hw-map { display: none; } .d-win__bar .sp ~ span { display: none; } }
+
+/* the map, drawn by the page's script: soft zones, one focused job at a time, everything moves into place */
+.kc-colours { --kc-have: #2f7a4a; --kc-have-t: #e4f1e7; --kc-miss: #b45a32; --kc-miss-t: #fbefe8;
+  --kc-high: #dcefe0; --kc-high-s: #a9d1b2; --kc-mid: #f7edd4; --kc-mid-s: #e2cc93; --kc-low: #f7e2dc; --kc-low-s: #e2ae9f; --kc-unk: #efefed; --kc-unk-s: #cfcfcb;
+  --kc-ink: #1b1d1c; --kc-soft: #6b706c; --kc-ease: cubic-bezier(.22, .8, .24, 1); }
+.kc-map { overflow: visible; }
+.kc-map text { font-family: var(--font-text); }
+.kc-map .z1 { fill: #2f7a4a; fill-opacity: .07; }
+.kc-map .z2 { fill: #2f7a4a; fill-opacity: .045; }
+.kc-map .z3 { fill: #2f7a4a; fill-opacity: .025; }
+.kc-map .zline { fill: none; stroke: #2f7a4a; stroke-opacity: .12; stroke-dasharray: 2 6; }
+.kc-map .me-dot { fill: var(--kc-ink); }
+.kc-map .me-du { fill: #fff; font-size: 17px; font-weight: 500; }
+.kc-map .me-name { fill: var(--kc-ink); font-size: 17px; font-weight: 500; }
+.kc-map :is(.me-name, .name, .sub) { paint-order: stroke; stroke: #f3f8f4; stroke-width: 5px; stroke-linejoin: round; }
+.kc-map .occ, .kc-map .sk { transition: transform .7s var(--kc-ease), opacity .45s ease; }
+.kc-map .occ.out, .kc-map .sk.out { opacity: 0; }
+.kc-map .occ .dot { stroke-width: 1.5; transition: r .3s var(--kc-ease), stroke-width .3s ease, fill .4s ease; }
+.kc-map .occ.o-high .dot { fill: var(--kc-high); stroke: var(--kc-high-s); }
+.kc-map .occ.o-mid .dot { fill: var(--kc-mid); stroke: var(--kc-mid-s); }
+.kc-map .occ.o-low .dot { fill: var(--kc-low); stroke: var(--kc-low-s); }
+.kc-map .occ.o-unknown .dot { fill: var(--kc-unk); stroke: var(--kc-unk-s); }
+.kc-map .occ .pct { fill: var(--kc-ink); font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.kc-map .occ .name { fill: var(--kc-ink); font-size: 16px; font-weight: 400; transition: opacity .3s ease; }
+.kc-map .occ .sub { fill: var(--kc-soft); font-size: 14px; opacity: 0; transition: opacity .3s ease; }
+.kc-map .occ .halo { fill: none; stroke: var(--kc-ink); stroke-width: 2; opacity: 0; transition: opacity .3s ease; }
+.kc-map .occ.is-sel .halo, .kc-map .occ.is-hover .halo { opacity: 1; }
+.kc-map .occ.is-hover:not(.is-sel) .halo { stroke-opacity: .35; }
+.kc-map .occ.is-sel .name, .kc-map .occ.is-hover .name { font-weight: 500; }
+.kc-map .occ.is-sel .sub, .kc-map .occ.is-hover .sub { opacity: 1; }
+.kc-map.is-hovering .occ:not(.is-hover):not(.is-sel) { opacity: .55; }
+.kc-map .sk rect { stroke-width: 1.25; transition: fill .3s ease, stroke .3s ease; }
+.kc-map .sk text { font-size: 15px; font-weight: 500; }
+.kc-map .sk.have rect { fill: var(--kc-have-t); stroke: #b9d9c1; } .kc-map .sk.have text { fill: #1f5333; }
+.kc-map .sk.miss rect { fill: #fff; stroke: #e7b9a3; stroke-dasharray: 4 3; } .kc-map .sk.miss text { fill: var(--kc-miss); }
+.kc-map .ln { fill: none; stroke-linecap: round; animation: kc-fade .5s ease both; }
+.kc-map .ln.have { stroke: var(--kc-have); stroke-opacity: .35; stroke-width: 1.5; }
+.kc-map .ln.miss { stroke: var(--kc-miss); stroke-opacity: .45; stroke-width: 1.5; stroke-dasharray: 4 5; }
+.kc-map .ln.course { stroke: var(--kc-ink); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: kc-draw .7s var(--kc-ease) both; }
+@keyframes kc-fade { from { opacity: 0; } }
+@keyframes kc-draw { to { stroke-dashoffset: 0; } }
+.kc-map [data-occ], .kc-map [data-skill] { cursor: pointer; outline: none; }
+.kc-map [data-occ]:focus-visible .halo { opacity: 1; stroke: var(--action); }
+.kc-map [data-skill]:focus-visible rect { stroke: var(--action); stroke-width: 2.5; }
+.kc-map [data-skill]:hover rect { stroke-width: 2; }
+.kc-map.static .occ, .kc-map.static .sk, .kc-map.static .ln { transition: none; animation: none; }
+.kc-map.static .ln.course { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) { .kc-map .occ, .kc-map .sk, .kc-map .ln, .kc-map .dot { transition: none !important; animation: none !important; } .kc-map .ln.course { stroke-dashoffset: 0; } }
+
+/* the app frame: the whole tool in one window across the wrap */
+.app.ui { --fx-muted: #555555; display: grid; grid-template-rows: auto auto minmax(0, 1fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); overflow: hidden; }
+.kc__bar { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-bottom: 1px solid var(--u-line); font-size: 13px; color: var(--u-muted); }
+.kc__bar b { color: var(--u-ink); font-weight: 500; } .kc__bar .sp { flex: 1; }
+.kc__bar select, .kc__tools select, .kc__tools input { font: 400 14px var(--font-text); color: var(--u-ink); height: 36px; border: 1px solid var(--u-border); border-radius: 8px; background: #fff; padding: 0 10px; }
+.kc__tools { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px 24px; padding: 16px; border-bottom: 1px solid var(--u-line); }
+.kc__field { display: grid; gap: 6px; align-content: start; font-size: 13px; color: var(--u-muted); min-width: 0; }
+.kc__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.kc__chip { transition: background .25s ease, border-color .25s ease; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 9px; border-radius: 15px; border: 1px solid var(--u-border); background: #fff; color: var(--u-ink); font: 400 14px var(--font-text); cursor: pointer; }
+.kc__chip i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid #9aa09b; transition: background .25s ease, border-color .25s ease; }
+.kc__chip[aria-pressed="true"] { background: var(--kc-have-t); border-color: var(--kc-have); }
+.kc__chip[aria-pressed="true"] i { background: var(--kc-have); border-color: var(--kc-have); }
+.kc__chip small { color: #4a4f4b; font-size: 12px; font-variant-numeric: tabular-nums; }
+.kc-find { position: relative; min-width: 0; }
+.kc-find--skill { width: 300px; max-width: 100%; margin-top: 6px; }
+.kc-find__ico { position: absolute; left: 11px; top: 11px; width: 16px; height: 16px; fill: none; stroke: #6b706c; stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
+.kc__tools .kc-find input { width: 100%; height: 38px; padding: 0 12px 0 34px; border-radius: 10px; transition: border-color .2s ease, box-shadow .2s ease; }
+.kc__tools .kc-find input:focus { outline: none; border-color: #2f7a4a; box-shadow: 0 0 0 3px rgb(47 122 74 / .15); }
+.kc-find__list { position: absolute; z-index: 30; left: 0; top: calc(100% + 6px); width: max(100%, 340px); max-width: min(420px, calc(100vw - 48px)); max-height: 340px; overflow: auto; margin: 0; padding: 6px; list-style: none; background: #fff; border: 1px solid var(--u-border); border-radius: 12px; box-shadow: 0 12px 32px -12px rgb(0 0 0 / .25), 0 2px 6px rgb(0 0 0 / .06); animation: kc-pop .16s ease both; }
+@keyframes kc-pop { from { opacity: 0; transform: translateY(-4px); } }
+.kc-find__head, .kc-find__none { padding: 8px 10px 6px; font-size: 12.5px; color: var(--u-muted); line-height: 1.4; }
+.kc-find__opt { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 1px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.kc-find__opt .m { grid-column: 1 / -1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc-find__opt .n { font-size: 12.5px; color: var(--u-muted); white-space: nowrap; align-self: center; font-variant-numeric: tabular-nums; }
+.kc-find__opt .t { font-size: 14.5px; color: var(--u-ink); }
+.kc-find__opt .m { font-size: 12.5px; color: var(--u-muted); }
+.kc-find__opt mark { background: none; color: inherit; font-weight: 600; }
+.kc-find__opt[aria-selected="true"], .kc-find__opt:hover { background: #eef5f0; }
+@media (prefers-reduced-motion: reduce) { .kc-find__list { animation: none; } }
+.kc__body { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); min-height: 0; }
+.kc__mapcol { min-width: 0; display: grid; align-content: start; }
+.kc__mapcol svg { display: block; width: 100%; height: auto; }
+.kc__legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 4px 20px 20px; font-size: 13px; color: var(--u-muted); }
+.kc__legend span { display: inline-flex; align-items: center; gap: 7px; }
+.kc__hint { margin: 0; padding: 18px 24px 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 62ch; }
+.kc__zone { width: 14px; height: 14px; border-radius: 50%; display: inline-block; background: #2f7a4a; }
+.kc__sw { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid; display: inline-block; flex: none; }
+.kc__sw.o-high { background: var(--kc-high); border-color: var(--kc-high-s); } .kc__sw.o-mid { background: var(--kc-mid); border-color: var(--kc-mid-s); } .kc__sw.o-low { background: var(--kc-low); border-color: var(--kc-low-s); } .kc__sw.o-unknown { background: var(--kc-unk); border-color: var(--kc-unk-s); }
+.kc__pill { width: 22px; height: 12px; border-radius: 6px; display: inline-block; border: 1.5px solid; }
+.kc__side { border-left: 1px solid var(--u-line); padding: 24px; display: grid; gap: 20px; align-content: start; min-width: 0; }
+.kc__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.kc__head .kc__title { margin: 0; font: 500 20px/1.25 var(--font-display); letter-spacing: -0.01em; overflow-wrap: anywhere; color: var(--u-ink); }
+.kc__head p { margin: 4px 0 0; font-size: 13px; color: var(--u-muted); }
+.kc__score { font: 500 32px/1 var(--font-display); text-align: right; font-variant-numeric: tabular-nums; color: var(--u-ink); }
+.kc__score small { display: block; font: 400 12px var(--font-text); color: var(--u-muted); margin-top: 4px; }
+.kc__outlook { display: flex; gap: 10px; font-size: 14px; color: var(--u-ink); line-height: 1.45; } .kc__outlook .kc__sw { margin-top: 3px; }
+.kc__bridge { padding: 0; display: grid; gap: 10px; font-size: 14px; line-height: 1.45; color: var(--u-ink); }
+.kc__bridge { background: var(--kc-miss-t); border-radius: 12px; padding: 14px 16px; }
+.kc__bridge.ok { background: var(--kc-have-t); }
+.kc__bridge b { font-weight: 500; color: #8f3e1d; }
+.kc__card-in { animation: kc-card .45s var(--kc-ease) both; }
+@keyframes kc-card { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .kc__card-in { animation: none; } .kc__bar-i i { transition: none; } }
+.kc__bridge.ok { color: var(--kc-have); }
+.kc__btn { transition: transform .15s ease, background .2s ease; justify-self: start; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--u-ink); color: #fff; font: 500 14px var(--font-text); cursor: pointer; }
+.kc__note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--u-muted); }
+.kc__stamp { margin: 0; font-size: 14px; color: var(--u-muted); }
+.kc__h4 { margin: 0 0 6px; font: 500 13px var(--font-text); color: var(--u-muted); }
+.kc__bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.kc__bars li { display: grid; grid-template-columns: minmax(0, 1fr) 72px 38px 24px; gap: 8px; align-items: center; font-size: 14px; color: var(--u-ink); }
+.kc__bars.have li { grid-template-columns: minmax(0, 1fr) 72px 38px; }
+.kc__bars .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc__bars .v { text-align: right; color: var(--u-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.kc__bar-i { height: 6px; border-radius: 3px; background: var(--u-fill-2); overflow: hidden; display: block; }
+.kc__bar-i i { display: block; height: 100%; width: 0; border-radius: 3px; transition: width .7s var(--kc-ease); }
+.have .kc__bar-i i { background: var(--kc-have); } .miss .kc__bar-i i { background: var(--kc-miss); }
+.kc__plus { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--kc-miss); background: #fff; color: var(--kc-miss); cursor: pointer; font: 500 15px/1 var(--font-text); padding: 0; }
+.kc__list li { min-width: 0; }
+.kc__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 16px; padding: 0 20px 20px; }
+.kc__list button { width: 100%; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: left; padding: 7px 8px; border: 0; background: none; border-radius: 8px; cursor: pointer; font: 400 14px var(--font-text); color: var(--u-ink); }
+.kc__list button:hover { background: var(--u-fill); }
+.kc__list button[aria-current="true"] { background: var(--u-fill-2); }
+.kc__list .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc__list .m { color: var(--u-muted); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media (max-width: 1279px) { .kc__list { grid-template-columns: minmax(0, 1fr); } .kc__list li:nth-child(n+8) { display: none; } }
+@media (max-width: 1279px) { .kc__bars li { grid-template-columns: minmax(0, 1fr) 52px 36px 24px; gap: 6px; } .kc__bars.have li { grid-template-columns: minmax(0, 1fr) 52px 36px; } }
+@media (max-width: 1023px) {
+  .kc__chips .kc__chip:nth-child(n+11):not([aria-pressed="true"]) { display: none; }
+  .kc__bridge { background: none; padding: 0; }
+  .kc__body { grid-template-columns: minmax(0, 1fr); }
+  .kc__side { border-left: 0; border-top: 1px solid var(--u-line); }
+  .kc__list { display: none; }
+}
+@media (max-width: 639px) {
+  .kc__tools { grid-template-columns: minmax(0, 1fr); }
+  .kc__chips .kc__chip:nth-child(n+9):not([aria-pressed="true"]) { display: none; }
+  .kc__legend { display: none; }
+  .kc__list { display: grid; grid-template-columns: minmax(0, 1fr); padding: 8px 12px 16px; }
+  .kc__list li:nth-child(n+5) { display: none; }
+  .kc__bars.miss li:nth-child(n+5) { display: none; }
+  .kc__bars.have li:nth-child(n+5) { display: none; }
+  .kc__hint { display: none; }
+  .kc-map#kc-map :is(.name, .sub, .sk, .lines, .me-name) { display: none; }
+  .kc-map#kc-map .occ .dot { r: 46px; }
+  .kc-map#kc-map .occ .halo { r: 56px; stroke-width: 4; }
+  .kc-map#kc-map .occ .pct { font-size: 32px; }
+  .kc-map#kc-map .me-dot { r: 40px; } .kc-map#kc-map .me-du { font-size: 30px; }
+  .kc__hint { padding: 12px 16px 0; }
+  .kc__bar .sp ~ * { display: none; }
+}
+</style>
+</head>
+<body>
+<!-- type: software (site-kind software)
+     deal: hero centred, nav nav-centre (nav-cards dealt first, re-dealt: no photographs for its cards), close close-type,
+     footer footer-statement, rhythm space, buttons arrow, mark ring, palette mint-pink-accounts, type onest, ground sky
+     effect: grain-gradient in the hero window's frame; card grounds: none fit the grain family, so the lit ground plain
+     moments: none -->
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="ring" aria-hidden="true"></span>Kompetenscirkeln</a>
+    <nav class="nav__links" aria-label="Huvudmeny">
+      <div class="nav__item"><a class="nav__link" href="#kartan">Kartan</a></div>
+      <div class="nav__item"><a class="nav__link" href="#steg">Stegen</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">Frågor</a></div>
+      <div class="nav__item"><a class="nav__link" href="#data">Data</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="#kartan">Prova kartan</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Meny">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top" class="kc-colours">
+  <section class="hero hero--centred" aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <a class="pill" href="#data"><span>Byggd på __ADS_IT__ IT-annonser i Platsbanken</span><span class="muted">Läs om datan</span></a>
+        <h1 id="hero-h">Kompetenskarta för IT-yrken</h1>
+        <p class="hero__lead">Välj ditt yrke och markera vad du kan. Kartan visar vilka av __N_OCC__ IT-yrken du ligger närmast och vilka kompetenser som tar dig dit.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#kartan">Prova kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#steg">Se hur det räknas</a></div>
+      </div>
+      <div class="hero__window" data-fx="grain-gradient" data-fx-seed="7" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","accent":"#3f6a92"}' data-fx-params='{"grainMotion":0}' role="img" aria-label="Kompetenscirkeln öppnad för en backend-utvecklare: närliggande yrken runt yrket, med andel matchning">
+        <div class="ly-piece ui d-win" aria-hidden="true">
+          <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Backend-utvecklare</b></span><span class="sp"></span><span>Prognos för hela riket</span></div>
+          <div class="d-win__body">
+            <div class="hw-list" id="hw-list"></div>
+            <div class="hw-map"><svg class="kc-map" id="hw-map" viewBox="170 0 760 420"></svg></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="kartan" style="--h: 2; --hm: 2" aria-labelledby="kartan-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="kartan-h" class="span-6">Kartan över närliggande IT-yrken</h2>
+        <p class="span-6 start-7 t-lead">Markera vad du kan. Ju mer du redan kan, desto närmare mitten hamnar ett yrke, och kortet visar vad som återstår. <a class="link" href="#steg">Se hur det räknas</a></p>
+      </div>
+      <div class="ui app" id="app" aria-label="Kompetenscirkeln, verktyget">
+        <div class="kc__bar"><span class="d-win__dots" aria-hidden="true"><i></i><i></i><i></i></span><b>Kompetenscirkeln</b><span class="sp"></span><label for="kc-lan">Prognos för</label><select id="kc-lan"></select></div>
+        <div class="kc__tools">
+          <div class="kc__field"><label for="kc-occ">Ditt yrke</label><div class="kc-find"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="kc-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök yrke, t.ex. backend"><ul class="kc-find__list" id="kc-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div></div>
+          <div class="kc__field"><span id="kc-chips-l">Dina kompetenser, de vanligaste i annonserna för ditt yrke</span>
+            <div class="kc__chips" id="kc-chips" role="group" aria-labelledby="kc-chips-l"></div>
+            <div class="kc-find kc-find--skill"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg><input class="kc__add" id="kc-add" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-add-list" autocomplete="off" spellcheck="false" placeholder="Lägg till kompetens, t.ex. kubernetes" aria-label="Lägg till kompetens"><ul class="kc-find__list" id="kc-add-list" role="listbox" aria-label="Kompetenser" hidden></ul></div>
+          </div>
+        </div>
+        <div class="kc__body">
+          <div class="kc__mapcol">
+            <p class="kc__hint">Du står i mitten. Ju närmare mitten ett yrke ligger, desto mer av det annonserna efterfrågar kan du redan. Klicka på ett yrke för att se vägen dit.</p>
+            <svg class="kc-map" id="kc-map" viewBox="0 0 1100 860" role="img" aria-label="Karta: du i mitten, närliggande yrken närmare mitten ju mer du redan kan, och kompetenserna för det valda yrket i inre ringen"></svg>
+            <div class="kc__legend">
+              <span><i class="kc__pill" style="background:var(--kc-have-t);border-color:#b9d9c1"></i>Du har</span>
+              <span><i class="kc__pill" style="background:#fff;border-color:#e7b9a3;border-style:dashed"></i>Saknas</span>
+              <span><i class="kc__sw o-high"></i>Stora jobbmöjligheter</span>
+              <span><i class="kc__sw o-mid"></i>Medelstora</span>
+              <span><i class="kc__sw o-low"></i>Små</span>
+            </div>
+            <ol class="kc__list" id="kc-list"></ol>
+          </div>
+          <aside class="kc__side" id="kc-card" aria-live="polite"></aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="steg" style="--hm: 2" aria-labelledby="steg-h">
+    <div class="wrap">
+      <div class="section-head"><h2 id="steg-h">Kartan i 3 steg</h2></div>
+      <div class="grid">
+        <article class="card card--row card--open m-nolift span-4">
+          <span class="step-num">1</span>
+          <h3>Välj ditt yrke</h3>
+          <p>Sök bland Arbetsförmedlingens yrkesbenämningar, till exempel backend-utvecklare.</p>
+          <div class="panel frame--lit">
+            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:340px;--ax:max(24px, 50% - 170px);--ay:32px;--ay-sm:24px" data-ui-loop>
+              <div class="ui ui-panel ui-search" data-ui="search">
+                <div class="ui-search__field">
+                  <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                  <span class="ui-search__q"><span data-search-q>backend</span><i class="ui-search__caret"></i></span>
+                </div>
+                <div class="ui-search__group">Yrken</div>
+                <ul class="ui-search__list" data-search-list>
+                  <li class="ui-search__row is-sel"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="2.5"/><path d="M3.5 13.5c.6-2.6 2.4-4 4.5-4s3.9 1.4 4.5 4"/></svg></span><span class="ui-search__t"><b>Backend</b>-utvecklare</span><span class="ui-search__m">2512</span></li>
+                  <li class="ui-search__row"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="2.5"/><path d="M3.5 13.5c.6-2.6 2.4-4 4.5-4s3.9 1.4 4.5 4"/></svg></span><span class="ui-search__t">Fullstack-utvecklare</span><span class="ui-search__m">2512</span></li>
+                  <li class="ui-search__row"><span class="ui-search__ico"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="2.5"/><path d="M3.5 13.5c.6-2.6 2.4-4 4.5-4s3.9 1.4 4.5 4"/></svg></span><span class="ui-search__t">Applikationsutvecklare</span><span class="ui-search__m">2512</span></li>
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+        <article class="card card--row card--open m-nolift span-4">
+          <span class="step-num">2</span>
+          <h3>Markera vad du kan</h3>
+          <p>De vanligaste kompetenserna i annonserna för ditt yrke ligger förvalda.</p>
+          <div class="panel frame--lit">
+            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:340px;--ax:max(24px, 50% - 170px);--ay:40px;--ay-sm:24px">
+              <div class="ui ui-panel ui-checks" data-ui="checklist">
+                <div class="ui-checks__head"><div class="ui-title">Dina kompetenser</div><span class="ui-spacer"></span><div class="ui-meta" data-checks-count>3 av 5</div></div>
+                <div class="ui-checks__bar"><i data-checks-bar style="--k:0.6"></i></div>
+                <ul class="ui-checks__list">
+                  <li class="ui-check is-done"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">CI/CD, i 48 % av annonserna</span></li>
+                  <li class="ui-check is-done"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Java, i 39 %</span></li>
+                  <li class="ui-check is-done"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">AI, i 37 %</span></li>
+                  <li class="ui-check"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">AWS, i 33 %</span></li>
+                  <li class="ui-check"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Docker, i 27 %</span></li>
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+        <article class="card card--row card--open m-nolift span-4">
+          <span class="step-num">3</span>
+          <h3>Se vad som saknas</h3>
+          <p>Varje närliggande yrke visar matchning och de kompetenser som tar dig dit.</p>
+          <div class="panel frame--lit">
+            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:360px;--ax:max(24px, 50% - 180px);--ay:calc(100% - 196px);--ay-sm:calc(100% - 196px)">
+              <div class="ui ui-notify" data-ui="notify">
+                <ul class="ui-notify__list" data-notify-list>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 11l3.5-3.5 2.5 2.5L13 6"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Molntekniker, 50 % matchning</span><span class="ui-note__body">Lär dig Python och Linux</span></span></li>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 11l3.5-3.5 2.5 2.5L13 6"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Systemutvecklare, 48 %</span><span class="ui-note__body">Tre kompetenser till, bland annat Python</span></span></li>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 11l3.5-3.5 2.5 2.5L13 6"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Fullstack-utvecklare, 45 %</span><span class="ui-note__body">TypeScript, JavaScript och C#</span></span></li>
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-6 stack-6">
+          <h2 id="faq-h">Frågor</h2>
+          <p class="t-lead kc-hide-sm">Det folk brukar fråga om kartan, matchningen och datan.</p>
+        </div>
+        <div class="faq span-6 start-7">
+          <div class="faq__item"><h3>Vem är kartan till för?</h3><p>Dig som vill byta jobb inom IT, och vägledare som behöver ett underlag i samtalet.</p></div>
+          <div class="faq__item"><h3>Hur räknas matchningen?</h3><p>Yrkets 15 vanligaste kompetenser i annonserna vägs efter hur ofta de nämns. Matchningen är andelen du täcker.</p></div>
+          <div class="faq__item"><h3>Hur aktuella är siffrorna?</h3><p>Annonserna hämtades från Platsbanken den __DATE__ och prognoserna kommer från Yrkesbarometern __OMGANG__. Datan uppdateras varje vecka.</p></div>
+          <div class="faq__item"><h3>Sparas det jag markerar?</h3><p>Nej. Allt stannar i din webbläsare.</p></div>
+          <div class="faq__item"><h3>Kommer fler yrkesområden?</h3><p>Metoden fungerar för alla 21 yrkesområden i taxonomin.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="data" aria-labelledby="data-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-6 stack-6">
+          <h2 id="data-h">Arbetsförmedlingens öppna data</h2>
+          <p class="t-lead kc-hide-sm">Tre öppna källor vägs ihop per yrke, så att kartan bygger på samma underlag som Platsbanken.</p>
+          <ul class="rows">
+            <li><span class="rows__name">Yrkestaxonomin</span><p>Yrken, SSYK-koder och utbytbarhet.</p></li>
+            <li><span class="rows__name">Platsbanken</span><p>Hur ofta kompetenser nämns i annonserna.</p></li>
+            <li><span class="rows__name">Yrkesbarometern</span><p>Jobbmöjligheter per län, i dag och om fem år.</p></li>
+          </ul>
+          <p class="kc__stamp">Datan hämtades __DATE__ och uppdateras varje vecka.</p>
+        </div>
+        <div class="frame frame--split frame--lit span-6 start-7" data-visual>
+          <div class="dg" data-diagram data-dg-still><script type="application/json">{"layout":"fanin","alt":"Yrkestaxonomin, Platsbankens annonser och Yrkesbarometern vägs ihop till en karta per yrke.","sources":[{"label":"Yrkestaxonomin","icon":"ui:layers","sub":"Yrken och SSYK"},{"label":"Platsbanken","icon":"ui:file-text","sub":"Annonser"},{"label":"Yrkesbarometern","icon":"ui:chart-column","sub":"Prognoser"},{"label":"Utbytbarhet","icon":"ui:refresh-cw","sub":"Mellan yrken"}],"target":{"label":"Kompetenscirkeln","icon":"ui:layers"},"then":{"label":"Din karta","icon":"ui:map-pin","meta":"per län"}}</script></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer closing footer--statement" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">Se vilka IT-yrken du når</h2>
+        <p>Gratis och utan konto. Fungerar direkt i webbläsaren.</p>
+      </div>
+      <a class="btn btn--primary btn--xl btn--wide" href="#kartan">Prova kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><span class="mark" data-mark="ring" aria-hidden="true"></span>Kompetenscirkeln</a>
+          <p class="footer__lede">En kompetenskarta för yrkesbyten inom IT, byggd på Arbetsförmedlingens öppna data.</p>
+        </div>
+        <div class="span-2 footer__col"><h4>Kartan</h4><ul><li><a href="#kartan">Verktyget</a></li><li><a href="#steg">Stegen</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Data</h4><ul><li><a href="#data">Källor</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Frågor</h4><ul><li><a href="#faq">Vanliga frågor</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Kontakt</h4><ul><li><a href="mailto:hej@kompetenscirkeln.example">Mejla projektgruppen</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Kompetenscirkeln</span>
+        <div class="socials"></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="application/json" id="kc-data">__DATA__</script>
+<script>
+(() => {
+  const DS = JSON.parse(document.getElementById("kc-data").textContent);
+  const CORE = 15, TARGET = 0.7, MIN_SCORE = 0.05, N_MAP = 8, MAX_SKILLS = 8, PRESELECT = 6;
+  const CX = 550, CY = 420, R0 = 250, R1 = 352, SRX = 178, SRY = 138, TAU = Math.PI * 2, NS = "http://www.w3.org/2000/svg";
+  const LAN = { "00": "hela riket", "01": "Stockholms län", "03": "Uppsala län", "04": "Södermanlands län", "05": "Östergötlands län", "06": "Jönköpings län", "07": "Kronobergs län", "08": "Kalmar län", "09": "Gotlands län", "10": "Blekinge län", "12": "Skåne län", "13": "Hallands län", "14": "Västra Götalands län", "17": "Värmlands län", "18": "Örebro län", "19": "Västmanlands län", "20": "Dalarnas län", "21": "Gävleborgs län", "22": "Västernorrlands län", "23": "Jämtlands län", "24": "Västerbottens län", "25": "Norrbottens län" };
+  const groups = new Map(DS.groups.map(g => [g.id, g]));
+  const skills = new Map(DS.skills.map(s => [s.id, s]));
+  const occs = new Map(DS.occupations.map(o => [o.id, o]));
+  const short = id => (skills.get(id)?.label || id).split(",")[0].trim();
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const brk = s => esc(s).replace(/\//g, "/&#8203;");
+  const pct = x => Math.round(x * 100);
+  const trunc = (s, n) => s.length > n ? s.slice(0, n - 1) + "…" : s;
+  const profile = o => (DS.occSkills[o.id] || DS.groupSkills[o.groupId] || []).slice(0, CORE);
+  const LOW_ADS = 25;
+  const basis = o => DS.occSkills[o.id] ? (o.adCount || 0) : (groups.get(o.groupId)?.adsAnalyzed || 0);
+  const unsure = o => { const n = basis(o); return n < LOW_ADS ? `Osäker profil. Den bygger på ${n} ${n === 1 ? "annons" : "annonser"}${DS.occSkills[o.id] ? "" : " för hela yrkesgruppen"}.` : ""; };
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function score(prof, mine) {
+    const total = prof.reduce((a, x) => a + x.share, 0);
+    const have = prof.filter(x => mine.has(x.skillId)), miss = prof.filter(x => !mine.has(x.skillId));
+    const cov = have.reduce((a, x) => a + x.share, 0), bridge = []; let acc = cov;
+    for (const m of miss) { if (!total || acc / total >= TARGET) break; bridge.push(m); acc += m.share; }
+    return { score: total ? cov / total : 0, have, miss, bridge };
+  }
+  const outlook = b => { const v = (b?.jobbmojligheter || "").toLowerCase(); return v.startsWith("stor") ? "high" : v.startsWith("medel") ? "mid" : v.startsWith("små") ? "low" : "unknown"; };
+  const trend = b => { const v = (b?.prognos || "").toLowerCase(); return !v ? null : v.includes("öka") ? "up" : v.includes("minska") ? "down" : "flat"; };
+
+  function rank(S) {
+    const me = occs.get(S.me), subs = new Map(me.substitutes.map(s => [s.id, s.pct])), out = [];
+    for (const o of DS.occupations) {
+      if (o.id === me.id || (o.groupId === me.groupId && !DS.occSkills[o.id])) continue;
+      const p = profile(o); if (!p.length) continue;
+      const g = groups.get(o.groupId), r = score(p, S.mine);
+      if (r.score < MIN_SCORE) continue;
+      const bb = DS.barometer[g.ssyk];
+      out.push({ o, g, ...r, subst: subs.get(o.id) ?? null, b: bb ? (bb[S.lan] || bb["00"] || null) : null });
+    }
+    return out.sort((a, b) => b.score - a.score || (b.subst || 0) - (a.subst || 0));
+  }
+
+  const ang = (i, n) => -Math.PI / 2 + (i * TAU) / n;
+  const adist = (a, b) => { const d = Math.abs(((a - b) % TAU + TAU) % TAU); return Math.min(d, TAU - d); };
+  const rOf = s => R0 + (1 - Math.min(1, s)) * (R1 - R0);
+  // a long job name goes on two lines, broken after a slash, a space or a hyphen
+  const SUFFIX = /(utvecklare|arkitekt|tekniker|ingenjör|analytiker|administratör|förvaltare|specialist|ansvarig|designer|konsult|strateg|samordnare|testare|programmerare|ledare|chef|säljare)$/;
+  function splitName(label) {
+    if (label.length <= 18) return [label];
+    let i = [label.indexOf("/") + 1, label.lastIndexOf(" ", 18) + 1, label.lastIndexOf("-", 17) + 1].find(k => k > 3 && k <= 19);
+    if (!i) { const m = label.match(SUFFIX); if (m && m.index > 3) return [label.slice(0, m.index) + "-", m[0]]; return [trunc(label, 22)]; }
+    return [label.slice(0, i).trim(), trunc(label.slice(i).trim(), 19)];
+  }
+  const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const place = (g, x, y, s = 1) => { g.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s})`; };
+
+  // the map: zones, the person in the middle, eight jobs placed by how much of them you already have,
+  // and the skills of the job in focus, drawn as one connected picture that moves into its new place
+  function Orbit(svg, live) {
+    svg.innerHTML = "";
+    if (!live) svg.classList.add("static");
+    [[0, "z3"], [0.33, "z2"], [0.66, "z1"]].forEach(([s, c]) => mk("circle", { class: c, cx: CX, cy: CY, r: rOf(s) + 34 }, svg));
+    mk("circle", { class: "zline", cx: CX, cy: CY, r: rOf(0.66) + 34 }, svg);
+    mk("ellipse", { class: "zline", cx: CX, cy: CY, rx: SRX, ry: SRY }, svg);
+    const gLines = mk("g", { class: "lines" }, svg), gSk = mk("g", { class: "skills" }, svg), gOcc = mk("g", { class: "occs" }, svg);
+    const gMe = mk("g", { class: "me" }, svg);
+    mk("circle", { class: "me-dot", cx: CX, cy: CY, r: 30 }, gMe);
+    mk("text", { class: "me-du", x: CX, y: CY + 6, "text-anchor": "middle" }, gMe).textContent = "Du";
+    const meName = mk("text", { class: "me-name", x: CX, y: CY + 58, "text-anchor": "middle" }, gMe);
+    const occNodes = new Map(), skNodes = new Map(), pos = new Map();
+    let first = true;
+
+    function occNode(id) {
+      let g = occNodes.get(id);
+      if (g) { g.classList.remove("out"); return g; }
+      g = mk("g", { class: "occ", "data-occ": id }, gOcc);
+      if (live) { g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); }
+      mk("circle", { class: "halo", r: 33 }, g);
+      mk("circle", { class: "dot", r: 26 }, g);
+      mk("text", { class: "pct", y: 5, "text-anchor": "middle" }, g);
+      mk("text", { class: "name" }, g);
+      mk("text", { class: "sub" }, g);
+      if (live && !reduced) { g.style.transition = "none"; place(g, CX, CY, 0.4); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = ""; }
+      occNodes.set(id, g);
+      return g;
+    }
+    function skNode(id) {
+      let g = skNodes.get(id);
+      if (g) { g.classList.remove("out"); return g; }
+      g = mk("g", { class: "sk", "data-skill": id }, gSk);
+      if (live) { g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); }
+      mk("rect", { height: 30, y: -15, rx: 15 }, g);
+      mk("text", { y: 5.5, "text-anchor": "middle" }, g);
+      g._new = true;
+      skNodes.set(id, g);
+      return g;
+    }
+    function retire(map, keep) {
+      for (const [id, g] of map) if (!keep.has(id) && !g.classList.contains("out")) {
+        g.classList.add("out");
+        setTimeout(() => { if (g.classList.contains("out")) { g.remove(); map.delete(id); } }, live && !reduced ? 450 : 0);
+      }
+    }
+
+    return function update(S, ranked) {
+      const me = occs.get(S.me);
+      meName.textContent = trunc(me.label, 26);
+      const top = ranked.slice(0, N_MAP).sort((a, b) => a.g.label.localeCompare(b.g.label, "sv") || b.score - a.score);
+      const n = top.length, focus = S.hover || S.sel;
+      const nodes = top.map((m, i) => { const a = ang(i, n), r = rOf(m.score); return { m, a, x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) }; });
+      const fNode = nodes.find(nd => nd.m.o.id === focus);
+      svg.classList.toggle("is-hovering", Boolean(S.hover) && S.hover !== S.sel);
+
+      let moved = false;
+      // everything a skill pill must keep clear of: the person, its name, each job and its name
+      const meW = Math.min(26, me.label.length) * 8.8;
+      const obs = [[CX - 36, CY - 36, CX + 36, CY + 36], [CX - meW / 2 - 4, CY + 40, CX + meW / 2 + 4, CY + 64]];
+      nodes.forEach(({ m, a, x, y }, i) => {
+        const id = m.o.id, g = occNode(id), o = outlook(m.b), t = trend(m.b);
+        const prev = pos.get(id); if (prev && Math.hypot(prev[0] - x, prev[1] - y) > 2) moved = true; pos.set(id, [x, y]);
+        g.setAttribute("class", `occ o-${o}${id === S.sel ? " is-sel" : ""}${id === S.hover ? " is-hover" : ""}`);
+        const c = Math.cos(a), sn = Math.sin(a), vertical = Math.abs(c) < 0.38;
+        const anchor = vertical ? "middle" : c > 0 ? "start" : "end", lx = vertical ? 0 : c > 0 ? 42 : -42, ly = vertical ? (sn < 0 ? -62 : 58) : 0;
+        const [pctEl, nameEl, subEl] = g.querySelectorAll("text");
+        const lines = splitName(m.o.label), two = lines.length > 1;
+        // first baseline: beside the dot the lines sit centred on it; above it the block ends where one line used to
+        const y1 = vertical ? (sn < 0 ? ly - (two ? 18 : 0) : ly) : (two ? -4 : 5), yEnd = y1 + (two ? 18 : 0);
+        const nw = Math.max(...lines.map(l => l.length)) * 8.8, bx = x + lx, x0 = anchor === "start" ? bx : anchor === "end" ? bx - nw : bx - nw / 2;
+        obs.push([x - 36, y - 36, x + 36, y + 36], [x0 - 4, y + y1 - 16, x0 + nw + 4, y + yEnd + (id === focus ? 26 : 6)]);
+        pctEl.textContent = pct(m.score);
+        nameEl.textContent = ""; nameEl.setAttribute("text-anchor", anchor);
+        lines.forEach((l, i) => { const t = mk("tspan", { x: lx, y: y1 + i * 18 }, nameEl); t.textContent = l; });
+        const arrow = t === "up" ? ", ökar" : t === "down" ? ", minskar" : "";
+        subEl.textContent = (m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka") + arrow;
+        subEl.setAttribute("x", lx); subEl.setAttribute("y", yEnd + 20); subEl.setAttribute("text-anchor", anchor);
+        if (live) g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning`);
+        if (first && live && !reduced) { g.style.transitionDelay = `${120 + i * 55}ms`; requestAnimationFrame(() => requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; })); setTimeout(() => (g.style.transitionDelay = ""), 1400); }
+        else { place(g, x, y); g.style.opacity = ""; }
+      });
+      retire(occNodes, new Set(top.map(m => m.o.id)));
+
+      // the skills of the job in focus: missing ones on the side that faces it, the ones you have around them
+      let items;
+      if (fNode) items = [...fNode.m.have.map(s => ({ ...s, have: true })), ...fNode.m.miss.map(s => ({ ...s, have: false }))].sort((a, b) => b.share - a.share).slice(0, MAX_SKILLS);
+      else items = [...S.mine].filter(id => skills.has(id)).slice(0, MAX_SKILLS).map(id => ({ skillId: id, have: true }));
+      const base = fNode ? fNode.a : -Math.PI / 2;
+      const pillW = s => Math.round(34 + trunc(short(s.skillId), 14).length * 8.2);
+      const hit = (A, B) => A[0] < B[2] && B[0] < A[2] && A[1] < B[3] && B[1] < A[3];
+      // try the most skills that fit with nothing touching: turn the ring a little, then drop the least asked-for skill
+      let best = null;
+      for (let k = items.length; k >= Math.min(4, items.length) && !(best && best.clash === 0); k--) {
+        const pickd = items.slice(0, k), ord = [...pickd.filter(s => !s.have), ...pickd.filter(s => s.have)];
+        for (const rot of [0, 0.12, -0.12, 0.24, -0.24, 0.36, -0.36]) {
+          const slots = Array.from({ length: k }, (_, i) => ang(i, k) + Math.PI / k + base + Math.PI / 2 + rot).sort((p, q) => adist(p, base + rot) - adist(q, base + rot));
+          const rects = ord.map((s, i) => { const a = slots.at(i), x = CX + SRX * Math.cos(a), y = CY + SRY * Math.sin(a), w = pillW(s); return { s, a, x, y, r: [x - w / 2 - 5, y - 20, x + w / 2 + 5, y + 20] }; });
+          let clash = 0;
+          rects.forEach((p, i) => { rects.slice(i + 1).forEach(q => { if (hit(p.r, q.r)) clash++; }); obs.forEach(o => { if (hit(p.r, o)) clash++; }); });
+          if (!best || clash < best.clash) best = { clash, rects };
+          if (clash === 0) break;
+        }
+      }
+      const placed = best ? best.rects : [], ordered = placed.map(p => p.s), at = new Map(placed.map(p => [p.s.skillId, p]));
+      const skPos = new Map();
+      ordered.forEach(s => {
+        const { x, y } = at.get(s.skillId), g = skNode(s.skillId), label = trunc(short(s.skillId), 14), w = pillW(s);
+        const isNew = g._new; g._new = false;
+        skPos.set(s.skillId, [x, y]); pos.set("s:" + s.skillId, [x, y]);
+        g.setAttribute("class", `sk ${s.have ? "have" : "miss"}`);
+        const r = g.querySelector("rect"), tx = g.querySelector("text");
+        r.setAttribute("width", w); r.setAttribute("x", -w / 2);
+        tx.textContent = (s.have ? "" : "+ ") + label;
+        if (live) g.setAttribute("aria-label", `${short(s.skillId)}: ${s.have ? "du har den" : "saknas, välj för att simulera att du lär dig den"}`);
+        if (live && !reduced && isNew) { g.style.transition = "none"; place(g, x, y, 0.7); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = ""; }
+        requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; });
+      });
+      retire(skNodes, new Set(ordered.map(s => s.skillId)));
+
+      // lines: drawn once everything has settled
+      gLines.innerHTML = "";
+      if (fNode) {
+        const delay = live && !reduced && (moved || first) ? (first ? 700 : 420) : 0;
+        const dx = fNode.x - CX, dy = fNode.y - CY, L = Math.hypot(dx, dy);
+        ordered.forEach(s => {
+          const p = skPos.get(s.skillId), ux = fNode.x - p[0], uy = fNode.y - p[1], d = Math.hypot(ux, uy);
+          const l = mk("line", { class: `ln ${s.have ? "have" : "miss"}`, x1: p[0], y1: p[1], x2: (fNode.x - ux / d * 34).toFixed(1), y2: (fNode.y - uy / d * 34).toFixed(1) }, gLines);
+          l.style.animationDelay = `${delay + 120}ms`;
+        });
+        const c = mk("line", { class: "ln course", pathLength: 1, x1: (CX + dx / L * 34).toFixed(1), y1: (CY + dy / L * 34).toFixed(1), x2: (fNode.x - dx / L * 36).toFixed(1), y2: (fNode.y - dy / L * 36).toFixed(1) }, gLines);
+        c.style.animationDelay = `${delay}ms`;
+      }
+      if (!n) { const t = mk("text", { class: "me-name", x: CX, y: CY + 110, "text-anchor": "middle" }, gLines); t.textContent = "Markera fler kompetenser så visas närliggande yrken."; }
+      first = false;
+    };
+  }
+
+  const back = new Map(DS.occupations.map(o => [o.label, o.id]));
+  const startId = back.get("Backend-utvecklare") || DS.occupations[0].id;
+  const initMine = id => new Set(profile(occs.get(id)).slice(0, PRESELECT).map(x => x.skillId));
+
+  // hero: the product as it opens, held still
+  {
+    const S = { me: startId, mine: initMine(startId), lan: "00", sel: null, hover: null };
+    const ranked = rank(S); S.sel = ranked[0]?.o.id;
+    Orbit(document.getElementById("hw-map"), false)(S, ranked);
+    document.getElementById("hw-list").innerHTML = `<div class="q">Närliggande yrken</div>` + ranked.slice(0, 3).map((m, i) => `<div class="t${i === 0 ? " is-on" : ""}"><b>${esc(m.o.label)}</b><em>${pct(m.score)} %</em><span>${m.bridge.length ? `${m.bridge.length} kompetenser till` : "redo att söka"}</span></div>`).join("");
+  }
+
+
+  // search that forgives typos: folded letters, prefix and part-of-word hits, and a small edit distance per word
+  const fold = s => s.toLowerCase().replace(/[åäà]/g, "a").replace(/[öø]/g, "o").replace(/[éè]/g, "e").replace(/ü/g, "u");
+  const words = s => fold(s).split(/[^a-z0-9#+]+/).filter(Boolean);
+  function edits(a, b) {
+    const m = a.length, n = b.length; if (Math.abs(m - n) > 3) return 9;
+    const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+    for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
+      const c = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[m][n];
+  }
+  function wordScore(q, t) {
+    if (t.startsWith(q)) return 1;
+    if (q.length >= 3 && t.includes(q)) return 0.85;
+    if (q.length < 3) return 0;
+    const allow = q.length <= 4 ? 1 : q.length <= 8 ? 2 : 3;
+    const d = Math.min(edits(q, t), edits(q, t.slice(0, q.length)), edits(q, t.slice(0, q.length + 1)));
+    return d <= allow ? 0.72 - 0.1 * d : 0;
+  }
+  function search(query, items, limit = 8) {
+    const qs = words(query); if (!qs.length) return [];
+    const out = [];
+    for (const it of items) {
+      let sum = 0, ok = true;
+      for (const q of qs) {
+        let best = 0;
+        for (const [w, weight] of it._w) { const s = wordScore(q, w) * weight; if (s > best) best = s; }
+        if (!best) { ok = false; break; }
+        sum += best;
+      }
+      if (ok) out.push({ it, score: sum / qs.length + (it.pop || 0) * 0.04 - it.label.length * 0.0005 });
+    }
+    out.sort((a, b) => b.score - a.score);
+    const top = out[0]?.score || 0;
+    return out.filter(x => top < 0.95 || x.score >= top - 0.3).slice(0, limit).map(x => x.it);
+  }
+  function mark(label, query) {
+    const f = fold(label), qs = words(query).sort((a, b) => b.length - a.length);
+    for (const q of qs) { const i = f.indexOf(q); if (i >= 0) return esc(label.slice(0, i)) + "<mark>" + esc(label.slice(i, i + q.length)) + "</mark>" + esc(label.slice(i + q.length)); }
+    return esc(label);
+  }
+  const index = (label, extra = [], weak = []) => [...words(label).map(w => [w, 1]), [words(label).join(""), 0.95], ...extra.flatMap(words).map(w => [w, 0.95]), ...weak.flatMap(words).map(w => [w, 0.8])];
+
+  // one combobox: type, see up to eight suggestions, move with the arrow keys, pick with Enter or a click
+  function Finder({ input, list, items, onPick, meta, aside, empty, emptyTitle, keepValue }) {
+    let shown = [], active = -1, n = 0;
+    const id = input.id + "-opt";
+    const open = on => { list.hidden = !on; input.setAttribute("aria-expanded", on); if (!on) { active = -1; input.removeAttribute("aria-activedescendant"); } };
+    function draw() {
+      const q = input.value.trim(), isEmpty = !q || (keepValue && keepValue() === q);
+      shown = isEmpty ? empty() : search(q, items());
+      active = shown.length ? 0 : -1;
+      const head = isEmpty ? `<li class="kc-find__head" role="presentation">${emptyTitle}</li>` : "";
+      list.innerHTML = head + (shown.length ? shown.map((it, i) => `<li role="option" id="${id}${i}" class="kc-find__opt" data-i="${i}" aria-selected="${i === active}"><span class="t">${(isEmpty ? esc(it.label) : mark(it.label, q)).replace(/\//g, "/&#8203;")}</span>${aside ? `<span class="n">${aside(it)}</span>` : ""}<span class="m">${meta(it)}</span></li>`).join("")
+        : `<li class="kc-find__none" role="presentation">Hittade inget som liknar ”${esc(q)}”. Prova ett annat ord.</li>`);
+      if (active >= 0) input.setAttribute("aria-activedescendant", id + active);
+      open(true);
+    }
+    function move(k) {
+      if (!shown.length) return;
+      active = (active + k + shown.length) % shown.length;
+      list.querySelectorAll(".kc-find__opt").forEach((li, i) => li.setAttribute("aria-selected", i === active));
+      input.setAttribute("aria-activedescendant", id + active);
+      list.querySelector(`#${CSS.escape(id + active)}`)?.scrollIntoView({ block: "nearest" });
+    }
+    function pick(i) { const it = shown[i]; if (!it) return; open(false); onPick(it); }
+    input.addEventListener("focus", () => { if (keepValue) input.select(); draw(); });
+    input.addEventListener("input", () => { clearTimeout(n); n = setTimeout(draw, 60); });
+    input.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown") { e.preventDefault(); list.hidden ? draw() : move(1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+      else if (e.key === "Enter") { if (!list.hidden && active >= 0) { e.preventDefault(); pick(active); } }
+      else if (e.key === "Escape") { open(false); if (keepValue) input.value = keepValue(); }
+    });
+    input.addEventListener("blur", () => setTimeout(() => { open(false); if (keepValue) input.value = keepValue(); }, 120));
+    list.addEventListener("mousedown", e => { const li = e.target.closest(".kc-find__opt"); if (li) { e.preventDefault(); pick(Number(li.dataset.i)); } });
+    return { draw };
+  }
+
+  // the tool
+  const $ = id => document.getElementById(id);
+  const S = { me: startId, mine: initMine(startId), lan: "00", sel: null, hover: null };
+  let ranked = [], shownScore = null, shownSel = null;
+  const lans = new Set(["00"]); Object.values(DS.barometer).forEach(b => Object.keys(b).forEach(k => lans.add(k)));
+  $("kc-lan").innerHTML = [...lans].sort().map(c => `<option value="${c}">${esc(LAN[c] || "län " + c)}</option>`).join("");
+  const SYN = { "Backend-utvecklare": "backend server api", "Frontend-utvecklare": "frontend webbutvecklare react webb", "Fullstack-utvecklare": "fullstack full stack webbutvecklare", "Systemutvecklare/Programmerare": "programmerare utvecklare developer kodare", "Mjukvaruutvecklare": "software developer engineer programmerare", "Supporttekniker IT": "helpdesk servicedesk support it-support", "Systemadministratör": "sysadmin admin drift server", "Nätverkstekniker": "network nätverk", "Data scientist": "datavetare ml ai maskininlärning", "Dataanalytiker": "analytiker analyst bi", "UX-designer": "ux designer användarupplevelse", "Projektledare, IT": "pm projektledare", "IT-säkerhetsanalytiker": "security säkerhet soc", "Molntekniker/Cloudutvecklare": "cloud moln aws azure", "Devops utvecklare": "devops sre", "Testutvecklare": "testare tester qa", "Mjukvarutestare": "testare tester qa", "Produktägare, IT": "product owner po", "IT-tekniker": "tekniker support" };
+  const maxAds = Math.max(1, ...DS.occupations.map(o => o.adCount || 0));
+  const occItems = DS.occupations.filter(o => !o.external).map(o => ({ id: o.id, label: o.label, group: groups.get(o.groupId).label, ads: o.adCount || 0, pop: (o.adCount || 0) / maxAds, _w: index(o.label, [SYN[o.label] || ""], [groups.get(o.groupId).label]) }));
+  const skillItems = DS.skills.map(s => ({ id: s.id, label: short(s.id), headline: s.headline, pop: 0, _w: index(short(s.id), [], [s.headline || ""]) }));
+  const occFind = Finder({ input: $("kc-occ"), list: $("kc-occ-list"), items: () => occItems, keepValue: () => occs.get(S.me).label,
+    emptyTitle: "Vanligast i annonserna. Skriv för att söka bland alla yrken.",
+    empty: () => [...occItems].sort((a, b) => b.ads - a.ads).slice(0, 8),
+    meta: it => esc(it.group),
+    aside: it => (it.ads ? `${it.ads} annonser` : ""),
+    onPick: it => { S.me = it.id; S.sel = null; S.mine = initMine(S.me); $("kc-occ").value = it.label; $("kc-occ").blur(); render(); } });
+  const myShare = id => { const me = occs.get(S.me); return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).find(x => x.skillId === id)?.share; };
+  const skillFind = Finder({ input: $("kc-add"), list: $("kc-add-list"),
+    items: () => skillItems.map(it => ({ ...it, pop: (myShare(it.id) || 0) * 3 + (S.mine.has(it.id) ? -1 : 0) })),
+    emptyTitle: "Vanliga i annonserna för ditt yrke som du inte har markerat",
+    empty: () => { const me = occs.get(S.me); return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).filter(x => !S.mine.has(x.skillId)).slice(0, 8).map(x => skillItems.find(it => it.id === x.skillId)).filter(Boolean); },
+    meta: it => S.mine.has(it.id) ? "Du har den redan" : myShare(it.id) ? `I ${pct(myShare(it.id))} % av annonserna för ditt yrke` : esc(it.headline || ""),
+    onPick: it => { S.mine.add(it.id); $("kc-add").value = ""; render(); skillFind.draw(); } });
+  $("kc-occ").value = occs.get(S.me).label;
+  const orbit = Orbit($("kc-map"), true);
+
+  const OUT = { high: "Stora jobbmöjligheter", mid: "Medelstora jobbmöjligheter", low: "Små jobbmöjligheter", unknown: "Prognos saknas" };
+  const TR = { up: "och de väntas öka på fem år", down: "och de väntas minska på fem år", flat: "och de väntas vara oförändrade på fem år" };
+
+  function countTo(el, from, to) {
+    if (reduced || from === null || from === to) { el.textContent = to; return; }
+    const t0 = performance.now(), d = 500;
+    const step = now => { const k = Math.min(1, (now - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  function drawCard() {
+    const m = ranked.find(x => x.o.id === S.sel);
+    if (!m) { $("kc-card").innerHTML = `<div class="kc__head"><div><p class="kc__title">Inga närliggande yrken än</p><p>Markera fler kompetenser ovanför kartan.</p></div></div>`; shownScore = null; return; }
+    const o = outlook(m.b), t = trend(m.b), fresh = shownSel !== m.o.id;
+    const after = m.bridge.length ? score([...m.have, ...m.miss], new Set([...S.mine, ...m.bridge.map(b => b.skillId)])).score : m.score;
+    const list = arr => arr.map(b => `<b>${esc(short(b.skillId))}</b>`).reduce((s, x, i, a) => s + (i === 0 ? "" : i === a.length - 1 ? " och " : ", ") + x, "");
+    const bars = (arr, kind) => arr.length ? `<ul class="kc__bars ${kind}">${arr.map(s => `<li><span class="n">${esc(short(s.skillId))}</span><span class="kc__bar-i"><i data-w="${Math.min(100, s.share * 100)}"></i></span><span class="v">${pct(s.share)} %</span>${kind === "miss" ? `<button type="button" class="kc__plus" data-add="${s.skillId}" aria-label="Simulera att du lär dig ${esc(short(s.skillId))}">+</button>` : ""}</li>`).join("")}</ul>` : `<p class="kc__h4">${kind === "have" ? "Inga av yrkets kärnkompetenser än." : "Inget saknas."}</p>`;
+    const prevWidths = new Map([...$("kc-card").querySelectorAll(".kc__bar-i i")].map(i => [i.closest("li").querySelector(".n").textContent + i.closest("ul").className, i.style.width]));
+    $("kc-card").innerHTML = `<div class="${fresh ? "kc__card-in" : ""}" style="display:grid;gap:20px"><div class="kc__head"><div><p class="kc__title">${brk(m.o.label)}</p><p>${esc(m.g.label)}</p></div><div class="kc__score"><span id="kc-score"></span> %<small>matchning</small></div></div>
+      <div class="kc__outlook"><i class="kc__sw o-${o}"></i><span>${OUT[o]}${t ? " " + TR[t] : ""}, ${esc(LAN[S.lan] || "län " + S.lan)}.</span></div>
+      ${unsure(m.o) ? `<p class="kc__note">${unsure(m.o)}</p>` : ""}
+      ${m.bridge.length ? `<div class="kc__bridge"><span>Lär dig ${list(m.bridge)} så går du från ${pct(m.score)} till ${pct(after)} % matchning.</span><button type="button" class="kc__btn" data-add="${m.bridge.map(b => b.skillId).join(",")}">Simulera att jag lär mig ${m.bridge.length > 1 ? "dem" : "den"}</button></div>` : `<div class="kc__bridge ok">Du täcker redan minst ${pct(TARGET)} % av det annonserna efterfrågar.</div>`}
+      <div><p class="kc__h4">Du har</p>${bars(m.have, "have")}</div><div><p class="kc__h4">Saknas, andel av annonserna</p>${bars(m.miss.slice(0, 7), "miss")}</div></div>`;
+    $("kc-card").querySelectorAll(".kc__bar-i i").forEach(i => { const key = i.closest("li").querySelector(".n").textContent + i.closest("ul").className; if (!fresh && prevWidths.has(key)) i.style.width = prevWidths.get(key); requestAnimationFrame(() => requestAnimationFrame(() => (i.style.width = i.dataset.w + "%"))); });
+    countTo($("kc-score"), fresh ? null : shownScore, pct(m.score));
+    shownScore = pct(m.score); shownSel = m.o.id;
+  }
+
+  function render() {
+    ranked = rank(S);
+    if (!ranked.some(m => m.o.id === S.sel)) S.sel = ranked[0]?.o.id || null;
+    const me = occs.get(S.me), prof = (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).slice(0, 16);
+    const ids = [...prof.map(p => p.skillId), ...[...S.mine].filter(id => !prof.some(p => p.skillId === id))];
+    const chips = $("kc-chips"), have = new Map([...chips.children].map(b => [b.dataset.skill, b]));
+    if (ids.length !== have.size || ids.some(id => !have.has(id))) {
+      chips.innerHTML = ids.map(id => { const p = prof.find(x => x.skillId === id); return `<button type="button" class="kc__chip" data-skill="${id}" aria-pressed="${S.mine.has(id)}"><i aria-hidden="true"></i>${esc(short(id))}${p ? ` <small>${pct(p.share)} %</small>` : ""}</button>`; }).join("");
+    } else ids.forEach(id => have.get(id).setAttribute("aria-pressed", S.mine.has(id)));
+    orbit(S, ranked);
+    drawCard();
+    $("kc-list").innerHTML = ranked.slice(0, 10).map(x => `<li><button type="button" data-occ="${x.o.id}" aria-current="${x.o.id === S.sel}"><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></button></li>`).join("");
+  }
+  const toggle = id => { S.mine.has(id) ? S.mine.delete(id) : S.mine.add(id); render(); };
+  $("kc-lan").onchange = e => { S.lan = e.target.value; render(); };
+
+  $("kc-chips").onclick = e => { const b = e.target.closest("[data-skill]"); if (b) toggle(b.dataset.skill); };
+  $("kc-card").onclick = e => { const b = e.target.closest("[data-add]"); if (b) { b.dataset.add.split(",").forEach(id => S.mine.add(id)); render(); } };
+  $("kc-list").onclick = e => { const b = e.target.closest("[data-occ]"); if (b) { S.sel = b.dataset.occ; render(); } };
+  const map = $("kc-map");
+  map.addEventListener("click", e => { const c = e.target.closest("[data-occ]"); if (c) { S.sel = c.dataset.occ; S.hover = null; render(); return; } const s = e.target.closest("[data-skill]"); if (s) toggle(s.dataset.skill); });
+  map.addEventListener("keydown", e => { if (e.key !== "Enter" && e.key !== " ") return; const t = e.target.closest("[data-occ],[data-skill]"); if (!t) return; e.preventDefault(); t.dataset.occ ? (S.sel = t.dataset.occ, render()) : toggle(t.dataset.skill); });
+  let hoverT;
+  map.addEventListener("mouseover", e => { const c = e.target.closest("[data-occ]"), id = c ? c.dataset.occ : null; if (id === S.hover) return; clearTimeout(hoverT); hoverT = setTimeout(() => { S.hover = id; orbit(S, ranked); }, id ? 60 : 160); });
+  map.addEventListener("mouseleave", () => { clearTimeout(hoverT); if (S.hover) { S.hover = null; orbit(S, ranked); } });
+  render();
+})();
+</script>
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="assets/diagrams/mount.js"></script>
+</body>
+</html>

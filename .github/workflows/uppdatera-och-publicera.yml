@@ -1,0 +1,62 @@
+name: Uppdatera data och publicera
+
+# Varje måndag morgon hämtas ny data från Arbetsförmedlingens öppna API:er, sidan byggs om och publiceras
+# på GitHub Pages. Varje push till main publicerar också (utan ny hämtning).
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      hamta:
+        description: "Hämta ny data"
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  bygg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tester
+        run: python3 -m unittest discover -s pipeline/tests -v
+      - name: Hämta data
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.hamta)
+        # avbryter med fel om hämtningen ser trasig ut; då publiceras inget nytt
+        run: python3 pipeline/hamta.py --utan-radata
+      - name: Bygg sidan
+        run: python3 web/build.py
+      - name: Spara ny data i repot
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dataset.json web/index.html web/artifact.html
+          git diff --cached --quiet || git commit -m "Data: veckouppdatering $(date -u +%F)"
+          git push
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+  publicera:
+    needs: bygg
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
