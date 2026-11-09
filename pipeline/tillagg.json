@@ -1,37 +1,56 @@
 {
-  "_om": "Egna tillägg till Arbetsförmedlingens kompetenslista. 'tillagg' är kompetenser som saknas helt i taxonomin. 'synonymer' ger extra söktermer (och ev. nytt visningsnamn, 'visa') till en kompetens som finns, nyckeln är taxonomins id. Termer i 'cs' matchas skiftlägeskänsligt. Listan bör granskas av vägledare och stämmas av med JobTech.",
+  "_om": "Egna tillägg till Arbetsförmedlingens kompetenslista. 'tillagg' är kompetenser som saknas helt i taxonomin. 'synonymer' ger extra söktermer (och ev. nytt visningsnamn, 'visa') till en kompetens som finns, nyckeln är taxonomins id. Termer i 'cs' matchas skiftlägeskänsligt. Listan bör granskas av vägledare och stämmas av med JobTech. 'stopp' är kompetensnamn som inte matchas i annonstext: allmänna ord (Svenska, Utbildning, Miljö), förmåner (Kollektivavtal, Försäkringar) och ord med annan vardaglig betydelse (Mark, Balans, Post). 'standardfraser' är reguljära uttryck: meningar i annonsen som matchar något av dem räknas inte.",
   "tillagg": [
-    {"label": "Kubernetes", "headline": "Applikationsplattformar", "termer": ["K8s", "k8s"]},
+    {"label": "Kubernetes", "headline": "Applikationsplattformar", "termer": [ "K8s", "k8s" ]},
     {"label": "OpenShift", "headline": "Applikationsplattformar"},
     {"label": "Terraform", "headline": "Programmerings- och systemutvecklingsverktyg"},
     {"label": "Ansible", "headline": "Programmerings- och systemutvecklingsverktyg"},
     {"label": "GitHub", "headline": "Programmerings- och systemutvecklingsverktyg"},
     {"label": "GitLab", "headline": "Programmerings- och systemutvecklingsverktyg"},
     {"label": "Grafana", "headline": "Programmerings- och systemutvecklingsverktyg"},
-    {"label": "Prometheus", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": ["Prometheus"]},
+    {"label": "Prometheus", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": [ "Prometheus" ]},
     {"label": "DevOps", "headline": "Styr- och utvecklingsmodeller"},
-    {"label": "SAFe", "headline": "Styr- och utvecklingsmodeller", "cs": ["SAFe"]},
+    {"label": "SAFe", "headline": "Styr- och utvecklingsmodeller", "cs": [ "SAFe" ]},
     {"label": "MLOps", "headline": "Styr- och utvecklingsmodeller"},
-    {"label": "React", "headline": "Ramverk", "termer": ["React.js", "ReactJS"], "cs": ["React"]},
-    {"label": "Next.js", "headline": "Ramverk", "termer": ["NextJS"]},
+    {"label": "React", "headline": "Ramverk", "termer": [ "React.js", "ReactJS" ], "cs": [ "React" ]},
+    {"label": "Next.js", "headline": "Ramverk", "termer": [ "NextJS" ]},
     {"label": "GraphQL", "headline": "Datorspråk"},
-    {"label": "Power BI", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": ["PowerBI"]},
+    {"label": "Power BI", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": [ "PowerBI" ]},
     {"label": "Databricks", "headline": "Applikationsplattformar"},
-    {"label": "Snowflake", "headline": "Databaser", "cs": ["Snowflake"]},
+    {"label": "Snowflake", "headline": "Databaser", "cs": [ "Snowflake" ]},
     {"label": "dbt", "headline": "Programmerings- och systemutvecklingsverktyg"},
-    {"label": "Airflow", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": ["Airflow"]},
-    {"label": "Apache Spark", "headline": "Applikationsplattformar", "termer": ["Spark", "PySpark"], "cs": ["Spark"]},
+    {"label": "Airflow", "headline": "Programmerings- och systemutvecklingsverktyg", "cs": [ "Airflow" ]},
+    {"label": "Apache Spark", "headline": "Applikationsplattformar", "termer": [ "Spark", "PySpark" ], "cs": [ "Spark" ]},
     {"label": "PyTorch", "headline": "Ramverk"},
     {"label": "TensorFlow", "headline": "Ramverk"},
-    {"label": "Språkmodeller", "headline": "Övriga kompetenser", "termer": ["LLM", "LLMs", "LLM:er", "språkmodeller", "large language models"]},
+    {"label": "Språkmodeller", "headline": "Övriga kompetenser", "termer": [ "LLM", "LLMs", "LLM:er", "språkmodeller", "large language models" ]},
     {"label": "Figma", "headline": "Programvara för digitalt skapande"},
-    {"label": "Entra ID", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": ["Microsoft Entra", "Azure AD", "Azure Active Directory"]},
-    {"label": "Microsoft 365", "headline": "Applikationsplattformar", "termer": ["M365", "Office 365", "O365"]},
+    {"label": "Entra ID", "headline": "Programmerings- och systemutvecklingsverktyg", "termer": [ "Microsoft Entra", "Azure AD", "Azure Active Directory" ]},
+    {"label": "Microsoft 365", "headline": "Applikationsplattformar", "termer": [ "M365", "Office 365", "O365" ]},
     {"label": "ServiceNow", "headline": "Applikationsplattformar"}
   ],
   "synonymer": {
-    "HKgZ_SWa_vn8": {"visa": "Azure", "termer": ["Azure", "Microsoft Azure"]},
-    "hYyY_NPi_H65": {"visa": "Kafka", "termer": ["Kafka"]},
-    "c6uA_XkH_gpt": {"visa": "Intune", "termer": ["Intune"]}
-  }
+    "HKgZ_SWa_vn8": {
+      "visa": "Azure",
+      "termer": ["Azure", "Microsoft Azure"]
+    },
+    "hYyY_NPi_H65": {
+      "visa": "Kafka",
+      "termer": ["Kafka"]
+    },
+    "c6uA_XkH_gpt": {
+      "visa": "Intune",
+      "termer": ["Intune"]
+    }
+  },
+  "stopp": ["Svenska", "Engelska", "Utbildning", "Miljö", "Kollektivavtal", "Teknik", "Verktyg", "Dokumentation", "Kommunikation", "Kompetensutveckling", "Industri", "Post", "Ekonomi", "Data", "Försäkringar", "Balans", "Intyg", "Språk", "Examen", "Gymnasieutbildning", "Fysik", "Performance", "Bild", "Arbetsgrupp", "Lönestatistik", "Smart", "Mark", "Certifikat", "Webb", "Utvecklingsarbete", "Kollektivtrafik", "Företagshälsovård", "Norrländska", "Mission", "Monitor", "Operation", "Regi", "Kanaler", "Kläder", "House", "Cover", "Country", "Mode", "Mobil", "Nice", "Present", "Parker", "Terminer", "Show", "Guld", "Feature", "Rock", "Licens", "Amanda", "Julia", "Tele", "Historia", "Färg", "Filosofi", "Programvara", "Analysverktyg", "Metall", "Utbildningsbevis", "Utbildningsintyg", "Yrkesbevis", "Högskoleexamen", "Kandidatexamen", "Yrkesutbildning", "Yrkeshögskoleutbildning", "Anställningsavtal", "Dataskyddsförordningen", "Alt", "DM", "Forskning", "Mänskliga rättigheter"],
+  "standardfraser": [
+    "undanber",
+    "(bemannings|rekryterings)(företag|bolag)",
+    "annons(försälj|sälj)",
+    "rekryteringskanal",
+    "\\bAI\\b.*(rekryter|ansök|urval|intervju|kandidat)",
+    "(rekryter|ansök|urval|intervju|kandidat).*\\bAI\\b",
+    "oavsett (kön|ålder|bakgrund)|mångfald|diskriminer|likabehandling"
+  ]
 }

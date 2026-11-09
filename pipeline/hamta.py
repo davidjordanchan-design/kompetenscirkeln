@@ -1,8 +1,8 @@
 """Kompetenscirkeln: hämtar Arbetsförmedlingens öppna data och skriver en färdig datafil. En körning, inga beroenden.
 
-    python3 pipeline/hamta.py                         # -> data/dataset.json + data/raw/radata.json.gz
+    python3 pipeline/hamta.py                         # alla yrkesområden -> data/dataset.json + data/raw/radata.json.gz
     python3 pipeline/hamta.py --utan-radata           # bara datafilen (så körs veckojobbet på GitHub)
-    FIELD_ID=<id> python3 pipeline/hamta.py           # annat yrkesområde än Data/IT
+    FIELD_ID=<id> python3 pipeline/hamta.py           # ett enda yrkesområde, t.ex. apaJ_2ja_LuF (Data/IT)
 
 Kräver nät mot jobtechdev.se (vanlig dator, Colab eller GitHub Actions) och Python 3.9+.
 Skriptet avbryter utan att skriva något om hämtningen ser trasig ut, så att en dålig körning inte publiceras.
@@ -15,7 +15,7 @@ import kompetens
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 CFG = {
-    "FIELD_ID": os.environ.get("FIELD_ID", "apaJ_2ja_LuF"),  # Data/IT
+    "FIELD_ID": os.environ.get("FIELD_ID", "alla"),  # "alla" eller ett yrkesområdes id, t.ex. apaJ_2ja_LuF (Data/IT)
     "TAXONOMY": os.environ.get("TAXONOMY_BASE", "https://taxonomy.api.jobtechdev.se"),
     "JOBSEARCH": os.environ.get("JOBSEARCH_BASE", "https://jobsearch.api.jobtechdev.se"),
     "BAROMETER_URL": os.environ.get("BAROMETER_URL", "https://data.jobtechdev.se/prognoser/yrkesbarometer.json"),
@@ -58,10 +58,18 @@ def fetch_field(fid):
     return d["concepts"][0]
 
 
-def fetch_group_skills(gid):
-    d = gql('{ concepts(id: "%s") { related(type: "skill") { id preferred_label alternative_labels hidden_labels '
-            'broader(type: "skill-headline") { preferred_label } } } }' % gid)
-    return (d.get("concepts") or [{}])[0].get("related") or []
+def fetch_fields():
+    d = gql('{ concepts(type: "occupation-field") { id preferred_label } }')
+    return sorted(d["concepts"], key=lambda f: f["preferred_label"])
+
+
+def fetch_skills():
+    """Hela kompetenslistan (cirka 6 800) med alternativa och dolda etiketter."""
+    d = gql('{ concepts(type: "skill") { id preferred_label alternative_labels hidden_labels '
+            'broader(type: "skill-headline") { preferred_label } } }')
+    return [{"id": s["id"], "label": s["preferred_label"], "alt": s.get("alternative_labels") or [],
+             "hidden": s.get("hidden_labels") or [],
+             "headline": ((s.get("broader") or [{}])[0] or {}).get("preferred_label")} for s in d["concepts"]]
 
 
 def fetch_ads(gid, max_ads):
@@ -93,45 +101,54 @@ def fetch_ads(gid, max_ads):
 
 
 def fetch_raw():
-    print("• Hämtar yrkesområde", CFG["FIELD_ID"], "från taxonomin …")
-    field = fetch_field(CFG["FIELD_ID"])
-    print(f"• {field['preferred_label']}: {len(field['narrower'])} yrkesgrupper")
-    groups, occupations, internal, external = [], [], set(), {}
-    for g in field["narrower"]:
-        groups.append({"id": g["id"], "label": g["preferred_label"], "ssyk": g["ssyk_code_2012"], "external": False})
-        for o in g.get("narrower") or []:
-            internal.add(o["id"])
-    for g in field["narrower"]:
-        for o in g.get("narrower") or []:
-            subs = o.get("substitutes") or []
-            occupations.append({"id": o["id"], "label": o["preferred_label"], "groupId": g["id"],
-                                "substitutes": [{"id": s["id"], "pct": s.get("substitutability_percentage")} for s in subs]})
-            if not CFG["INCLUDE_EXTERNAL"]:
+    alla = CFG["FIELD_ID"].lower() == "alla"
+    ids = [f["id"] for f in fetch_fields()] if alla else [CFG["FIELD_ID"]]
+    print(f"• Hämtar {len(ids)} yrkesområde(n) från taxonomin …")
+    fields, groups, occupations, internal, external, seen_groups = [], [], [], set(), {}, set()
+    tree = [fetch_field(fid) for fid in ids]
+    for field in tree:
+        fields.append({"id": field["id"], "label": field["preferred_label"]})
+        for g in field["narrower"]:
+            if g["id"] in seen_groups:
                 continue
-            for s in subs:
-                sg = (s.get("broader") or [None])[0]
-                if s["id"] in internal or not sg:
+            seen_groups.add(g["id"])
+            groups.append({"id": g["id"], "label": g["preferred_label"], "ssyk": g["ssyk_code_2012"],
+                           "fieldId": field["id"], "external": False})
+            for o in g.get("narrower") or []:
+                internal.add(o["id"])
+    seen_occ = set()
+    for field in tree:
+        for g in field["narrower"]:
+            for o in g.get("narrower") or []:
+                if o["id"] in seen_occ:
                     continue
-                e = external.setdefault(sg["id"], {"group": sg, "occupations": {}, "refs": 0})
-                e["refs"] += 1
-                e["occupations"][s["id"]] = s["preferred_label"]
-    chosen = sorted(external.values(), key=lambda e: -e["refs"])[: CFG["MAX_EXTERNAL_GROUPS"]]
-    for e in chosen:
+                seen_occ.add(o["id"])
+                subs = o.get("substitutes") or []
+                occupations.append({"id": o["id"], "label": o["preferred_label"], "groupId": g["id"],
+                                    "substitutes": [{"id": s["id"], "pct": s.get("substitutability_percentage")} for s in subs]})
+                if alla or not CFG["INCLUDE_EXTERNAL"]:
+                    continue
+                for s in subs:
+                    sg = (s.get("broader") or [None])[0]
+                    if s["id"] in internal or not sg:
+                        continue
+                    e = external.setdefault(sg["id"], {"group": sg, "occupations": {}, "refs": 0})
+                    e["refs"] += 1
+                    e["occupations"][s["id"]] = s["preferred_label"]
+    # bara när ett enda yrkesområde hämtas: ta med närliggande yrkesgrupper utanför området
+    for e in sorted(external.values(), key=lambda e: -e["refs"])[: CFG["MAX_EXTERNAL_GROUPS"]]:
         g = e["group"]
-        groups.append({"id": g["id"], "label": g["preferred_label"], "ssyk": g["ssyk_code_2012"], "external": True})
+        groups.append({"id": g["id"], "label": g["preferred_label"], "ssyk": g["ssyk_code_2012"], "fieldId": None, "external": True})
         for oid, label in e["occupations"].items():
             occupations.append({"id": oid, "label": label, "groupId": g["id"], "substitutes": [], "external": True})
-    if chosen:
-        print(f"• + {len(chosen)} närliggande yrkesgrupper utanför området (via utbytbarhet)")
+    print(f"• {len(groups)} yrkesgrupper, {len(occupations)} yrken")
 
-    raw = {"field": {"id": field["id"], "label": field["preferred_label"]}, "fetched": datetime.now(timezone.utc).isoformat(),
-           "groups": groups, "skillsByGroup": {}, "ads": [], "barometerRows": [], "occupations": occupations}
-    for g in groups:
-        skills = fetch_group_skills(g["id"])
-        raw["skillsByGroup"][g["id"]] = [
-            {"id": s["id"], "label": s["preferred_label"], "alt": s.get("alternative_labels") or [],
-             "hidden": s.get("hidden_labels") or [],
-             "headline": ((s.get("broader") or [{}])[0] or {}).get("preferred_label")} for s in skills]
+    skills = fetch_skills()
+    print(f"• {len(skills)} kompetenser i taxonomin")
+    raw = {"field": {"id": "alla", "label": "Alla yrkesområden"} if alla else fields[0], "fields": fields,
+           "fetched": datetime.now(timezone.utc).isoformat(), "groups": groups, "skills": skills, "ads": [],
+           "barometerRows": [], "occupations": occupations}
+    for i, g in enumerate(groups, 1):
         total, ads = fetch_ads(g["id"], CFG["MAX_ADS_EXTERNAL_GROUP"] if g["external"] else CFG["MAX_ADS_PER_GROUP"])
         raw["ads"].extend(ads)
         g["adCount"], g["adsAnalyzed"] = total, len(ads)
@@ -142,7 +159,8 @@ def fetch_raw():
         for o in occupations:
             if o["groupId"] == g["id"]:
                 o["adCount"] = per_occ.get(o["id"], 0)
-        print(f"• [{g['ssyk']}] {g['label']}: {len(skills)} kompetenser i taxonomin, {len(ads)}/{total} annonser")
+        if i % 25 == 0 or i == len(groups):
+            print(f"• {i}/{len(groups)} yrkesgrupper, {len(raw['ads'])} annonser", flush=True)
 
     print("• Hämtar Yrkesbarometern …")
     ssyks = {str(g["ssyk"]) for g in groups}
@@ -175,6 +193,11 @@ def main():
     raw = fetch_raw()
     ds = kompetens.build_dataset(raw)
     fel = check(raw, ds)
+    if os.path.exists(a.ut):  # jämför med förra körningen: ett kraftigt tapp tyder på att ett API har ändrats
+        with open(a.ut, encoding="utf-8") as f:
+            prev = json.load(f).get("meta", {})
+        if prev.get("field", {}).get("id") == ds["meta"]["field"]["id"] and len(raw["ads"]) < 0.5 * prev.get("adsAnalyzed", 0):
+            fel.append(f"{len(raw['ads'])} annonser mot {prev['adsAnalyzed']} förra gången")
     if fel:
         sys.exit("✗ Hämtningen ser trasig ut, inget skrevs: " + "; ".join(fel))
     kompetens.write_dataset(ds, a.ut)

@@ -2,7 +2,9 @@ const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const W=+process.argv[2]||1440;const p=await b.newPage({viewport:{width:W,height:900},reducedMotion:'reduce'});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto('http://127.0.0.1:8811/index.html',{waitUntil:'networkidle'});
-const labels=await p.evaluate(()=>JSON.parse(document.getElementById('kc-data').textContent).occupations.filter(o=>!o.external).map(o=>o.label));
+// startsteget: välj ett yrke och visa kartan
+await p.click('#kc-occ');await p.fill('#kc-occ','Backend-utvecklare');await p.waitForTimeout(300);await p.keyboard.press('Enter');await p.click('#kc-go');await p.waitForTimeout(300);
+const STEP=+process.argv[3]||1;const labels=(await p.evaluate(()=>{const c=JSON.parse(document.getElementById('kc-data').textContent);return c.o.filter((o,i)=>c.os[i]||c.gs[o[2]]).map(o=>o[1])})).filter((_,i)=>i%STEP===0);
 const measure=()=>p.evaluate(()=>{const svg=document.getElementById('kc-map'),R=e=>e.getBoundingClientRect(),S=svg.getBoundingClientRect();
  const items=[];const vis=e=>{const cs=getComputedStyle(e);return cs.display!=='none'&&+cs.opacity>0.05&&!e.closest('.out')};
  svg.querySelectorAll('.occ:not(.out)').forEach(g=>{const id=g.dataset.occ;items.push({k:'dot',id,r:R(g.querySelector('.dot'))});const n=g.querySelector('.name');if(vis(n))items.push({k:'name',id,t:n.textContent,r:R(n)});const s=g.querySelector('.sub');if(+getComputedStyle(s).opacity>0.5&&getComputedStyle(s).display!=='none'&&R(s).width>0)items.push({k:'sub',id,t:s.textContent,r:R(s)});});
@@ -23,5 +25,5 @@ for(const lab of labels){
  for(let k=0;k<Math.min(n,8);k++){await p.locator('#kc-map .occ:not(.out)').nth(k).click({force:true});await p.mouse.move(5,5);await p.waitForTimeout(40);
   const o=await measure();states++;if(o.length){total+=o.length;bad[lab+' #'+k]=o;}}
 }
-console.log('states',states,'collisions',total);const agg={};for(const v of Object.values(bad))for(const x of v){const t=x.startsWith('clipped')?'clipped':x.replace(/:[^×]*/g,'').trim();agg[t]=(agg[t]||0)+1;}console.log(agg);const nc=Object.entries(bad).filter(([k,v])=>v.some(x=>!x.startsWith('clipped')));for(const [k,v] of nc.slice(0,20))console.log(k,'->',v.filter(x=>!x.startsWith('clipped')).slice(0,3).join(' ; '));
+console.log('states',states,'collisions',total);const agg={};for(const v of Object.values(bad))for(const x of v){const t=x.startsWith('clipped')?'clipped':x.replace(/:[^×]*/g,'').trim();agg[t]=(agg[t]||0)+1;}console.log(agg);const nc=Object.entries(bad);for(const [k,v] of nc.slice(0,20))console.log(k,'->',v.slice(0,3).join(' ; '));
 console.log('ERR',errs);await b.close();})();

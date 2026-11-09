@@ -2,6 +2,8 @@ const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:900}});const errs=[];
 p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&!/fonts|ERR_TUNNEL/.test(m.text())&&errs.push(m.text()));
 await p.goto('http://127.0.0.1:8811/index.html',{waitUntil:'networkidle'});
+// startsteget: välj ett yrke och visa kartan
+await p.click('#kc-occ');await p.fill('#kc-occ','Backend-utvecklare');await p.waitForTimeout(300);await p.keyboard.press('Enter');await p.click('#kc-go');await p.waitForTimeout(300);
 await p.evaluate(()=>document.querySelector('#app').scrollIntoView());await p.waitForTimeout(400);
 const q=async(sel,list,txt)=>{await p.fill(sel,'');await p.type(sel,txt,{delay:10});await p.waitForTimeout(150);return (await p.$$eval(list+' .kc-find__opt .t',els=>els.map(e=>e.textContent))).slice(0,4).join(' | ')||(await p.textContent(list));};
 for(const t of ['bakend','programerare','suport','nätverk','datascientist','säkerhet','utvecklre','ux','moln','testare','sysadmin','projekledare'])console.log('YRKE',t.padEnd(14),'->',await q('#kc-occ','#kc-occ-list',t));

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kompetenscirkeln</title>
-<meta name="description" content="Kompetenskarta för IT-yrken: välj ditt yrke, markera vad du kan och se vilka närliggande yrken du når och vilka kompetenser som saknas.">
+<meta name="description" content="Kompetenskarta för alla yrken: välj ditt yrke, markera vad du kan och se vilka närliggande yrken du når och vilka kompetenser som saknas.">
 <meta name="site-kind" content="software">
 <meta name="page-type" content="software">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,7 +78,8 @@
 .kc-map .me-du { fill: #fff; font-size: 17px; font-weight: 500; }
 .kc-map .me-name { fill: var(--kc-ink); font-size: 17px; font-weight: 500; }
 .kc-map :is(.me-name, .name, .sub) { paint-order: stroke; stroke: #f3f8f4; stroke-width: 5px; stroke-linejoin: round; }
-.kc-map .occ, .kc-map .sk { transition: transform .7s var(--kc-ease), opacity .45s ease; }
+.kc-map .occ { transition: transform .7s var(--kc-ease), opacity .45s ease; }
+.kc-map .sk { transition: transform .6s var(--kc-ease), opacity .3s ease; }
 .kc-map .occ.out, .kc-map .sk.out { opacity: 0; }
 .kc-map .occ .dot { stroke-width: 1.5; transition: r .3s var(--kc-ease), stroke-width .3s ease, fill .4s ease; }
 .kc-map .occ.o-high .dot { fill: var(--kc-high); stroke: var(--kc-high-s); }
@@ -102,6 +103,7 @@
 .kc-map .ln.have { stroke: var(--kc-have); stroke-opacity: .35; stroke-width: 1.5; }
 .kc-map .ln.miss { stroke: var(--kc-miss); stroke-opacity: .45; stroke-width: 1.5; stroke-dasharray: 4 5; }
 .kc-map .ln.course { stroke: var(--kc-ink); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: kc-draw .7s var(--kc-ease) both; }
+.kc-map .ln.gone { animation: none; opacity: 0; transition: opacity .15s ease; }
 @keyframes kc-fade { from { opacity: 0; } }
 @keyframes kc-draw { to { stroke-dashoffset: 0; } }
 .kc-map [data-occ], .kc-map [data-skill] { cursor: pointer; outline: none; }
@@ -118,7 +120,7 @@
 .kc__bar b { color: var(--u-ink); font-weight: 500; } .kc__bar .sp { flex: 1; }
 .kc__bar select, .kc__tools select, .kc__tools input { font: 400 14px var(--font-text); color: var(--u-ink); height: 36px; border: 1px solid var(--u-border); border-radius: 8px; background: #fff; padding: 0 10px; }
 .kc__tools { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px 24px; padding: 16px; border-bottom: 1px solid var(--u-line); }
-.kc__field { display: grid; gap: 6px; align-content: start; font-size: 13px; color: var(--u-muted); min-width: 0; }
+.kc__field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; align-content: start; font-size: 13px; color: var(--u-muted); min-width: 0; }
 .kc__chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .kc__chip { transition: background .25s ease, border-color .25s ease; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 9px; border-radius: 15px; border: 1px solid var(--u-border); background: #fff; color: var(--u-ink); font: 400 14px var(--font-text); cursor: pointer; }
 .kc__chip i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid #9aa09b; transition: background .25s ease, border-color .25s ease; }
@@ -167,12 +169,16 @@
 @media (prefers-reduced-motion: reduce) { .kc__card-in { animation: none; } .kc__bar-i i { transition: none; } }
 .kc__bridge.ok { color: var(--kc-have); }
 .kc__btn { transition: transform .15s ease, background .2s ease; justify-self: start; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--u-ink); color: #fff; font: 500 14px var(--font-text); cursor: pointer; }
+.kc__go { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 20px 24px 24px; border-top: 1px solid var(--u-line, rgba(0,0,0,.08)); }
+.kc__go p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 52ch; }
+.kc__go .kc__btn:disabled { opacity: .45; cursor: default; }
+.kc__body.kc__reveal { animation: kc-card .5s var(--kc-ease) both; }
 .kc__note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--u-muted); }
 .kc__stamp { margin: 0; font-size: 14px; color: var(--u-muted); }
 .kc__h4 { margin: 0 0 6px; font: 500 13px var(--font-text); color: var(--u-muted); }
 .kc__bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.kc__bars li { display: grid; grid-template-columns: minmax(0, 1fr) 72px 38px 24px; gap: 8px; align-items: center; font-size: 14px; color: var(--u-ink); }
-.kc__bars.have li { grid-template-columns: minmax(0, 1fr) 72px 38px; }
+.kc__bars li { display: grid; grid-template-columns: minmax(0, 1fr) 72px 44px 24px; gap: 8px; align-items: center; font-size: 14px; color: var(--u-ink); }
+.kc__bars.have li { grid-template-columns: minmax(0, 1fr) 72px 44px; }
 .kc__bars .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kc__bars .v { text-align: right; color: var(--u-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .kc__bar-i { height: 6px; border-radius: 3px; background: var(--u-fill-2); overflow: hidden; display: block; }
@@ -187,7 +193,7 @@
 .kc__list .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kc__list .m { color: var(--u-muted); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 @media (max-width: 1279px) { .kc__list { grid-template-columns: minmax(0, 1fr); } .kc__list li:nth-child(n+8) { display: none; } }
-@media (max-width: 1279px) { .kc__bars li { grid-template-columns: minmax(0, 1fr) 52px 36px 24px; gap: 6px; } .kc__bars.have li { grid-template-columns: minmax(0, 1fr) 52px 36px; } }
+@media (max-width: 1279px) { .kc__bars li { grid-template-columns: minmax(0, 1fr) 52px 44px 24px; gap: 6px; } .kc__bars.have li { grid-template-columns: minmax(0, 1fr) 52px 44px; } }
 @media (max-width: 1023px) {
   .kc__chips .kc__chip:nth-child(n+11):not([aria-pressed="true"]) { display: none; }
   .kc__bridge { background: none; padding: 0; }
@@ -242,9 +248,9 @@
   <section class="hero hero--centred" aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text">
       <div class="hero__c">
-        <a class="pill" href="#data"><span>Byggd på __ADS_IT__ IT-annonser i Platsbanken</span><span class="muted">Läs om datan</span></a>
-        <h1 id="hero-h">Kompetenskarta för IT-yrken</h1>
-        <p class="hero__lead">Välj ditt yrke och markera vad du kan. Kartan visar vilka av __N_OCC__ IT-yrken du ligger närmast och vilka kompetenser som tar dig dit.</p>
+        <a class="pill" href="#data"><span>Byggd på __ADS__ annonser i Platsbanken</span><span class="muted">Läs om datan</span></a>
+        <h1 id="hero-h">Kompetenskarta för alla yrken</h1>
+        <p class="hero__lead">Välj ditt yrke och markera vad du kan. Kartan visar vilka av __N_OCC__ yrken du ligger närmast och vilka kompetenser som tar dig dit.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#kartan">Prova kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#steg">Se hur det räknas</a></div>
       </div>
       <div class="hero__window" data-fx="grain-gradient" data-fx-seed="7" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","accent":"#3f6a92"}' data-fx-params='{"grainMotion":0}' role="img" aria-label="Kompetenscirkeln öppnad för en backend-utvecklare: närliggande yrken runt yrket, med andel matchning">
@@ -262,19 +268,20 @@
   <section class="section" id="kartan" style="--h: 2; --hm: 2" aria-labelledby="kartan-h">
     <div class="wrap">
       <div class="grid">
-        <h2 id="kartan-h" class="span-6">Kartan över närliggande IT-yrken</h2>
+        <h2 id="kartan-h" class="span-6">Kartan över närliggande yrken</h2>
         <p class="span-6 start-7 t-lead">Markera vad du kan. Ju mer du redan kan, desto närmare mitten hamnar ett yrke, och kortet visar vad som återstår. <a class="link" href="#steg">Se hur det räknas</a></p>
       </div>
       <div class="ui app" id="app" aria-label="Kompetenscirkeln, verktyget">
         <div class="kc__bar"><span class="d-win__dots" aria-hidden="true"><i></i><i></i><i></i></span><b>Kompetenscirkeln</b><span class="sp"></span><label for="kc-lan">Prognos för</label><select id="kc-lan"></select></div>
         <div class="kc__tools">
-          <div class="kc__field"><label for="kc-occ">Ditt yrke</label><div class="kc-find"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="kc-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök yrke, t.ex. backend"><ul class="kc-find__list" id="kc-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div></div>
+          <div class="kc__field"><label for="kc-occ">Ditt yrke</label><div class="kc-find"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="kc-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök yrke, t.ex. undersköterska"><ul class="kc-find__list" id="kc-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div></div>
           <div class="kc__field"><span id="kc-chips-l">Dina kompetenser, de vanligaste i annonserna för ditt yrke</span>
             <div class="kc__chips" id="kc-chips" role="group" aria-labelledby="kc-chips-l"></div>
-            <div class="kc-find kc-find--skill"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg><input class="kc__add" id="kc-add" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-add-list" autocomplete="off" spellcheck="false" placeholder="Lägg till kompetens, t.ex. kubernetes" aria-label="Lägg till kompetens"><ul class="kc-find__list" id="kc-add-list" role="listbox" aria-label="Kompetenser" hidden></ul></div>
+            <div class="kc-find kc-find--skill"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg><input class="kc__add" id="kc-add" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-add-list" autocomplete="off" spellcheck="false" placeholder="Lägg till kompetens, t.ex. Excel" aria-label="Lägg till kompetens"><ul class="kc-find__list" id="kc-add-list" role="listbox" aria-label="Kompetenser" hidden></ul></div>
           </div>
         </div>
-        <div class="kc__body">
+        <div class="kc__go" id="kc-gorow"><p id="kc-go-hint">Sök ditt yrke och markera det du kan. Sedan visas kartan över yrken som ligger nära.</p><button type="button" class="kc__btn" id="kc-go" disabled>Visa kartan</button></div>
+        <div class="kc__body" id="kc-body" hidden>
           <div class="kc__mapcol">
             <p class="kc__hint">Du står i mitten. Ju närmare mitten ett yrke ligger, desto mer av det annonserna efterfrågar kan du redan. Klicka på ett yrke för att se vägen dit.</p>
             <svg class="kc-map" id="kc-map" viewBox="0 0 1100 860" role="img" aria-label="Karta: du i mitten, närliggande yrken närmare mitten ju mer du redan kan, och kompetenserna för det valda yrket i inre ringen"></svg>
@@ -366,11 +373,11 @@
           <p class="t-lead kc-hide-sm">Det folk brukar fråga om kartan, matchningen och datan.</p>
         </div>
         <div class="faq span-6 start-7">
-          <div class="faq__item"><h3>Vem är kartan till för?</h3><p>Dig som vill byta jobb inom IT, och vägledare som behöver ett underlag i samtalet.</p></div>
+          <div class="faq__item"><h3>Vem är kartan till för?</h3><p>Dig som funderar på att byta yrke, och vägledare som behöver ett underlag i samtalet.</p></div>
           <div class="faq__item"><h3>Hur räknas matchningen?</h3><p>Yrkets 15 vanligaste kompetenser i annonserna vägs efter hur ofta de nämns. Matchningen är andelen du täcker.</p></div>
           <div class="faq__item"><h3>Hur aktuella är siffrorna?</h3><p>Annonserna hämtades från Platsbanken den __DATE__ och prognoserna kommer från Yrkesbarometern __OMGANG__. Datan uppdateras varje vecka.</p></div>
           <div class="faq__item"><h3>Sparas det jag markerar?</h3><p>Nej. Allt stannar i din webbläsare.</p></div>
-          <div class="faq__item"><h3>Kommer fler yrkesområden?</h3><p>Metoden fungerar för alla 21 yrkesområden i taxonomin.</p></div>
+          <div class="faq__item"><h3>Vilka yrken finns med?</h3><p>Alla __N_FIELDS__ yrkesområden i Arbetsförmedlingens taxonomi. Yrken med få annonser får yrkesgruppens profil och markeras som osäkra.</p></div>
         </div>
       </div>
     </div>
@@ -401,7 +408,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head">
-        <h2 id="close-h">Se vilka IT-yrken du når</h2>
+        <h2 id="close-h">Se vilka yrken du når</h2>
         <p>Gratis och utan konto. Fungerar direkt i webbläsaren.</p>
       </div>
       <a class="btn btn--primary btn--xl btn--wide" href="#kartan">Prova kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
@@ -428,7 +435,18 @@
 <script type="application/json" id="kc-data">__DATA__</script>
 <script>
 (() => {
-  const DS = JSON.parse(document.getElementById("kc-data").textContent);
+  const DS = (c => {
+    // build.py packar datan (index i stället för id, andelar i promille); här packas den upp igen
+    const pairs = a => { const out = []; for (let i = 0; i < a.length; i += 2) out.push({ skillId: c.s[a[i]][0], share: a[i + 1] / 1000 }); return out; };
+    const map = (o, key) => Object.fromEntries(Object.entries(o).map(([i, a]) => [key(+i), pairs(a)]));
+    return {
+      groups: c.g.map(g => ({ id: g[0], label: g[1], ssyk: g[2], adsAnalyzed: g[3] })),
+      occupations: c.o.map(o => ({ id: o[0], label: o[1], groupId: c.g[o[2]][0], adCount: o[3], substitutes: (o[4] || []).map(x => ({ id: c.o[x[0]][0], pct: x[1] })) })),
+      skills: c.s.map(x => ({ id: x[0], label: x[1], headline: c.h[x[2]] })),
+      groupSkills: map(c.gs, i => c.g[i][0]), occSkills: map(c.os, i => c.o[i][0]),
+      barometer: Object.fromEntries(Object.entries(c.b).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([l, x]) => [l, { jobbmojligheter: c.bv[x[0]], prognos: c.bv[x[1]] }]))])),
+    };
+  })(JSON.parse(document.getElementById("kc-data").textContent));
   const CORE = 15, TARGET = 0.7, MIN_SCORE = 0.05, N_MAP = 8, MAX_SKILLS = 8, PRESELECT = 6;
   const CX = 550, CY = 420, R0 = 250, R1 = 352, SRX = 178, SRY = 138, TAU = Math.PI * 2, NS = "http://www.w3.org/2000/svg";
   const LAN = { "00": "hela riket", "01": "Stockholms län", "03": "Uppsala län", "04": "Södermanlands län", "05": "Östergötlands län", "06": "Jönköpings län", "07": "Kronobergs län", "08": "Kalmar län", "09": "Gotlands län", "10": "Blekinge län", "12": "Skåne län", "13": "Hallands län", "14": "Västra Götalands län", "17": "Värmlands län", "18": "Örebro län", "19": "Västmanlands län", "20": "Dalarnas län", "21": "Gävleborgs län", "22": "Västernorrlands län", "23": "Jämtlands län", "24": "Västerbottens län", "25": "Norrbottens län" };
@@ -441,9 +459,12 @@
   const pct = x => Math.round(x * 100);
   const trunc = (s, n) => s.length > n ? s.slice(0, n - 1) + "…" : s;
   const profile = o => (DS.occSkills[o.id] || DS.groupSkills[o.groupId] || []).slice(0, CORE);
-  const LOW_ADS = 25;
+  const LOW_ADS = 25, MIN_ADS_MAP = 10;
   const basis = o => DS.occSkills[o.id] ? (o.adCount || 0) : (groups.get(o.groupId)?.adsAnalyzed || 0);
-  const unsure = o => { const n = basis(o); return n < LOW_ADS ? `Osäker profil. Den bygger på ${n} ${n === 1 ? "annons" : "annonser"}${DS.occSkills[o.id] ? "" : " för hela yrkesgruppen"}.` : ""; };
+  const unsure = o => { const n = basis(o), own = DS.occSkills[o.id], top = profile(o)[0]?.share || 0;
+    if (n < LOW_ADS) return `Osäker profil. Den bygger på ${n} ${n === 1 ? "annons" : "annonser"}${own ? "" : " för hela yrkesgruppen"}.`;
+    if (top < 0.15) return "Svag profil. Annonserna för yrket nämner få kompetenser, så matchningen säger mindre.";
+    return own ? "" : "Profilen gäller hela yrkesgruppen, eftersom yrket har få egna annonser."; };
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function score(prof, mine) {
@@ -460,13 +481,21 @@
     const me = occs.get(S.me), subs = new Map(me.substitutes.map(s => [s.id, s.pct])), out = [];
     for (const o of DS.occupations) {
       if (o.id === me.id || (o.groupId === me.groupId && !DS.occSkills[o.id])) continue;
-      const p = profile(o); if (!p.length) continue;
+      const p = profile(o); if (!p.length || basis(o) < MIN_ADS_MAP) continue;  // too few ads to show as somewhere to go
       const g = groups.get(o.groupId), r = score(p, S.mine);
       if (r.score < MIN_SCORE) continue;
+      if (r.have.length < 2 && p.length >= 3) continue;  // one shared skill (often "Försäljning") does not make a job nearby
       const bb = DS.barometer[g.ssyk];
       out.push({ o, g, ...r, subst: subs.get(o.id) ?? null, b: bb ? (bb[S.lan] || bb["00"] || null) : null });
     }
-    return out.sort((a, b) => b.score - a.score || (b.subst || 0) - (a.subst || 0));
+    // yrken utan egen profil delar yrkesgruppens: visa bara ett per grupp, annars fylls kartan av likadana
+    const best = new Map();
+    for (const m of out) {
+      if (DS.occSkills[m.o.id]) continue;
+      const b = best.get(m.o.groupId);
+      if (!b || (m.subst || 0) > (b.subst || 0) || ((m.subst || 0) === (b.subst || 0) && (m.o.adCount || 0) > (b.o.adCount || 0))) best.set(m.o.groupId, m);
+    }
+    return out.filter(m => DS.occSkills[m.o.id] || best.get(m.o.groupId) === m).sort((a, b) => b.score - a.score || (b.subst || 0) - (a.subst || 0));
   }
 
   const ang = (i, n) => -Math.PI / 2 + (i * TAU) / n;
@@ -477,7 +506,7 @@
   function splitName(label) {
     if (label.length <= 18) return [label];
     let i = [label.indexOf("/") + 1, label.lastIndexOf(" ", 18) + 1, label.lastIndexOf("-", 17) + 1].find(k => k > 3 && k <= 19);
-    if (!i) { const m = label.match(SUFFIX); if (m && m.index > 3) return [label.slice(0, m.index) + "-", m[0]]; return [trunc(label, 22)]; }
+    if (!i) { const m = label.match(SUFFIX); if (m && m.index > 3) return [trunc(label.slice(0, m.index) + "-", 19), m[0]]; return [trunc(label, 19)]; }
     return [label.slice(0, i).trim(), trunc(label.slice(i).trim(), 19)];
   }
   const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
@@ -535,14 +564,14 @@
       const me = occs.get(S.me);
       meName.textContent = trunc(me.label, 26);
       const top = ranked.slice(0, N_MAP).sort((a, b) => a.g.label.localeCompare(b.g.label, "sv") || b.score - a.score);
-      const n = top.length, focus = S.hover || S.sel;
+      const n = top.length, focus = S.sel;
       const nodes = top.map((m, i) => { const a = ang(i, n), r = rOf(m.score); return { m, a, x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) }; });
       const fNode = nodes.find(nd => nd.m.o.id === focus);
       svg.classList.toggle("is-hovering", Boolean(S.hover) && S.hover !== S.sel);
 
       let moved = false;
       // everything a skill pill must keep clear of: the person, its name, each job and its name
-      const meW = Math.min(26, me.label.length) * 8.8;
+      const meW = Math.min(26, me.label.length) * 9.6;
       const obs = [[CX - 36, CY - 36, CX + 36, CY + 36], [CX - meW / 2 - 4, CY + 40, CX + meW / 2 + 4, CY + 64]];
       nodes.forEach(({ m, a, x, y }, i) => {
         const id = m.o.id, g = occNode(id), o = outlook(m.b), t = trend(m.b);
@@ -560,7 +589,8 @@
         nameEl.textContent = ""; nameEl.setAttribute("text-anchor", anchor);
         lines.forEach((l, i) => { const t = mk("tspan", { x: lx, y: y1 + i * 18 }, nameEl); t.textContent = l; });
         const arrow = t === "up" ? ", ökar" : t === "down" ? ", minskar" : "";
-        subEl.textContent = (m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka") + arrow;
+        const subText = m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka";
+        subEl.textContent = subText + (subText.length + arrow.length > 24 ? "" : arrow);
         subEl.setAttribute("x", lx); subEl.setAttribute("y", yEnd + 20); subEl.setAttribute("text-anchor", anchor);
         if (live) g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning`);
         if (first && live && !reduced) { g.style.transitionDelay = `${120 + i * 55}ms`; requestAnimationFrame(() => requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; })); setTimeout(() => (g.style.transitionDelay = ""), 1400); }
@@ -577,11 +607,22 @@
       const hit = (A, B) => A[0] < B[2] && B[0] < A[2] && A[1] < B[3] && B[1] < A[3];
       // try the most skills that fit with nothing touching: turn the ring a little, then drop the least asked-for skill
       let best = null;
-      for (let k = items.length; k >= Math.min(4, items.length) && !(best && best.clash === 0); k--) {
+      for (let k = items.length; k >= Math.min(2, items.length) && !(best && best.clash === 0); k--) {
         const pickd = items.slice(0, k), ord = [...pickd.filter(s => !s.have), ...pickd.filter(s => s.have)];
         for (const rot of [0, 0.12, -0.12, 0.24, -0.24, 0.36, -0.36]) {
           const slots = Array.from({ length: k }, (_, i) => ang(i, k) + Math.PI / k + base + Math.PI / 2 + rot).sort((p, q) => adist(p, base + rot) - adist(q, base + rot));
-          const rects = ord.map((s, i) => { const a = slots.at(i), x = CX + SRX * Math.cos(a), y = CY + SRY * Math.sin(a), w = pillW(s); return { s, a, x, y, r: [x - w / 2 - 5, y - 20, x + w / 2 + 5, y + 20] }; });
+          // a pill that is already on the map takes the free slot nearest to where it is, so it glides instead of crossing the ring
+          const nMiss = ord.filter(s => !s.have).length, asg = new Map();
+          for (const [list, sl] of [[ord.slice(0, nMiss), slots.slice(0, nMiss)], [ord.slice(nMiss), slots.slice(nMiss)]]) {
+            const free = sl.map(a => ({ a, x: CX + SRX * Math.cos(a), y: CY + SRY * Math.sin(a) }));
+            for (const s of list) {
+              const g = skNodes.get(s.skillId), q = g && !g.classList.contains("out") ? pos.get("s:" + s.skillId) : null; if (!q) continue;
+              let bi = 0, bd = Infinity; free.forEach((f, i) => { const d = Math.hypot(f.x - q[0], f.y - q[1]); if (d < bd) { bd = d; bi = i; } });
+              asg.set(s.skillId, free.splice(bi, 1)[0]);
+            }
+            for (const s of list) if (!asg.has(s.skillId)) asg.set(s.skillId, free.shift());
+          }
+          const rects = ord.map(s => { const { a, x, y } = asg.get(s.skillId), w = pillW(s); return { s, a, x, y, r: [x - w / 2 - 5, y - 20, x + w / 2 + 5, y + 20] }; });
           let clash = 0;
           rects.forEach((p, i) => { rects.slice(i + 1).forEach(q => { if (hit(p.r, q.r)) clash++; }); obs.forEach(o => { if (hit(p.r, o)) clash++; }); });
           if (!best || clash < best.clash) best = { clash, rects };
@@ -589,25 +630,38 @@
         }
       }
       const placed = best ? best.rects : [], ordered = placed.map(p => p.s), at = new Map(placed.map(p => [p.s.skillId, p]));
-      const skPos = new Map();
+      const skPos = new Map(); let skMoved = false, nNew = 0;
       ordered.forEach(s => {
         const { x, y } = at.get(s.skillId), g = skNode(s.skillId), label = trunc(short(s.skillId), 14), w = pillW(s);
         const isNew = g._new; g._new = false;
-        skPos.set(s.skillId, [x, y]); pos.set("s:" + s.skillId, [x, y]);
+        const was = pos.get("s:" + s.skillId); if (isNew || !was || Math.hypot(was[0] - x, was[1] - y) > 2) skMoved = true;
+        skPos.set(s.skillId, [x, y]); pos.set("s:" + s.skillId, [x, y]); g._xy = [x, y];
         g.setAttribute("class", `sk ${s.have ? "have" : "miss"}`);
         const r = g.querySelector("rect"), tx = g.querySelector("text");
         r.setAttribute("width", w); r.setAttribute("x", -w / 2);
         tx.textContent = (s.have ? "" : "+ ") + label;
         if (live) g.setAttribute("aria-label", `${short(s.skillId)}: ${s.have ? "du har den" : "saknas, välj för att simulera att du lär dig den"}`);
-        if (live && !reduced && isNew) { g.style.transition = "none"; place(g, x, y, 0.7); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = ""; }
+        if (live && !reduced && isNew) {
+          // a new pill unfolds from where it belongs: what you have comes from you, what is missing comes from the job
+          const [sx, sy] = !s.have && fNode ? [fNode.x, fNode.y] : [CX, CY];
+          g.style.transition = "none"; place(g, sx + (x - sx) * 0.25, sy + (y - sy) * 0.25, 0.5); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = "";
+          g.style.transitionDelay = `${first ? 500 + nNew * 45 : nNew * 35}ms`; nNew++;
+          setTimeout(() => (g.style.transitionDelay = ""), 1300);
+        }
         requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; });
       });
-      retire(skNodes, new Set(ordered.map(s => s.skillId)));
+      const keepSk = new Set(ordered.map(s => s.skillId));
+      // a pill that leaves shrinks where it stands
+      for (const [id, g] of skNodes) if (!keepSk.has(id) && !g.classList.contains("out")) { skMoved = true; if (live && !reduced && g._xy) { g.style.transitionDelay = ""; place(g, g._xy[0], g._xy[1], 0.8); } }
+      retire(skNodes, keepSk);
 
-      // lines: drawn once everything has settled
-      gLines.innerHTML = "";
+      // lines: drawn once everything has settled, and left alone when nothing changed
+      const sig = [S.me, focus, n, ...ordered.map(s => `${s.skillId}${s.have ? 1 : 0}${skPos.get(s.skillId).map(Math.round)}`), fNode ? `${Math.round(fNode.x)},${Math.round(fNode.y)}` : ""].join("|");
+      if (sig === update.sig && !first) return;
+      update.sig = sig;
+      for (const l of [...gLines.children]) { if (live && !reduced && !first) { l.classList.add("gone"); setTimeout(() => l.remove(), 180); } else l.remove(); }
       if (fNode) {
-        const delay = live && !reduced && (moved || first) ? (first ? 700 : 420) : 0;
+        const delay = live && !reduced ? (first ? 900 : moved || skMoved ? 520 : 0) : 0;
         const dx = fNode.x - CX, dy = fNode.y - CY, L = Math.hypot(dx, dy);
         ordered.forEach(s => {
           const p = skPos.get(s.skillId), ux = fNode.x - p[0], uy = fNode.y - p[1], d = Math.hypot(ux, uy);
@@ -719,28 +773,28 @@
 
   // the tool
   const $ = id => document.getElementById(id);
-  const S = { me: startId, mine: initMine(startId), lan: "00", sel: null, hover: null };
-  let ranked = [], shownScore = null, shownSel = null;
+  const S = { me: null, mine: new Set(), lan: "00", sel: null, hover: null };
+  let ranked = [], shownScore = null, shownSel = null, shown = false;
   const lans = new Set(["00"]); Object.values(DS.barometer).forEach(b => Object.keys(b).forEach(k => lans.add(k)));
   $("kc-lan").innerHTML = [...lans].sort().map(c => `<option value="${c}">${esc(LAN[c] || "län " + c)}</option>`).join("");
   const SYN = { "Backend-utvecklare": "backend server api", "Frontend-utvecklare": "frontend webbutvecklare react webb", "Fullstack-utvecklare": "fullstack full stack webbutvecklare", "Systemutvecklare/Programmerare": "programmerare utvecklare developer kodare", "Mjukvaruutvecklare": "software developer engineer programmerare", "Supporttekniker IT": "helpdesk servicedesk support it-support", "Systemadministratör": "sysadmin admin drift server", "Nätverkstekniker": "network nätverk", "Data scientist": "datavetare ml ai maskininlärning", "Dataanalytiker": "analytiker analyst bi", "UX-designer": "ux designer användarupplevelse", "Projektledare, IT": "pm projektledare", "IT-säkerhetsanalytiker": "security säkerhet soc", "Molntekniker/Cloudutvecklare": "cloud moln aws azure", "Devops utvecklare": "devops sre", "Testutvecklare": "testare tester qa", "Mjukvarutestare": "testare tester qa", "Produktägare, IT": "product owner po", "IT-tekniker": "tekniker support" };
   const maxAds = Math.max(1, ...DS.occupations.map(o => o.adCount || 0));
-  const occItems = DS.occupations.filter(o => !o.external).map(o => ({ id: o.id, label: o.label, group: groups.get(o.groupId).label, ads: o.adCount || 0, pop: (o.adCount || 0) / maxAds, _w: index(o.label, [SYN[o.label] || ""], [groups.get(o.groupId).label]) }));
+  const occItems = DS.occupations.filter(o => profile(o).length).map(o => ({ id: o.id, label: o.label, group: groups.get(o.groupId).label, ads: o.adCount || 0, pop: (o.adCount || 0) / maxAds, _w: index(o.label, [SYN[o.label] || ""], [groups.get(o.groupId).label]) }));
   const skillItems = DS.skills.map(s => ({ id: s.id, label: short(s.id), headline: s.headline, pop: 0, _w: index(short(s.id), [], [s.headline || ""]) }));
-  const occFind = Finder({ input: $("kc-occ"), list: $("kc-occ-list"), items: () => occItems, keepValue: () => occs.get(S.me).label,
+  const occFind = Finder({ input: $("kc-occ"), list: $("kc-occ-list"), items: () => occItems, keepValue: () => (S.me ? occs.get(S.me).label : ""),
     emptyTitle: "Vanligast i annonserna. Skriv för att söka bland alla yrken.",
     empty: () => [...occItems].sort((a, b) => b.ads - a.ads).slice(0, 8),
     meta: it => esc(it.group),
     aside: it => (it.ads ? `${it.ads} annonser` : ""),
-    onPick: it => { S.me = it.id; S.sel = null; S.mine = initMine(S.me); $("kc-occ").value = it.label; $("kc-occ").blur(); render(); } });
-  const myShare = id => { const me = occs.get(S.me); return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).find(x => x.skillId === id)?.share; };
+    onPick: it => { S.me = it.id; S.sel = null; S.mine = initMine(S.me); $("kc-occ").value = it.label; $("kc-occ").blur(); $("kc-go").disabled = false; $("kc-add").disabled = false; render(); } });
+  const myShare = id => { const me = occs.get(S.me); if (!me) return 0; return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).find(x => x.skillId === id)?.share; };
   const skillFind = Finder({ input: $("kc-add"), list: $("kc-add-list"),
     items: () => skillItems.map(it => ({ ...it, pop: (myShare(it.id) || 0) * 3 + (S.mine.has(it.id) ? -1 : 0) })),
     emptyTitle: "Vanliga i annonserna för ditt yrke som du inte har markerat",
-    empty: () => { const me = occs.get(S.me); return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).filter(x => !S.mine.has(x.skillId)).slice(0, 8).map(x => skillItems.find(it => it.id === x.skillId)).filter(Boolean); },
+    empty: () => { const me = occs.get(S.me); if (!me) return []; return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).filter(x => !S.mine.has(x.skillId)).slice(0, 8).map(x => skillItems.find(it => it.id === x.skillId)).filter(Boolean); },
     meta: it => S.mine.has(it.id) ? "Du har den redan" : myShare(it.id) ? `I ${pct(myShare(it.id))} % av annonserna för ditt yrke` : esc(it.headline || ""),
     onPick: it => { S.mine.add(it.id); $("kc-add").value = ""; render(); skillFind.draw(); } });
-  $("kc-occ").value = occs.get(S.me).label;
+  $("kc-occ").value = "";
   const orbit = Orbit($("kc-map"), true);
 
   const OUT = { high: "Stora jobbmöjligheter", mid: "Medelstora jobbmöjligheter", low: "Små jobbmöjligheter", unknown: "Prognos saknas" };
@@ -772,6 +826,7 @@
   }
 
   function render() {
+    if (!S.me) { $("kc-chips").innerHTML = `<p class="kc__note">Välj ett yrke först, så visas de vanligaste kompetenserna i annonserna.</p>`; $("kc-add").disabled = true; return; }
     ranked = rank(S);
     if (!ranked.some(m => m.o.id === S.sel)) S.sel = ranked[0]?.o.id || null;
     const me = occs.get(S.me), prof = (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).slice(0, 16);
@@ -780,6 +835,7 @@
     if (ids.length !== have.size || ids.some(id => !have.has(id))) {
       chips.innerHTML = ids.map(id => { const p = prof.find(x => x.skillId === id); return `<button type="button" class="kc__chip" data-skill="${id}" aria-pressed="${S.mine.has(id)}"><i aria-hidden="true"></i>${esc(short(id))}${p ? ` <small>${pct(p.share)} %</small>` : ""}</button>`; }).join("");
     } else ids.forEach(id => have.get(id).setAttribute("aria-pressed", S.mine.has(id)));
+    if (!shown) return;
     orbit(S, ranked);
     drawCard();
     $("kc-list").innerHTML = ranked.slice(0, 10).map(x => `<li><button type="button" data-occ="${x.o.id}" aria-current="${x.o.id === S.sel}"><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></button></li>`).join("");
@@ -794,8 +850,17 @@
   map.addEventListener("click", e => { const c = e.target.closest("[data-occ]"); if (c) { S.sel = c.dataset.occ; S.hover = null; render(); return; } const s = e.target.closest("[data-skill]"); if (s) toggle(s.dataset.skill); });
   map.addEventListener("keydown", e => { if (e.key !== "Enter" && e.key !== " ") return; const t = e.target.closest("[data-occ],[data-skill]"); if (!t) return; e.preventDefault(); t.dataset.occ ? (S.sel = t.dataset.occ, render()) : toggle(t.dataset.skill); });
   let hoverT;
-  map.addEventListener("mouseover", e => { const c = e.target.closest("[data-occ]"), id = c ? c.dataset.occ : null; if (id === S.hover) return; clearTimeout(hoverT); hoverT = setTimeout(() => { S.hover = id; orbit(S, ranked); }, id ? 60 : 160); });
-  map.addEventListener("mouseleave", () => { clearTimeout(hoverT); if (S.hover) { S.hover = null; orbit(S, ranked); } });
+  // hovering only highlights a job; the skills stay with the selected one, so nothing jumps under the pointer
+  const setHover = id => { S.hover = id; map.classList.toggle("is-hovering", Boolean(id) && id !== S.sel); map.querySelectorAll(".occ").forEach(g => g.classList.toggle("is-hover", g.dataset.occ === id)); };
+  map.addEventListener("mouseover", e => { const c = e.target.closest("[data-occ]"), id = c ? c.dataset.occ : null; if (id === S.hover) return; clearTimeout(hoverT); hoverT = setTimeout(() => setHover(id), id ? 60 : 160); });
+  map.addEventListener("mouseleave", () => { clearTimeout(hoverT); if (S.hover) setHover(null); });
+  $("kc-go").onclick = () => {
+    if (!S.me) return;
+    shown = true; $("kc-gorow").hidden = true;
+    const body = $("kc-body"); body.hidden = false; if (!reduced) body.classList.add("kc__reveal");
+    render();
+    body.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+  };
   render();
 })();
 </script>

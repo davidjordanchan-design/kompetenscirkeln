@@ -6,7 +6,8 @@ Här finns hela matchningen (tidigare match.py + recompute.py):
 - kompetenser med samma visningsnamn slås ihop (fem varianter av Cybersäkerhet -> en)
 - alternativa etiketter som 'Java, ramverk' matchas som hela fraser, inte som 'Java'
 - varje annons matchas mot alla kompetenser, inte bara dem taxonomin kopplar till yrkesgruppen
-- egna tillägg och synonymer ur tillagg.json (Kubernetes, Terraform ... som saknas i taxonomin)
+- egna tillägg, synonymer och fler stoppord ur tillagg.json (Kubernetes ... som saknas i taxonomin; Svenska,
+  Utbildning, Miljö ... som är för allmänna för att skilja yrken åt)
 
 build_dataset(raw) tar rådatan (det hamta.py hämtar) och ger det sidan läser.
 """
@@ -44,6 +45,16 @@ def grams(text, n=4):
     return orig, low
 
 
+SENT = re.compile(r"(?<=[.!?:])\s+|\n+")
+
+
+def strip_boilerplate(text, patterns):
+    """Tar bort meningar som är standardfraser (undanber oss säljare, AI i rekryteringen, mångfaldspolicy).
+    De nämner kompetensord utan att vara krav."""
+    if not patterns: return text
+    return "\n".join(m for m in SENT.split(text) if not any(p.search(m) for p in patterns))
+
+
 def term_key(t, force_cs=False):
     """(nyckel, skiftlägeskänslig). Korta termer och versalförkortningar matchas skiftlägeskänsligt."""
     tk = tokens(t)
@@ -56,6 +67,7 @@ def term_key(t, force_cs=False):
 
 def display(label):
     head = label.split(",")[0].strip()
+    if head.endswith("-"): head = label.strip()  # "Öron-, näs- och halssjukvård" är ett namn, inte en lista
     head = re.sub(r"\s*\(.*?\)", "", head).strip()
     hs = [x for x in head.split("/") if x]
     if len(hs) > 1 and all(re.sub(r"\W", "", x).isupper() and len(x) <= 6 for x in hs):
@@ -68,7 +80,7 @@ def display(label):
     return head.split("/")[0].strip() or label
 
 
-def terms(s):
+def terms(s, stop=STOP):
     lab = s["label"]
     own = re.sub(r"\(.*?\)", "", lab.split(",")[0]).strip()
     cands = [own] if "/" not in own else []
@@ -80,7 +92,7 @@ def terms(s):
         if "," in c:
             first = c.split(",")[0].strip()
             c = first if first.lower() == own.lower() else c.replace(",", " ")
-        if len(c) < 2 or c.lower() in STOP: continue
+        if len(c) < 2 or c.lower() in stop: continue
         k = term_key(c)
         if k and k not in out: out.append(k)
     for c in s.get("extra", []):  # egna termer ur tillagg.json: redan granskade, ingen stopplista
@@ -91,10 +103,11 @@ def terms(s):
 
 def load_extras(path=TILLAGG):
     if not path or not os.path.exists(path):
-        return {"tillagg": [], "synonymer": {}}
+        return {"tillagg": [], "synonymer": {}, "stopp": [], "standardfraser": []}
     with open(path, encoding="utf-8") as f:
         x = json.load(f)
-    return {"tillagg": x.get("tillagg", []), "synonymer": x.get("synonymer", {})}
+    return {"tillagg": x.get("tillagg", []), "synonymer": x.get("synonymer", {}), "stopp": x.get("stopp", []),
+            "standardfraser": x.get("standardfraser", [])}
 
 
 def barometer_from_rows(rows):
@@ -103,18 +116,17 @@ def barometer_from_rows(rows):
     for r in rows:
         omgang = omgang or r.get("omgang")
         barometer.setdefault(str(r.get("ssyk")), {})[r.get("lan")] = {
-            "yrke": r.get("yb_yrke"), "jobbmojligheter": r.get("jobbmojligheter"),
-            "rekrytering": r.get("rekryteringssituation"), "prognos": r.get("prognos"),
-            "text": r.get("text_jobbmojligheter")}
+            "jobbmojligheter": r.get("jobbmojligheter"), "rekrytering": r.get("rekryteringssituation"),
+            "prognos": r.get("prognos")}
     return barometer, omgang
 
 
-def build_dataset(raw, extras=None):
+def build_dataset(raw, extras=None, stats=None):
     """Rådata -> dataset. Deterministisk: samma rådata ger samma fil."""
     extras = load_extras() if extras is None else extras
     skills = {}
-    for gid, lst in raw["skillsByGroup"].items():
-        for s in lst: skills.setdefault(s["id"], dict(s))
+    for s in raw.get("skills") or [x for lst in raw["skillsByGroup"].values() for x in lst]:  # äldre rådata: per grupp
+        skills.setdefault(s["id"], dict(s))
     rename = {}
     for sid, syn in extras["synonymer"].items():
         if sid not in skills: continue  # taxonomin kan ha bytt id; då faller synonymen bort utan fel
@@ -132,17 +144,22 @@ def build_dataset(raw, extras=None):
         d = rename.get(sid) or (s["label"] if s.get("own") else display(s["label"]))
         d = RENAME.get(d, d)
         canon[sid] = disp.setdefault(d.lower(), (sid, d, s.get("headline") or "Övrigt"))[0]
-    terms_by = {sid: (terms(s) if not s.get("own") else [k for k in (term_key(c, c in s["cs"]) for c in s["extra"]) if k])
+    stop = STOP | {w.lower() for w in extras.get("stopp", [])}
+    terms_by = {sid: (terms(s, stop) if not s.get("own") else [k for k in (term_key(c, c in s["cs"]) for c in s["extra"]) if k])
                 for sid, s in skills.items()}
-    all_ids = sorted(skills)
+    boiler = [re.compile(p, re.I) for p in extras.get("standardfraser", [])]
+    # uppslag term -> kompetenser, så att varje annons bara slår upp sina egna n-gram
+    idx_cs, idx_ci = collections.defaultdict(set), collections.defaultdict(set)
+    for sid, tl in terms_by.items():
+        for key, cs in tl: (idx_cs if cs else idx_ci)[key].add(canon[sid])
 
     def ad_hits(a, g):
         o, l = g
         hit = set(canon.get(x, x) for x in a["skillIds"] if x in skills)
-        for sid in all_ids:
-            if canon[sid] in hit: continue
-            for key, cs in terms_by[sid]:
-                if key in (o if cs else l): hit.add(canon[sid]); break
+        for gram in o:
+            if gram in idx_cs: hit |= idx_cs[gram]
+        for gram in l:
+            if gram in idx_ci: hit |= idx_ci[gram]
         return hit
 
     def shares(ads, hits):
@@ -157,7 +174,9 @@ def build_dataset(raw, extras=None):
     group_skills, occ_skills = {}, {}
     for g in raw["groups"]:
         ads = ads_by_group[g["id"]]
-        hits = {a["id"]: ad_hits(a, grams(a["text"])) for a in ads}
+        hits = {a["id"]: ad_hits(a, grams(strip_boilerplate(a["text"], boiler))) for a in ads}
+        if stats is not None:
+            for h in hits.values(): stats.update(h)
         group_skills[g["id"]] = shares(ads, hits)
         by_occ = collections.defaultdict(list)
         for a in ads:
@@ -167,13 +186,15 @@ def build_dataset(raw, extras=None):
                 occ_skills[o["id"]] = shares(by_occ[o["id"]], hits)
 
     barometer, omgang = barometer_from_rows(raw.get("barometerRows", []))
+    used = {x["skillId"] for l in list(group_skills.values()) + list(occ_skills.values()) for x in l}
     return {
         "meta": {"demo": False, "generated": raw.get("fetched"), "field": raw.get("field"), "barometerOmgang": omgang,
                  "adsAnalyzed": len(raw["ads"]),
-                 "adsInField": sum(len(ads_by_group[g["id"]]) for g in raw["groups"] if not g.get("external")),
                  "method": METHOD, "sources": ["JobTech Taxonomy", "JobSearch (Platsbanken)", "Yrkesbarometern"]},
+        "fields": raw.get("fields") or [raw.get("field")],
         "groups": raw["groups"], "occupations": raw["occupations"],
-        "skills": [{"id": cid, "label": d, "headline": h} for (cid, d, h) in disp.values()],  # alla, så att sökningen hittar dem
+        # bara kompetenser som förekommer i någon profil: övriga nämns i för få annonser för att påverka något
+        "skills": [{"id": cid, "label": d, "headline": h} for (cid, d, h) in disp.values() if cid in used],
         "groupSkills": group_skills, "occSkills": occ_skills, "barometer": barometer,
     }
 

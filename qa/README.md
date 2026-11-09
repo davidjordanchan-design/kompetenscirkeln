@@ -4,7 +4,7 @@ Alla skript utom mock-servern förutsätter att sidan serveras på port 8811 fr�
 
 ```bash
 cd web && python3 -m http.server 8811 &
-node ../qa/collide.js 1440    # även 1024 och 390. Förväntat: "states 536 collisions 0"
+node ../qa/collide.js 1440 6  # vart 6:e yrke; även 1024 och 390. Förväntat: "collisions 0". Utan steg körs alla yrken
 ```
 
 | Skript | Vad det kontrollerar |

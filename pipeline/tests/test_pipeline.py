@@ -16,7 +16,7 @@ NONE = {"tillagg": [], "synonymer": {}}
 
 
 def digest(ds):
-    body = {key: ds[key] for key in ("groups", "occupations", "skills", "groupSkills", "occSkills", "barometer")}
+    body = {key: ds[key] for key in ("groupSkills", "occSkills")}  # vikterna; övriga fält är ren genomströmning
     return hashlib.sha256(json.dumps(body, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
 
 

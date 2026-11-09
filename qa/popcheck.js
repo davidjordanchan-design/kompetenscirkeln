@@ -2,6 +2,8 @@ const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const out=[];
 for(const W of [1440,1024,390]){const p=await b.newPage({viewport:{width:W,height:900},reducedMotion:'reduce'});
 await p.goto('http://127.0.0.1:8811/index.html',{waitUntil:'networkidle'});
+// startsteget: välj ett yrke och visa kartan
+await p.click('#kc-occ');await p.fill('#kc-occ','Backend-utvecklare');await p.waitForTimeout(300);await p.keyboard.press('Enter');await p.click('#kc-go');await p.waitForTimeout(300);
 for(const [sel,qs] of [['#kc-occ',['','sys','utvecklare','säkerhet','projekt','data','it']],['#kc-add',['','win','python','azure','cert','test']]]){
  for(const q of qs){await p.click(sel);await p.fill(sel,q);await p.waitForTimeout(200);
   const r=await p.evaluate(sel=>{const list=document.getElementById(document.querySelector(sel).getAttribute('aria-controls'));const L=list.getBoundingClientRect();const res=[];

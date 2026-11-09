@@ -14,7 +14,7 @@ cells = [
        "**Så gör du:** välj **Körning → Kör alla** (Runtime → Run all). Det tar några minuter. Du får `dataset.json` "
        "(färdig datafil, läggs i `data/`) och `radata.json.gz` (rådata med annonstexter, läggs i `data/raw/`, ska inte "
        "delas vidare)."),
-    code('import os\nos.environ["FIELD_ID"] = "apaJ_2ja_LuF"  # Data/IT. Byt id för annat yrkesområde.'),
+    code('import os\nos.environ["FIELD_ID"] = "alla"  # alla yrkesområden. Ange ett id (t.ex. apaJ_2ja_LuF för Data/IT) för bara ett.'),
     code("%%writefile kompetens.py\n" + read("kompetens.py")),
     code("%%writefile tillagg.json\n" + read("tillagg.json")),
     code("%%writefile hamta.py\n" + read("hamta.py")),
