@@ -22,6 +22,8 @@ EMBED_TOP = 25  # kompetenser per profil i sidan (motorn använder 15 för match
 
 def pack(d):
     """Kompakt form för inbäddning: index i stället för id och andelar i promille. Sidan packar upp den vid start."""
+    fields = [f for f in (d.get("fields") or []) if f]
+    fi = {f["id"]: i for i, f in enumerate(fields)}
     gi = {g["id"]: i for i, g in enumerate(d["groups"])}
     oi = {o["id"]: i for i, o in enumerate(d["occupations"])}
     prof = lambda lst: lst[:EMBED_TOP]
@@ -39,7 +41,8 @@ def pack(d):
         return bv.index(v)
 
     return {
-        "g": [[g["id"], g["label"], g["ssyk"], g.get("adsAnalyzed", 0)] for g in d["groups"]],
+        "f": [f["label"] for f in fields],
+        "g": [[g["id"], g["label"], g["ssyk"], g.get("adsAnalyzed", 0), fi.get(g.get("fieldId"), -1)] for g in d["groups"]],
         "o": [[o["id"], o["label"], gi[o["groupId"]], o.get("adCount", 0)]
               + ([[[oi[x["id"]], x["pct"]] for x in o.get("substitutes", []) if x["id"] in oi]] if any(x["id"] in oi for x in o.get("substitutes", [])) else [])
               for o in d["occupations"]],

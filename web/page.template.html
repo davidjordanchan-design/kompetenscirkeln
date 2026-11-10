@@ -115,7 +115,7 @@
 @media (prefers-reduced-motion: reduce) { .kc-map .occ, .kc-map .sk, .kc-map .ln, .kc-map .dot { transition: none !important; animation: none !important; } .kc-map .ln.course { stroke-dashoffset: 0; } }
 
 /* the app frame: the whole tool in one window across the wrap */
-.app.ui { --fx-muted: #555555; display: grid; grid-template-rows: auto auto minmax(0, 1fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); overflow: hidden; }
+.app.ui { --fx-muted: #555555; display: grid; grid-template-rows: auto auto minmax(0, 1fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); overflow: visible; scroll-margin-top: calc(var(--nav, 72px) + 16px); }
 .kc__bar { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-bottom: 1px solid var(--u-line); font-size: 13px; color: var(--u-muted); }
 .kc__bar b { color: var(--u-ink); font-weight: 500; } .kc__bar .sp { flex: 1; }
 .kc__bar select, .kc__tools select, .kc__tools input { font: 400 14px var(--font-text); color: var(--u-ink); height: 36px; border: 1px solid var(--u-border); border-radius: 8px; background: #fff; padding: 0 10px; }
@@ -143,7 +143,7 @@
 .kc-find__opt mark { background: none; color: inherit; font-weight: 600; }
 .kc-find__opt[aria-selected="true"], .kc-find__opt:hover { background: #eef5f0; }
 @media (prefers-reduced-motion: reduce) { .kc-find__list { animation: none; } }
-.kc__body { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); min-height: 0; }
+.kc__body { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); min-height: 0; overflow: hidden; border-radius: 0 0 var(--u-r) var(--u-r); }
 .kc__mapcol { min-width: 0; display: grid; align-content: start; }
 .kc__mapcol svg { display: block; width: 100%; height: auto; }
 .kc__legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 4px 20px 20px; font-size: 13px; color: var(--u-muted); }
@@ -169,10 +169,83 @@
 @media (prefers-reduced-motion: reduce) { .kc__card-in { animation: none; } .kc__bar-i i { transition: none; } }
 .kc__bridge.ok { color: var(--kc-have); }
 .kc__btn { transition: transform .15s ease, background .2s ease; justify-self: start; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--u-ink); color: #fff; font: 500 14px var(--font-text); cursor: pointer; }
-.kc__go { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 20px 24px 24px; border-top: 1px solid var(--u-line, rgba(0,0,0,.08)); }
-.kc__go p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 52ch; }
-.kc__go .kc__btn:disabled { opacity: .45; cursor: default; }
 .kc__body.kc__reveal { animation: kc-card .5s var(--kc-ease) both; }
+
+/* the tool in three steps: the same controls, laid out for the step you are on */
+main > #kartan { --h: 1; --hm: 1; height: auto; min-height: calc(var(--h) * 100svh); }
+main > #kartan.is-map { --h: 2; --hm: 2; }
+main > #kartan > .wrap { z-index: 2; }
+main > .hero { z-index: 3; }
+@media (max-width: 639px) { main > #kartan { height: auto; min-height: calc(var(--hm) * 100lvh); } }
+.kc__steps { display: flex; align-items: center; list-style: none; margin: 0 0 0 -6px; padding: 0; }
+.kc__steps li { display: flex; align-items: center; }
+.kc__steps li + li::before { content: ""; width: 18px; height: 1px; background: var(--u-line-2); margin: 0 4px; }
+.kc__steps button { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 6px; border: 0; border-radius: 16px; background: none; font: 500 13px var(--font-text); color: var(--u-muted); cursor: pointer; transition: background .2s ease, color .2s ease; }
+.kc__steps button:disabled { cursor: default; opacity: .55; }
+.kc__steps button:not(:disabled):hover { background: var(--u-fill); color: var(--u-ink); }
+.kc__steps i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid currentColor; font: 500 11px/1 var(--font-text); font-style: normal; transition: background .2s ease, border-color .2s ease, color .2s ease; }
+.kc__steps button[aria-current="step"] { color: var(--u-ink); background: var(--u-fill-2); }
+.kc__steps button[aria-current="step"] i { background: var(--u-ink); border-color: var(--u-ink); color: #fff; }
+.kc__steps button.is-done { color: var(--u-ink); }
+.kc__steps button.is-done i { background: var(--kc-have); border-color: var(--kc-have); color: #fff; }
+.app:not([data-step="1"]) .kc__s1, .app:not([data-step="2"]) .kc__s2, .app:not([data-step="3"]) .kc__s3, .app[data-step="1"] .kc__not1, .app[data-step="3"] .kc__s12 { display: none !important; }
+.kc__q { margin: 0; font: 500 26px/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--u-ink); }
+.kc__sub { margin: 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 58ch; }
+.kc__tools.kc__in > * { animation: kc-card .4s var(--kc-ease) both; }
+.kc__tools.kc__in > :nth-child(2) { animation-delay: 60ms; } .kc__tools.kc__in > :nth-child(n+3) { animation-delay: 110ms; }
+@media (prefers-reduced-motion: reduce) { .kc__tools.kc__in > * { animation: none; } }
+.app[data-step="1"] .kc__tools, .app[data-step="2"] .kc__tools { padding: 36px 40px 40px; gap: 28px 56px; min-height: 468px; align-content: start; border-bottom: 0; }
+.app[data-step="1"] .kc__tools { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.app[data-step="1"] .kc__field--occ { gap: 14px; }
+.app[data-step="1"] .kc__tools .kc-find input { height: 52px; padding-left: 44px; font-size: 16px; border-radius: 12px; }
+.app[data-step="1"] .kc__field--occ .kc-find__ico { left: 16px; top: 18px; }
+.app[data-step="1"] #kc-occ-list { position: static; width: 100%; max-width: none; max-height: 392px; margin-top: 10px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; animation: none; }
+.app[data-step="1"] #kc-occ-list .kc-find__head { padding: 6px 12px 8px; }
+.app[data-step="1"] #kc-occ-list .kc-find__opt { padding: 10px 12px; border-radius: 10px; }
+.kc__browse { display: grid; gap: 14px; align-content: start; align-self: start; min-width: 0; padding: 24px; border: 1px solid var(--u-line); border-radius: 14px; background: #fff; }
+.kc__browse h3 { margin: 0; font: 500 15px/1.3 var(--font-text); color: var(--u-ink); }
+.kc__fields { display: flex; flex-wrap: wrap; gap: 6px; }
+.kc__chip--plain { padding: 0 12px; }
+.kc__chip--plain[aria-pressed="true"] { background: var(--u-ink); border-color: var(--u-ink); color: #fff; }
+.app[data-step="2"] .kc__tools { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); grid-template-rows: auto 1fr; }
+.app[data-step="2"] .kc__field--occ { grid-column: 1; grid-row: 1; max-width: 400px; }
+.app[data-step="2"] .kc__field--skills { grid-column: 1; grid-row: 2; gap: 12px; }
+.app[data-step="2"] .kc__chips { gap: 8px; margin-top: 4px; }
+.app[data-step="2"] .kc__chip { height: 34px; padding: 0 14px 0 10px; border-radius: 17px; font-size: 15px; }
+.app[data-step="2"] .kc-find--skill { margin-top: 10px; }
+.app[data-step="2"] #kc-add-list { top: auto; bottom: calc(100% + 6px); }  /* opens over the chips, so it stays on screen */
+.kc__next { grid-column: 2; grid-row: 1 / span 2; display: grid; gap: 16px; align-content: start; align-self: start; min-width: 0; padding: 24px; border: 1px solid var(--u-line); border-radius: 14px; background: #fff; }
+.kc__next h3 { margin: 0; font: 500 15px/1.3 var(--font-text); color: var(--u-ink); }
+.kc__near { list-style: none; margin: 0; padding: 0; display: grid; }
+.kc__near li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; font-size: 14px; color: var(--u-ink); border-bottom: 1px solid var(--u-line); }
+.kc__near li.none { display: block; color: var(--u-muted); line-height: 1.45; }
+.kc__near .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kc__near .m { color: var(--u-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.kc__next .btn { width: 100%; justify-content: center; }
+@media (max-width: 1023px) {
+  .app[data-step="1"] .kc__tools, .app[data-step="2"] .kc__tools { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: 24px 20px 28px; gap: 24px; min-height: 0; }
+  .app[data-step="2"] .kc__field--occ, .app[data-step="2"] .kc__field--skills, .kc__next { grid-column: 1; grid-row: auto; }
+  .kc__q { font-size: 22px; }
+  .kc__next #kc-count { order: -2; } .kc__next .btn { order: -1; }  /* the button before the preview when the panel sits under the chips */
+}
+@media (max-width: 639px) {
+  .kc__fields { flex-wrap: nowrap; overflow-x: auto; margin: 0 -24px; padding: 0 24px 6px; scrollbar-width: none; } .kc__fields .kc__chip { flex: none; }
+  .kc__steps button { padding: 0 8px 0 4px; gap: 6px; } .kc__steps li + li::before { width: 10px; margin: 0 2px; }
+  .app[data-step="1"] #kc-occ-list { max-height: none; }
+  .app[data-step="2"] .kc__chips { gap: 6px; } .app[data-step="2"] .kc__chip { height: 30px; padding: 0 12px 0 9px; font-size: 14px; }
+}
+
+/* the search on the first screen */
+.hero-find { position: relative; z-index: 3; width: min(560px, 100%); margin-top: var(--s-3); text-align: left; }
+.hero-find input { width: 100%; height: 56px; padding: 0 18px 0 48px; border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent); border-radius: 14px; background: #fff; color: var(--ink); font: 400 17px var(--font-text); box-shadow: 0 1px 2px rgb(0 0 0 / .04), 0 10px 28px -14px rgb(0 0 0 / .22); transition: border-color .2s ease, box-shadow .2s ease; }
+.hero-find input::placeholder { color: #7a7f7b; }
+.hero-find input:focus { outline: none; border-color: #2f7a4a; box-shadow: 0 0 0 4px rgb(47 122 74 / .16), 0 10px 28px -14px rgb(0 0 0 / .22); }
+.hero-find .kc-find__ico { left: 18px; top: 19px; width: 18px; height: 18px; }
+.hero-find .kc-find__list { width: 100%; max-width: none; max-height: min(348px, 46svh); }
+.hero-quick { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 8px; margin: 0; font-size: 14px; color: var(--muted); }
+.hero-quick button { height: 30px; padding: 0 12px; border: 1px solid color-mix(in oklab, var(--ink) 14%, transparent); border-radius: 15px; background: color-mix(in oklab, var(--bg) 60%, #fff); color: var(--ink); font: 400 14px var(--font-text); cursor: pointer; transition: background .2s ease, border-color .2s ease; }
+.hero-quick button:hover { background: #fff; border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+@media (max-width: 639px) { .hero .pill .muted { display: none; } .hero-quick button:nth-of-type(n+4) { display: none; } .hero-find input { height: 52px; font-size: 16px; } .hero-find .kc-find__ico { top: 17px; } }
 .kc__note { margin: 0; font-size: 13px; line-height: 1.45; color: var(--u-muted); }
 .kc__stamp { margin: 0; font-size: 14px; color: var(--u-muted); }
 .kc__h4 { margin: 0 0 6px; font: 500 13px var(--font-text); color: var(--u-muted); }
@@ -202,7 +275,7 @@
   .kc__list { display: none; }
 }
 @media (max-width: 639px) {
-  .kc__tools { grid-template-columns: minmax(0, 1fr); }
+  .kc__tools, .app[data-step="3"] .kc__tools { grid-template-columns: minmax(0, 1fr); }
   .kc__chips .kc__chip:nth-child(n+9):not([aria-pressed="true"]) { display: none; }
   .kc__legend { display: none; }
   .kc__list { display: grid; grid-template-columns: minmax(0, 1fr); padding: 8px 12px 16px; }
@@ -249,9 +322,10 @@
     <div class="wrap"><div class="hero-text">
       <div class="hero__c">
         <a class="pill" href="#data"><span>Byggd på __ADS__ annonser i Platsbanken</span><span class="muted">Läs om datan</span></a>
-        <h1 id="hero-h">Kompetenskarta för alla yrken</h1>
-        <p class="hero__lead">Välj ditt yrke och markera vad du kan. Kartan visar vilka av __N_OCC__ yrken du ligger närmast och vilka kompetenser som tar dig dit.</p>
-        <div class="btn-row"><a class="btn btn--primary" href="#kartan">Prova kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#steg">Se hur det räknas</a></div>
+        <h1 id="hero-h">Vilka yrken ligger nära ditt?</h1>
+        <p class="hero__lead">Sök ditt yrke och markera vad du kan. Kartan visar vilka av __N_OCC__ yrken du ligger närmast, vad som saknas och hur jobbmöjligheterna ser ut.</p>
+        <div class="hero-find kc-find ui"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="hero-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="hero-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök ditt yrke, t.ex. undersköterska" aria-label="Sök ditt yrke"><ul class="kc-find__list" id="hero-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div>
+        <p class="hero-quick" id="hero-quick"><span>Vanliga yrken:</span></p>
       </div>
       <div class="hero__window" data-fx="grain-gradient" data-fx-seed="7" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","accent":"#3f6a92"}' data-fx-params='{"grainMotion":0}' role="img" aria-label="Kompetenscirkeln öppnad för en backend-utvecklare: närliggande yrken runt yrket, med andel matchning">
         <div class="ly-piece ui d-win" aria-hidden="true">
@@ -265,22 +339,27 @@
     </div></div>
   </section>
 
-  <section class="section" id="kartan" style="--h: 2; --hm: 2" aria-labelledby="kartan-h">
+  <section class="section" id="kartan" aria-labelledby="kartan-h">
     <div class="wrap">
       <div class="grid">
         <h2 id="kartan-h" class="span-6">Kartan över närliggande yrken</h2>
         <p class="span-6 start-7 t-lead">Markera vad du kan. Ju mer du redan kan, desto närmare mitten hamnar ett yrke, och kortet visar vad som återstår. <a class="link" href="#steg">Se hur det räknas</a></p>
       </div>
-      <div class="ui app" id="app" aria-label="Kompetenscirkeln, verktyget">
-        <div class="kc__bar"><span class="d-win__dots" aria-hidden="true"><i></i><i></i><i></i></span><b>Kompetenscirkeln</b><span class="sp"></span><label for="kc-lan">Prognos för</label><select id="kc-lan"></select></div>
+      <div class="ui app" id="app" data-step="1" aria-label="Kompetenscirkeln, verktyget">
+        <div class="kc__bar"><ol class="kc__steps" id="kc-steps" aria-label="Steg">
+            <li><button type="button" data-go="1" aria-current="step"><i>1</i>Yrke</button></li>
+            <li><button type="button" data-go="2" disabled><i>2</i>Kompetenser</button></li>
+            <li><button type="button" data-go="3" disabled><i>3</i>Karta</button></li>
+          </ol><span class="sp"></span><label class="kc__s3" for="kc-lan">Prognos för</label><select class="kc__s3" id="kc-lan"></select></div>
         <div class="kc__tools">
-          <div class="kc__field"><label for="kc-occ">Ditt yrke</label><div class="kc-find"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="kc-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök yrke, t.ex. undersköterska"><ul class="kc-find__list" id="kc-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div></div>
-          <div class="kc__field"><span id="kc-chips-l">Dina kompetenser, de vanligaste i annonserna för ditt yrke</span>
+          <div class="kc__field kc__field--occ"><label for="kc-occ"><span class="kc__q kc__s1">Vilket yrke har du?</span><span class="kc__not1">Ditt yrke</span></label><div class="kc-find"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><input id="kc-occ" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-occ-list" autocomplete="off" spellcheck="false" placeholder="Sök yrke, t.ex. undersköterska"><ul class="kc-find__list" id="kc-occ-list" role="listbox" aria-label="Yrken" hidden></ul></div></div>
+          <div class="kc__browse kc__s1"><h3>Eller välj ett yrkesområde</h3><div class="kc__fields" id="kc-fields" role="group" aria-label="Yrkesområden"></div><p class="kc__sub">Listan till vänster visar de vanligaste yrkena i området. Yrkena och annonserna kommer från Arbetsförmedlingen.</p></div>
+          <div class="kc__field kc__field--skills kc__not1"><h3 class="kc__q kc__s2">Vad kan du redan?</h3><p class="kc__sub kc__s2" id="kc-chips-sub"></p><span class="kc__s3" id="kc-chips-l">Dina kompetenser, de vanligaste i annonserna för ditt yrke</span>
             <div class="kc__chips" id="kc-chips" role="group" aria-labelledby="kc-chips-l"></div>
             <div class="kc-find kc-find--skill"><svg class="kc-find__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg><input class="kc__add" id="kc-add" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="kc-add-list" autocomplete="off" spellcheck="false" placeholder="Lägg till kompetens, t.ex. Excel" aria-label="Lägg till kompetens"><ul class="kc-find__list" id="kc-add-list" role="listbox" aria-label="Kompetenser" hidden></ul></div>
           </div>
+          <aside class="kc__next kc__s2" aria-live="polite"><h3>Närmast just nu</h3><ol class="kc__near" id="kc-near"></ol><p class="kc__sub" id="kc-count"></p><button type="button" class="btn btn--primary" id="kc-go">Visa kartan<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></aside>
         </div>
-        <div class="kc__go" id="kc-gorow"><p id="kc-go-hint">Sök ditt yrke och markera det du kan. Sedan visas kartan över yrken som ligger nära.</p><button type="button" class="kc__btn" id="kc-go" disabled>Visa kartan</button></div>
         <div class="kc__body" id="kc-body" hidden>
           <div class="kc__mapcol">
             <p class="kc__hint">Du står i mitten. Ju närmare mitten ett yrke ligger, desto mer av det annonserna efterfrågar kan du redan. Klicka på ett yrke för att se vägen dit.</p>
@@ -440,7 +519,7 @@
     const pairs = a => { const out = []; for (let i = 0; i < a.length; i += 2) out.push({ skillId: c.s[a[i]][0], share: a[i + 1] / 1000 }); return out; };
     const map = (o, key) => Object.fromEntries(Object.entries(o).map(([i, a]) => [key(+i), pairs(a)]));
     return {
-      groups: c.g.map(g => ({ id: g[0], label: g[1], ssyk: g[2], adsAnalyzed: g[3] })),
+      groups: c.g.map(g => ({ id: g[0], label: g[1], ssyk: g[2], adsAnalyzed: g[3], field: c.f[g[4]] || "" })),
       occupations: c.o.map(o => ({ id: o[0], label: o[1], groupId: c.g[o[2]][0], adCount: o[3], substitutes: (o[4] || []).map(x => ({ id: c.o[x[0]][0], pct: x[1] })) })),
       skills: c.s.map(x => ({ id: x[0], label: x[1], headline: c.h[x[2]] })),
       groupSkills: map(c.gs, i => c.g[i][0]), occSkills: map(c.os, i => c.o[i][0]),
@@ -736,15 +815,17 @@
   const index = (label, extra = [], weak = []) => [...words(label).map(w => [w, 1]), [words(label).join(""), 0.95], ...extra.flatMap(words).map(w => [w, 0.95]), ...weak.flatMap(words).map(w => [w, 0.8])];
 
   // one combobox: type, see up to eight suggestions, move with the arrow keys, pick with Enter or a click
-  function Finder({ input, list, items, onPick, meta, aside, empty, emptyTitle, keepValue }) {
+  // `inline` keeps the list open in the page (step 1), instead of floating under the field
+  function Finder({ input, list, items, onPick, meta, aside, empty, emptyTitle, keepValue, inline }) {
     let shown = [], active = -1, n = 0;
     const id = input.id + "-opt";
-    const open = on => { list.hidden = !on; input.setAttribute("aria-expanded", on); if (!on) { active = -1; input.removeAttribute("aria-activedescendant"); } };
+    const pinned = () => Boolean(inline && inline());
+    const open = on => { if (pinned()) on = true; list.hidden = !on; input.setAttribute("aria-expanded", on); if (!on) { active = -1; input.removeAttribute("aria-activedescendant"); } };
     function draw() {
       const q = input.value.trim(), isEmpty = !q || (keepValue && keepValue() === q);
       shown = isEmpty ? empty() : search(q, items());
-      active = shown.length ? 0 : -1;
-      const head = isEmpty ? `<li class="kc-find__head" role="presentation">${emptyTitle}</li>` : "";
+      active = shown.length && !(isEmpty && pinned()) ? 0 : -1;  // an open list of suggestions has nothing chosen until you type or use the arrows
+      const head = isEmpty ? `<li class="kc-find__head" role="presentation">${typeof emptyTitle === "function" ? emptyTitle() : emptyTitle}</li>` : "";
       list.innerHTML = head + (shown.length ? shown.map((it, i) => `<li role="option" id="${id}${i}" class="kc-find__opt" data-i="${i}" aria-selected="${i === active}"><span class="t">${(isEmpty ? esc(it.label) : mark(it.label, q)).replace(/\//g, "/&#8203;")}</span>${aside ? `<span class="n">${aside(it)}</span>` : ""}<span class="m">${meta(it)}</span></li>`).join("")
         : `<li class="kc-find__none" role="presentation">Hittade inget som liknar ”${esc(q)}”. Prova ett annat ord.</li>`);
       if (active >= 0) input.setAttribute("aria-activedescendant", id + active);
@@ -764,9 +845,9 @@
       if (e.key === "ArrowDown") { e.preventDefault(); list.hidden ? draw() : move(1); }
       else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
       else if (e.key === "Enter") { if (!list.hidden && active >= 0) { e.preventDefault(); pick(active); } }
-      else if (e.key === "Escape") { open(false); if (keepValue) input.value = keepValue(); }
+      else if (e.key === "Escape") { if (pinned()) { input.value = ""; draw(); return; } open(false); if (keepValue) input.value = keepValue(); }
     });
-    input.addEventListener("blur", () => setTimeout(() => { open(false); if (keepValue) input.value = keepValue(); }, 120));
+    input.addEventListener("blur", () => setTimeout(() => { if (pinned()) return; open(false); if (keepValue) input.value = keepValue(); }, 120));
     list.addEventListener("mousedown", e => { const li = e.target.closest(".kc-find__opt"); if (li) { e.preventDefault(); pick(Number(li.dataset.i)); } });
     return { draw };
   }
@@ -774,19 +855,29 @@
   // the tool
   const $ = id => document.getElementById(id);
   const S = { me: null, mine: new Set(), lan: "00", sel: null, hover: null };
-  let ranked = [], shownScore = null, shownSel = null, shown = false;
+  let ranked = [], shownScore = null, shownSel = null, step = 1, browse = null;
   const lans = new Set(["00"]); Object.values(DS.barometer).forEach(b => Object.keys(b).forEach(k => lans.add(k)));
   $("kc-lan").innerHTML = [...lans].sort().map(c => `<option value="${c}">${esc(LAN[c] || "län " + c)}</option>`).join("");
   const SYN = { "Backend-utvecklare": "backend server api", "Frontend-utvecklare": "frontend webbutvecklare react webb", "Fullstack-utvecklare": "fullstack full stack webbutvecklare", "Systemutvecklare/Programmerare": "programmerare utvecklare developer kodare", "Mjukvaruutvecklare": "software developer engineer programmerare", "Supporttekniker IT": "helpdesk servicedesk support it-support", "Systemadministratör": "sysadmin admin drift server", "Nätverkstekniker": "network nätverk", "Data scientist": "datavetare ml ai maskininlärning", "Dataanalytiker": "analytiker analyst bi", "UX-designer": "ux designer användarupplevelse", "Projektledare, IT": "pm projektledare", "IT-säkerhetsanalytiker": "security säkerhet soc", "Molntekniker/Cloudutvecklare": "cloud moln aws azure", "Devops utvecklare": "devops sre", "Testutvecklare": "testare tester qa", "Mjukvarutestare": "testare tester qa", "Produktägare, IT": "product owner po", "IT-tekniker": "tekniker support" };
   const maxAds = Math.max(1, ...DS.occupations.map(o => o.adCount || 0));
-  const occItems = DS.occupations.filter(o => profile(o).length).map(o => ({ id: o.id, label: o.label, group: groups.get(o.groupId).label, ads: o.adCount || 0, pop: (o.adCount || 0) / maxAds, _w: index(o.label, [SYN[o.label] || ""], [groups.get(o.groupId).label]) }));
+  const occItems = DS.occupations.filter(o => profile(o).length).map(o => ({ id: o.id, label: o.label, group: groups.get(o.groupId).label, field: groups.get(o.groupId).field, ads: o.adCount || 0, pop: (o.adCount || 0) / maxAds, _w: index(o.label, [SYN[o.label] || ""], [groups.get(o.groupId).label]) }));
   const skillItems = DS.skills.map(s => ({ id: s.id, label: short(s.id), headline: s.headline, pop: 0, _w: index(short(s.id), [], [s.headline || ""]) }));
-  const occFind = Finder({ input: $("kc-occ"), list: $("kc-occ-list"), items: () => occItems, keepValue: () => (S.me ? occs.get(S.me).label : ""),
-    emptyTitle: "Vanligast i annonserna. Skriv för att söka bland alla yrken.",
-    empty: () => [...occItems].sort((a, b) => b.ads - a.ads).slice(0, 8),
-    meta: it => esc(it.group),
-    aside: it => (it.ads ? `${it.ads} annonser` : ""),
-    onPick: it => { S.me = it.id; S.sel = null; S.mine = initMine(S.me); $("kc-occ").value = it.label; $("kc-occ").blur(); $("kc-go").disabled = false; $("kc-add").disabled = false; render(); } });
+  const popular = [...occItems].sort((x, y) => y.ads - x.ads);
+  const occOpts = { items: () => occItems, meta: it => esc(it.group), aside: it => (it.ads ? `${it.ads} annonser` : "") };
+  const occFind = Finder({ ...occOpts, input: $("kc-occ"), list: $("kc-occ-list"), inline: () => step === 1, keepValue: () => (S.me ? occs.get(S.me).label : ""),
+    emptyTitle: () => browse ? `Vanligast inom ${esc(browse.toLowerCase())}` : "Vanligast i annonserna. Skriv för att söka bland alla yrken.",
+    empty: () => browse ? popular.filter(it => it.field === browse).slice(0, 12) : popular.slice(0, step === 1 ? 6 : 8),
+    onPick: it => pickOcc(it.id) });
+  const heroFind = Finder({ ...occOpts, input: $("hero-occ"), list: $("hero-occ-list"),
+    emptyTitle: "Vanligast i annonserna. Skriv för att söka bland alla yrken.", empty: () => popular.slice(0, 6),
+    onPick: it => { $("hero-occ").value = ""; $("hero-occ").blur(); pickOcc(it.id, true); } });
+  $("hero-quick").insertAdjacentHTML("beforeend", popular.filter(it => it.label.length <= 22).slice(0, 5).map(it => `<button type="button" data-occ="${it.id}">${esc(it.label)}</button>`).join(""));
+  $("hero-quick").onclick = e => { const b = e.target.closest("[data-occ]"); if (b) pickOcc(b.dataset.occ, true); };
+  // step 1: browse by field instead of searching
+  const fieldNames = [...new Set(occItems.map(it => it.field).filter(Boolean))].sort((x, y) => x.localeCompare(y, "sv"));
+  const drawFields = () => { $("kc-fields").innerHTML = fieldNames.map(f => `<button type="button" class="kc__chip kc__chip--plain" data-field="${esc(f)}" aria-pressed="${f === browse}">${esc(f)}</button>`).join(""); };
+  $("kc-fields").onclick = e => { const b = e.target.closest("[data-field]"); if (!b) return; browse = browse === b.dataset.field ? null : b.dataset.field; $("kc-occ").value = ""; drawFields(); occFind.draw(); $("kc-occ-list").scrollTop = 0; };
+  $("kc-occ").addEventListener("input", () => { if (browse) { browse = null; drawFields(); } });
   const myShare = id => { const me = occs.get(S.me); if (!me) return 0; return (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).find(x => x.skillId === id)?.share; };
   const skillFind = Finder({ input: $("kc-add"), list: $("kc-add-list"),
     items: () => skillItems.map(it => ({ ...it, pop: (myShare(it.id) || 0) * 3 + (S.mine.has(it.id) ? -1 : 0) })),
@@ -826,7 +917,7 @@
   }
 
   function render() {
-    if (!S.me) { $("kc-chips").innerHTML = `<p class="kc__note">Välj ett yrke först, så visas de vanligaste kompetenserna i annonserna.</p>`; $("kc-add").disabled = true; return; }
+    if (!S.me) { $("kc-chips").innerHTML = ""; $("kc-add").disabled = true; return; }
     ranked = rank(S);
     if (!ranked.some(m => m.o.id === S.sel)) S.sel = ranked[0]?.o.id || null;
     const me = occs.get(S.me), prof = (DS.occSkills[me.id] || DS.groupSkills[me.groupId] || []).slice(0, 16);
@@ -835,7 +926,13 @@
     if (ids.length !== have.size || ids.some(id => !have.has(id))) {
       chips.innerHTML = ids.map(id => { const p = prof.find(x => x.skillId === id); return `<button type="button" class="kc__chip" data-skill="${id}" aria-pressed="${S.mine.has(id)}"><i aria-hidden="true"></i>${esc(short(id))}${p ? ` <small>${pct(p.share)} %</small>` : ""}</button>`; }).join("");
     } else ids.forEach(id => have.get(id).setAttribute("aria-pressed", S.mine.has(id)));
-    if (!shown) return;
+    if (step === 2) {
+      const near = ranked.slice(0, 4), k = S.mine.size, note = unsure(me);
+      $("kc-chips-sub").textContent = `Det här efterfrågas oftast i annonserna för ${me.label}. Markera det du kan, och lägg till annat du har.${note ? " " + note : ""}`;
+      $("kc-near").innerHTML = near.length ? near.map(x => `<li><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></li>`).join("") : `<li class="none">Inga yrken ligger nära än. Markera fler kompetenser.</li>`;
+      $("kc-count").textContent = `${k} ${k === 1 ? "kompetens markerad" : "kompetenser markerade"}. Kartan visar upp till åtta yrken och vägen till vart och ett.`;
+    }
+    if (step !== 3) return;
     orbit(S, ranked);
     drawCard();
     $("kc-list").innerHTML = ranked.slice(0, 10).map(x => `<li><button type="button" data-occ="${x.o.id}" aria-current="${x.o.id === S.sel}"><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></button></li>`).join("");
@@ -854,14 +951,32 @@
   const setHover = id => { S.hover = id; map.classList.toggle("is-hovering", Boolean(id) && id !== S.sel); map.querySelectorAll(".occ").forEach(g => g.classList.toggle("is-hover", g.dataset.occ === id)); };
   map.addEventListener("mouseover", e => { const c = e.target.closest("[data-occ]"), id = c ? c.dataset.occ : null; if (id === S.hover) return; clearTimeout(hoverT); hoverT = setTimeout(() => setHover(id), id ? 60 : 160); });
   map.addEventListener("mouseleave", () => { clearTimeout(hoverT); if (S.hover) setHover(null); });
-  $("kc-go").onclick = () => {
-    if (!S.me) return;
-    shown = true; $("kc-gorow").hidden = true;
-    const body = $("kc-body"); body.hidden = false; if (!reduced) body.classList.add("kc__reveal");
+  // the three steps share one set of controls; a step only changes how they are laid out and what is shown under them
+  function setStep(n, scroll) {
+    step = n;
+    const app = $("app"), tools = app.querySelector(".kc__tools");
+    app.dataset.step = n; $("kc-body").hidden = n !== 3; $("kartan").classList.toggle("is-map", n === 3);
+    $("kc-steps").querySelectorAll("button").forEach(b => {
+      const k = Number(b.dataset.go); b.disabled = k > 1 && !S.me; b.classList.toggle("is-done", k < n); b.firstElementChild.textContent = k < n ? "✓" : k;
+      k === n ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current");
+    });
+    if (!reduced) { tools.classList.remove("kc__in"); void tools.offsetWidth; tools.classList.add("kc__in"); if (n === 3) { const body = $("kc-body"); body.classList.remove("kc__reveal"); void body.offsetWidth; body.classList.add("kc__reveal"); } }
+    $("kc-occ").value = S.me && n !== 1 ? occs.get(S.me).label : "";
+    if (n === 1) occFind.draw(); else $("kc-occ-list").hidden = true;
     render();
-    body.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
-  };
-  render();
+    if (scroll) requestAnimationFrame(() => (scroll === "section" ? $("kartan") : app).scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }));
+    if (n === 2) $("kc-go").focus({ preventScroll: true });
+  }
+  function pickOcc(id, fromHero) {
+    if (S.me !== id) { S.me = id; S.sel = null; S.mine = initMine(id); }
+    $("kc-add").disabled = false; browse = null; drawFields();
+    if (step === 3) { $("kc-occ").value = occs.get(id).label; $("kc-occ").blur(); render(); if (fromHero) $("app").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }); return; }
+    setStep(2, fromHero ? "section" : null);
+  }
+  $("kc-steps").onclick = e => { const b = e.target.closest("[data-go]"); if (b && !b.disabled) setStep(Number(b.dataset.go)); };
+  $("kc-go").onclick = () => { if (S.me) setStep(3, "frame"); };
+  drawFields();
+  setStep(1);
 })();
 </script>
 <script type="module" src="assets/system.js"></script>
