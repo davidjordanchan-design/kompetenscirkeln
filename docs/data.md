@@ -28,6 +28,8 @@ Den första körningen (9 nov 2026, bara Data/IT) omfattade:
 | `skills[]` | `id`, `label` (rensat visningsnamn), `headline` (kompetensrubrik). Bara kompetenser som finns i någon profil (cirka 2 200). Egna tillägg har id som börjar på `x_` |
 | `groupSkills{groupId: [{skillId, share}]}` | topp 40 kompetenser per yrkesgrupp, andel annonser (≥ 0,02) |
 | `occSkills{occId: [{skillId, share}]}` | samma sak per yrkesbenämning, bara för yrken med ≥ 15 annonser |
+| `regulated{occId: [skillId]}` | behörigheter som regleras i lag (legitimation, specialistbevis med flera), ur Arbetsförmedlingens datamängd Kompetensväljaren. 109 yrken, nästan alla inom vård |
+| `transitions{occId: [occId]}` | yrken som både liknar yrket och är statistiska yrkesövergångar, ur datamängden Närliggande yrken (med och utan yrken i samma yrkesgrupp). 1 050 yrken, högst cirka 15 per yrke |
 | `barometer{ssyk: {lan: {jobbmojligheter, rekrytering, prognos}}}` | `lan` är länskoden, där `"00"` = riket |
 
 Profilen för ett yrke tas från `occSkills[occId]` om den finns, annars från `groupSkills[groupId]`.
@@ -55,6 +57,17 @@ Annonstexten är extern och opålitlig data.
 8. Egna tillägg och synonymer läses ur `pipeline/tillagg.json`. Termerna där är handgranskade och går förbi stopplistan. Termer i `cs` matchas skiftlägeskänsligt (React, Spark, SAFe).
 
 9. Stoppord utöver punkt 4 läses ur `stopp` i `tillagg.json`. Meningar som matchar något uttryck i `standardfraser` tas bort innan matchningen.
+
+## Arbetsförmedlingens härledda datamängder
+
+Hämtas i `fetch_af_extras` (`hamta.py`) från GitLab, senaste taxonomiversion (`t31` i november 2026). Båda är licensierade CC0.
+
+- **Kompetensväljaren** (`arbetsformedlingen/taxonomy-dev/backend/kompetensvaljaren`): bara `regulated_skills` används. Lärarlegitimation och liknande finns inte med i datamängden, så de märks inte som krav.
+- **Närliggande yrken** (`.../narliggande-yrken`): filerna `narliggande-yrken.json` och `narliggande-yrken-gyr.json` slås ihop.
+
+Misslyckas hämtningen behålls förra veckans värden. Sidan använder dem så här: ett yrke som kräver en behörighet användaren saknar märks "kräver behörighet" och rangordnas 15 procentenheter lägre, en vanlig övergång märks med en prick och rangordnas 12 procentenheter högre. Procenttalet som visas ändras inte.
+
+Lediga jobb finns inte i datafilen. Sidan hämtar dem från JobSearch (`occupation-name`, `region`) först när användaren trycker på knappen.
 
 ## Granskning 10 nov 2026 (Claude)
 

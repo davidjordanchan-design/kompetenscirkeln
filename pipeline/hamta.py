@@ -19,6 +19,9 @@ CFG = {
     "TAXONOMY": os.environ.get("TAXONOMY_BASE", "https://taxonomy.api.jobtechdev.se"),
     "JOBSEARCH": os.environ.get("JOBSEARCH_BASE", "https://jobsearch.api.jobtechdev.se"),
     "BAROMETER_URL": os.environ.get("BAROMETER_URL", "https://data.jobtechdev.se/prognoser/yrkesbarometer.json"),
+    # Arbetsförmedlingens härledda datamängder (CC0): Kompetensväljaren och Närliggande yrken
+    "AF_REPOS": os.environ.get("AF_REPOS", "https://gitlab.com/arbetsformedlingen/taxonomy-dev/backend"),
+    "AF_API": os.environ.get("AF_API", "https://gitlab.com/api/v4/projects/arbetsformedlingen%2Ftaxonomy-dev%2Fbackend%2F"),
     "MAX_ADS_PER_GROUP": 2000, "MAX_ADS_EXTERNAL_GROUP": 500, "INCLUDE_EXTERNAL": True, "MAX_EXTERNAL_GROUPS": 12,
     "DELAY": float(os.environ.get("DELAY", "0.15")), "RAW_TEXT_MAX": 6000,
     # rimlighetsgränser: under dessa skrivs ingen fil
@@ -98,6 +101,39 @@ def fetch_ads(gid, max_ads):
             break
         offset += 100
     return total, ads
+
+
+def latest_version(repo, path, pattern):
+    """Datamängderna ges ut per taxonomiversion (t27, t28 ...). Ger namnet med högst nummer."""
+    import re
+    names = [t["name"] for t in get_json(f"{CFG['AF_API']}{repo}/repository/tree?path={path}&per_page=100")]
+    hits = [(int(m.group(1)), n) for n in names for m in [re.fullmatch(pattern, n)] if m]
+    if not hits:
+        raise RuntimeError(f"hittade ingen version i {repo}/{path}")
+    return max(hits)[1]
+
+
+def fetch_af_extras():
+    """Reglerade behörigheter per yrke (Kompetensväljaren) och närliggande yrken som också är statistiska
+    yrkesövergångar (Närliggande yrken). Returnerar None om hämtningen misslyckas, så att resten ändå går igenom."""
+    try:
+        f = latest_version("kompetensvaljaren", "output/v1", r"kompetensvaljaren-t(\d+)\.json")
+        kv = get_json(f"{CFG['AF_REPOS']}/kompetensvaljaren/-/raw/main/output/v1/{f}")
+        regulated = {oid: [{"id": sid, "label": " ".join(label.split())} for label, sid in v["regulated_skills"].items()]
+                     for oid, v in kv["data"].items() if v.get("type") == "occupation-name" and v.get("regulated_skills")}
+        t = latest_version("narliggande-yrken", "output/v1", r"t(\d+)")
+        transitions = {}
+        for name in ("narliggande-yrken.json", "narliggande-yrken-gyr.json"):  # med och utan yrken i samma yrkesgrupp
+            for oid, v in get_json(f"{CFG['AF_REPOS']}/narliggande-yrken/-/raw/main/output/v1/{t}/{name}")["data"].items():
+                lst = transitions.setdefault(oid, [])
+                lst.extend(x["id"] for x in v.get("similar", []) if x["id"] not in lst)
+        if not regulated or not transitions:
+            raise RuntimeError("tomma datamängder")
+        print(f"• Arbetsförmedlingens datamängder: {len(regulated)} yrken med reglerad behörighet ({f}), {len(transitions)} yrken med övergångar ({t})")
+        return {"regulated": regulated, "transitions": transitions, "versions": {"kompetensvaljaren": f, "narliggandeYrken": t}}
+    except Exception as e:
+        print("⚠ Kunde inte hämta Kompetensväljaren/Närliggande yrken:", str(e)[:200])
+        return None
 
 
 def fetch_raw():
@@ -191,13 +227,22 @@ def main():
     ap.add_argument("--utan-radata", action="store_true", help="spara inte rådatan (annonstexterna)")
     a = ap.parse_args()
     raw = fetch_raw()
-    ds = kompetens.build_dataset(raw)
-    fel = check(raw, ds)
-    if os.path.exists(a.ut):  # jämför med förra körningen: ett kraftigt tapp tyder på att ett API har ändrats
+    extras = fetch_af_extras()
+    prev = {}
+    if os.path.exists(a.ut):
         with open(a.ut, encoding="utf-8") as f:
-            prev = json.load(f).get("meta", {})
-        if prev.get("field", {}).get("id") == ds["meta"]["field"]["id"] and len(raw["ads"]) < 0.5 * prev.get("adsAnalyzed", 0):
-            fel.append(f"{len(raw['ads'])} annonser mot {prev['adsAnalyzed']} förra gången")
+            prev = json.load(f)
+    if extras:
+        raw.update(regulated=extras["regulated"], transitions=extras["transitions"], afVersions=extras["versions"])
+    ds = kompetens.build_dataset(raw)
+    if not extras and prev.get("regulated"):  # behåll förra veckans i stället för att tappa dem
+        ds["regulated"], ds["transitions"] = prev["regulated"], prev.get("transitions", {})
+        known = {s["id"] for s in ds["skills"]}
+        ds["skills"] += [s for s in prev["skills"] if s["id"] not in known and any(s["id"] in v for v in ds["regulated"].values())]
+    fel = check(raw, ds)
+    pm = prev.get("meta", {})  # jämför med förra körningen: ett kraftigt tapp tyder på att ett API har ändrats
+    if (pm.get("field") or {}).get("id") == ds["meta"]["field"]["id"] and len(raw["ads"]) < 0.5 * pm.get("adsAnalyzed", 0):
+        fel.append(f"{len(raw['ads'])} annonser mot {pm['adsAnalyzed']} förra gången")
     if fel:
         sys.exit("✗ Hämtningen ser trasig ut, inget skrevs: " + "; ".join(fel))
     kompetens.write_dataset(ds, a.ut)

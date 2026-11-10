@@ -127,6 +127,11 @@ def build_dataset(raw, extras=None, stats=None):
     skills = {}
     for s in raw.get("skills") or [x for lst in raw["skillsByGroup"].values() for x in lst]:  # äldre rådata: per grupp
         skills.setdefault(s["id"], dict(s))
+    # reglerade behörigheter (legitimation m.m.) ska alltid finnas med som kompetenser, även om ingen annons nämner dem
+    occ_ids = {o["id"] for o in raw["occupations"]}
+    reg_raw = {oid: lst for oid, lst in (raw.get("regulated") or {}).items() if oid in occ_ids}
+    for lst in reg_raw.values():
+        for x in lst: skills.setdefault(x["id"], {"id": x["id"], "label": x["label"], "headline": "Reglerade behörigheter"})
     rename = {}
     for sid, syn in extras["synonymer"].items():
         if sid not in skills: continue  # taxonomin kan ha bytt id; då faller synonymen bort utan fel
@@ -187,15 +192,22 @@ def build_dataset(raw, extras=None, stats=None):
 
     barometer, omgang = barometer_from_rows(raw.get("barometerRows", []))
     used = {x["skillId"] for l in list(group_skills.values()) + list(occ_skills.values()) for x in l}
+    regulated = {oid: sorted({canon[x["id"]] for x in lst}) for oid, lst in reg_raw.items()}
+    used |= {sid for lst in regulated.values() for sid in lst}
+    transitions = {oid: [x for x in lst if x in occ_ids and x != oid] for oid, lst in (raw.get("transitions") or {}).items() if oid in occ_ids}
     return {
         "meta": {"demo": False, "generated": raw.get("fetched"), "field": raw.get("field"), "barometerOmgang": omgang,
                  "adsAnalyzed": len(raw["ads"]),
-                 "method": METHOD, "sources": ["JobTech Taxonomy", "JobSearch (Platsbanken)", "Yrkesbarometern"]},
+                 "method": METHOD, "sources": ["JobTech Taxonomy", "JobSearch (Platsbanken)", "Yrkesbarometern", "Kompetensväljaren", "Närliggande yrken"],
+                 "afVersions": raw.get("afVersions")},
         "fields": raw.get("fields") or [raw.get("field")],
         "groups": raw["groups"], "occupations": raw["occupations"],
         # bara kompetenser som förekommer i någon profil: övriga nämns i för få annonser för att påverka något
-        "skills": [{"id": cid, "label": d, "headline": h} for (cid, d, h) in disp.values() if cid in used],
+        "skills": [{"id": cid, "label": " ".join(d.split()), "headline": h} for (cid, d, h) in disp.values() if cid in used],
         "groupSkills": group_skills, "occSkills": occ_skills, "barometer": barometer,
+        # Arbetsförmedlingens härledda datamängder: lagstadgade behörigheter per yrke, och yrken som både liknar
+        # yrket och är statistiska yrkesövergångar
+        "regulated": regulated, "transitions": {k: v for k, v in transitions.items() if v},
     }
 
 

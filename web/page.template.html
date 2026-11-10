@@ -90,6 +90,8 @@
 .kc-map .occ .name { fill: var(--kc-ink); font-size: 16px; font-weight: 400; transition: opacity .3s ease; }
 .kc-map .occ .sub { fill: var(--kc-soft); font-size: 14px; opacity: 0; transition: opacity .3s ease; }
 .kc-map .occ .halo { fill: none; stroke: var(--kc-ink); stroke-width: 2; opacity: 0; transition: opacity .3s ease; }
+.kc-map .occ .tr { fill: var(--kc-ink); stroke: #f3f8f4; stroke-width: 2.5; opacity: 0; transition: opacity .3s ease; }
+.kc-map .occ.is-trans .tr { opacity: 1; }
 .kc-map .occ.is-sel .halo, .kc-map .occ.is-hover .halo { opacity: 1; }
 .kc-map .occ.is-hover:not(.is-sel) .halo { stroke-opacity: .35; }
 .kc-map .occ.is-sel .name, .kc-map .occ.is-hover .name { font-weight: 500; }
@@ -153,6 +155,22 @@
 .kc__sw { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid; display: inline-block; flex: none; }
 .kc__sw.o-high { background: var(--kc-high); border-color: var(--kc-high-s); } .kc__sw.o-mid { background: var(--kc-mid); border-color: var(--kc-mid-s); } .kc__sw.o-low { background: var(--kc-low); border-color: var(--kc-low-s); } .kc__sw.o-unknown { background: var(--kc-unk); border-color: var(--kc-unk-s); }
 .kc__pill { width: 22px; height: 12px; border-radius: 6px; display: inline-block; border: 1.5px solid; }
+.kc__tr { width: 10px; height: 10px; margin: 2px; border-radius: 50%; background: var(--kc-ink); display: inline-block; flex: none; }
+.kc__outlook .kc__tr { margin-top: 5px; }
+.kc__req { display: grid; gap: 4px; padding: 14px 16px; border: 1px solid #e2cc93; border-radius: 12px; background: #fdf8ea; font-size: 14px; line-height: 1.45; color: var(--u-ink); }
+.kc__req b { font-weight: 500; }
+.kc__req span { color: #5c5539; font-size: 13px; }
+.kc__jobs { display: grid; gap: 10px; padding-top: 20px; border-top: 1px solid var(--u-line); }
+.kc__jobs .kc__h4 { margin: 0; }
+.kc__jobs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.kc__jobs li a { display: grid; gap: 1px; padding: 8px 10px; margin: 0 -10px; border-radius: 8px; color: var(--u-ink); text-decoration: none; font-size: 14px; line-height: 1.35; }
+.kc__jobs li a:hover { background: var(--u-fill); }
+.kc__jobs li a span { color: var(--u-muted); font-size: 12.5px; }
+.kc__jobs-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.kc__btn--ghost { background: #fff; color: var(--u-ink); box-shadow: inset 0 0 0 1px var(--u-line-2); }
+.kc__btn--ghost:hover { background: var(--u-fill); }
+.kc__btn[disabled] { opacity: .6; cursor: default; }
+.kc__more { font-size: 14px; color: var(--u-ink); text-underline-offset: 3px; }
 .kc__side { border-left: 1px solid var(--u-line); padding: 24px; display: grid; gap: 20px; align-content: start; min-width: 0; }
 .kc__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
 .kc__head .kc__title { margin: 0; font: 500 20px/1.25 var(--font-display); letter-spacing: -0.01em; overflow-wrap: anywhere; color: var(--u-ink); }
@@ -285,6 +303,7 @@ main > .hero { z-index: 3; }
   .kc__hint { display: none; }
   .kc-map#kc-map :is(.name, .sub, .sk, .lines, .me-name) { display: none; }
   .kc-map#kc-map .occ .dot { r: 46px; }
+  .kc-map#kc-map .occ .tr { cx: 34px; cy: -34px; r: 11px; stroke-width: 4; }
   .kc-map#kc-map .occ .halo { r: 56px; stroke-width: 4; }
   .kc-map#kc-map .occ .pct { font-size: 32px; }
   .kc-map#kc-map .me-dot { r: 40px; } .kc-map#kc-map .me-du { font-size: 30px; }
@@ -370,6 +389,7 @@ main > .hero { z-index: 3; }
               <span><i class="kc__sw o-high"></i>Stora jobbmöjligheter</span>
               <span><i class="kc__sw o-mid"></i>Medelstora</span>
               <span><i class="kc__sw o-low"></i>Små</span>
+              <span><i class="kc__tr"></i>Vanlig övergång</span>
             </div>
             <ol class="kc__list" id="kc-list"></ol>
           </div>
@@ -455,7 +475,7 @@ main > .hero { z-index: 3; }
           <div class="faq__item"><h3>Vem är kartan till för?</h3><p>Dig som funderar på att byta yrke, och vägledare som behöver ett underlag i samtalet.</p></div>
           <div class="faq__item"><h3>Hur räknas matchningen?</h3><p>Yrkets 15 vanligaste kompetenser i annonserna vägs efter hur ofta de nämns. Matchningen är andelen du täcker.</p></div>
           <div class="faq__item"><h3>Hur aktuella är siffrorna?</h3><p>Annonserna hämtades från Platsbanken den __DATE__ och prognoserna kommer från Yrkesbarometern __OMGANG__. Datan uppdateras varje vecka.</p></div>
-          <div class="faq__item"><h3>Sparas det jag markerar?</h3><p>Nej. Allt stannar i din webbläsare.</p></div>
+          <div class="faq__item"><h3>Sparas det jag markerar?</h3><p>Nej. Allt stannar i din webbläsare. Lediga jobb hämtas från Arbetsförmedlingen först när du ber om dem.</p></div>
           <div class="faq__item"><h3>Vilka yrken finns med?</h3><p>Alla __N_FIELDS__ yrkesområden i Arbetsförmedlingens taxonomi. Yrken med få annonser får yrkesgruppens profil och markeras som osäkra.</p></div>
         </div>
       </div>
@@ -468,7 +488,7 @@ main > .hero { z-index: 3; }
           <h2 id="data-h">Arbetsförmedlingens öppna data</h2>
           <p class="t-lead kc-hide-sm">Tre öppna källor vägs ihop per yrke, så att kartan bygger på samma underlag som Platsbanken.</p>
           <ul class="rows">
-            <li><span class="rows__name">Yrkestaxonomin</span><p>Yrken, SSYK-koder och utbytbarhet.</p></li>
+            <li><span class="rows__name">Yrkestaxonomin</span><p>Yrken, behörigheter som regleras i lag och vanliga yrkesbyten.</p></li>
             <li><span class="rows__name">Platsbanken</span><p>Hur ofta kompetenser nämns i annonserna.</p></li>
             <li><span class="rows__name">Yrkesbarometern</span><p>Jobbmöjligheter per län, i dag och om fem år.</p></li>
           </ul>
@@ -523,6 +543,8 @@ main > .hero { z-index: 3; }
       occupations: c.o.map(o => ({ id: o[0], label: o[1], groupId: c.g[o[2]][0], adCount: o[3], substitutes: (o[4] || []).map(x => ({ id: c.o[x[0]][0], pct: x[1] })) })),
       skills: c.s.map(x => ({ id: x[0], label: x[1], headline: c.h[x[2]] })),
       groupSkills: map(c.gs, i => c.g[i][0]), occSkills: map(c.os, i => c.o[i][0]),
+      regulated: Object.fromEntries(Object.entries(c.r || {}).map(([i, a]) => [c.o[i][0], a.map(x => c.s[x][0])])),
+      transitions: new Map(Object.entries(c.t || {}).map(([i, a]) => [c.o[i][0], new Set(a.map(x => c.o[x][0]))])),
       barometer: Object.fromEntries(Object.entries(c.b).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([l, x]) => [l, { jobbmojligheter: c.bv[x[0]], prognos: c.bv[x[1]] }]))])),
     };
   })(JSON.parse(document.getElementById("kc-data").textContent));
@@ -557,15 +579,17 @@ main > .hero { z-index: 3; }
   const trend = b => { const v = (b?.prognos || "").toLowerCase(); return !v ? null : v.includes("öka") ? "up" : v.includes("minska") ? "down" : "flat"; };
 
   function rank(S) {
-    const me = occs.get(S.me), subs = new Map(me.substitutes.map(s => [s.id, s.pct])), out = [];
+    const me = occs.get(S.me), subs = new Map(me.substitutes.map(s => [s.id, s.pct])), out = [], moves = DS.transitions.get(me.id);
     for (const o of DS.occupations) {
-      if (o.id === me.id || (o.groupId === me.groupId && !DS.occSkills[o.id])) continue;
+      if (o.id === me.id || (o.groupId === me.groupId && !DS.occSkills[o.id]) || /studerande$/.test(o.label)) continue;  // a student title is not a job to move to
       const p = profile(o); if (!p.length || basis(o) < MIN_ADS_MAP) continue;  // too few ads to show as somewhere to go
       const g = groups.get(o.groupId), r = score(p, S.mine);
       if (r.score < MIN_SCORE) continue;
-      if (r.have.length < 2 && p.length >= 3) continue;  // one shared skill (often "Försäljning") does not make a job nearby
+      // trans: Arbetsförmedlingen lists the job as similar and as one people actually move to. need: licences required by law that you lack
+      const trans = Boolean(moves && moves.has(o.id)), need = (DS.regulated[o.id] || []).filter(id => !S.mine.has(id));
+      if (r.have.length < 2 && p.length >= 3 && !trans) continue;  // one shared skill (often "Försäljning") does not make a job nearby
       const bb = DS.barometer[g.ssyk];
-      out.push({ o, g, ...r, subst: subs.get(o.id) ?? null, b: bb ? (bb[S.lan] || bb["00"] || null) : null });
+      out.push({ o, g, ...r, trans, need, key: r.score + (trans ? 0.12 : 0) - (need.length ? 0.15 : 0), subst: subs.get(o.id) ?? null, b: bb ? (bb[S.lan] || bb["00"] || null) : null });
     }
     // yrken utan egen profil delar yrkesgruppens: visa bara ett per grupp, annars fylls kartan av likadana
     const best = new Map();
@@ -574,7 +598,9 @@ main > .hero { z-index: 3; }
       const b = best.get(m.o.groupId);
       if (!b || (m.subst || 0) > (b.subst || 0) || ((m.subst || 0) === (b.subst || 0) && (m.o.adCount || 0) > (b.o.adCount || 0))) best.set(m.o.groupId, m);
     }
-    return out.filter(m => DS.occSkills[m.o.id] || best.get(m.o.groupId) === m).sort((a, b) => b.score - a.score || (b.subst || 0) - (a.subst || 0));
+    // the order, not the percentage: a documented move counts for a little more than its skill overlap alone, and a job
+    // behind a licence you lack for a little less, so the eight on the map are jobs you can realistically reach
+    return out.filter(m => DS.occSkills[m.o.id] || best.get(m.o.groupId) === m).sort((a, b) => b.key - a.key || (b.subst || 0) - (a.subst || 0));
   }
 
   const ang = (i, n) => -Math.PI / 2 + (i * TAU) / n;
@@ -617,6 +643,7 @@ main > .hero { z-index: 3; }
       mk("text", { class: "pct", y: 5, "text-anchor": "middle" }, g);
       mk("text", { class: "name" }, g);
       mk("text", { class: "sub" }, g);
+      mk("circle", { class: "tr", cx: 19, cy: -19, r: 7 }, g);
       if (live && !reduced) { g.style.transition = "none"; place(g, CX, CY, 0.4); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = ""; }
       occNodes.set(id, g);
       return g;
@@ -655,7 +682,7 @@ main > .hero { z-index: 3; }
       nodes.forEach(({ m, a, x, y }, i) => {
         const id = m.o.id, g = occNode(id), o = outlook(m.b), t = trend(m.b);
         const prev = pos.get(id); if (prev && Math.hypot(prev[0] - x, prev[1] - y) > 2) moved = true; pos.set(id, [x, y]);
-        g.setAttribute("class", `occ o-${o}${id === S.sel ? " is-sel" : ""}${id === S.hover ? " is-hover" : ""}`);
+        g.setAttribute("class", `occ o-${o}${id === S.sel ? " is-sel" : ""}${id === S.hover ? " is-hover" : ""}${m.trans ? " is-trans" : ""}`);
         const c = Math.cos(a), sn = Math.sin(a), vertical = Math.abs(c) < 0.38;
         const anchor = vertical ? "middle" : c > 0 ? "start" : "end", lx = vertical ? 0 : c > 0 ? 42 : -42, ly = vertical ? (sn < 0 ? -62 : 58) : 0;
         const [pctEl, nameEl, subEl] = g.querySelectorAll("text");
@@ -668,10 +695,10 @@ main > .hero { z-index: 3; }
         nameEl.textContent = ""; nameEl.setAttribute("text-anchor", anchor);
         lines.forEach((l, i) => { const t = mk("tspan", { x: lx, y: y1 + i * 18 }, nameEl); t.textContent = l; });
         const arrow = t === "up" ? ", ökar" : t === "down" ? ", minskar" : "";
-        const subText = m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka";
+        const subText = m.need.length ? "kräver behörighet" : m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka";
         subEl.textContent = subText + (subText.length + arrow.length > 24 ? "" : arrow);
         subEl.setAttribute("x", lx); subEl.setAttribute("y", yEnd + 20); subEl.setAttribute("text-anchor", anchor);
-        if (live) g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning`);
+        if (live) g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning${m.trans ? ", vanlig övergång" : ""}${m.need.length ? ", kräver behörighet" : ""}`);
         if (first && live && !reduced) { g.style.transitionDelay = `${120 + i * 55}ms`; requestAnimationFrame(() => requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; })); setTimeout(() => (g.style.transitionDelay = ""), 1400); }
         else { place(g, x, y); g.style.opacity = ""; }
       });
@@ -757,7 +784,8 @@ main > .hero { z-index: 3; }
 
   const back = new Map(DS.occupations.map(o => [o.label, o.id]));
   const startId = back.get("Backend-utvecklare") || DS.occupations[0].id;
-  const initMine = id => new Set(profile(occs.get(id)).slice(0, PRESELECT).map(x => x.skillId));
+  // what is preselected: the most asked-for skills, and the licences the job itself requires by law
+  const initMine = id => new Set([...profile(occs.get(id)).slice(0, PRESELECT).map(x => x.skillId), ...(DS.regulated[id] || [])]);
 
   // hero: the product as it opens, held still
   {
@@ -898,19 +926,47 @@ main > .hero { z-index: 3; }
     requestAnimationFrame(step);
   }
 
+  const lower1 = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // vacancies: nothing is fetched until you ask. Then the newest ads for the job in the chosen county come straight from Arbetsförmedlingen
+  const jobs = new Map(), jobKey = id => id + "|" + S.lan;
+  const platsbanken = o => "https://arbetsformedlingen.se/platsbanken/annonser?q=" + encodeURIComponent(o.label);
+  function jobsHtml(o) {
+    const j = jobs.get(jobKey(o.id)), where = S.lan === "00" ? "hela landet" : LAN[S.lan], more = `<a class="kc__more" href="${platsbanken(o)}" target="_blank" rel="noopener">Sök i Platsbanken</a>`;
+    let body;
+    if (!j) body = `<p class="kc__note">${o.adCount ? `${o.adCount} ${o.adCount === 1 ? "annons" : "annonser"} i hela landet när datan hämtades.` : "Inga annonser för yrket när datan hämtades."}</p><div class="kc__jobs-row"><button type="button" class="kc__btn kc__btn--ghost" data-jobs="${o.id}">Visa aktuella jobb i ${esc(where)}</button>${more}</div>`;
+    else if (j.state === "wait") body = `<p class="kc__note">Hämtar från Arbetsförmedlingen …</p>`;
+    else if (j.state === "fail") body = `<p class="kc__note">Det gick inte att hämta jobben just nu.</p><div class="kc__jobs-row">${more}</div>`;
+    else body = `<p class="kc__note">${j.total ? `${j.total} ${j.total === 1 ? "annons" : "annonser"} i ${esc(where)} just nu.` : `Inga annonser i ${esc(where)} just nu.`}</p>${j.hits.length ? `<ul>${j.hits.map(h => `<li><a href="https://arbetsformedlingen.se/platsbanken/annonser/${encodeURIComponent(h.id)}" target="_blank" rel="noopener">${esc(h.headline)}<span>${esc([h.employer, h.place].filter(Boolean).join(" · "))}</span></a></li>`).join("")}</ul>` : ""}<div class="kc__jobs-row">${more}</div>`;
+    return `<div class="kc__jobs"><p class="kc__h4">Lediga jobb</p>${body}</div>`;
+  }
+  async function loadJobs(id) {
+    const key = jobKey(id), lan = S.lan;
+    jobs.set(key, { state: "wait" }); drawCard();
+    try {
+      const r = await fetch(`https://jobsearch.api.jobtechdev.se/search?occupation-name=${encodeURIComponent(id)}${lan === "00" ? "" : "&region=" + lan}&limit=5`, { headers: { accept: "application/json" } });
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      jobs.set(key, { state: "ok", total: d.total?.value || 0, hits: (d.hits || []).slice(0, 5).map(h => ({ id: String(h.id), headline: String(h.headline || "Annons"), employer: h.employer?.name || "", place: h.workplace_address?.municipality || "" })) });
+    } catch { jobs.set(key, { state: "fail" }); }
+    drawCard();
+  }
   function drawCard() {
     const m = ranked.find(x => x.o.id === S.sel);
     if (!m) { $("kc-card").innerHTML = `<div class="kc__head"><div><p class="kc__title">Inga närliggande yrken än</p><p>Markera fler kompetenser ovanför kartan.</p></div></div>`; shownScore = null; return; }
     const o = outlook(m.b), t = trend(m.b), fresh = shownSel !== m.o.id;
-    const after = m.bridge.length ? score([...m.have, ...m.miss], new Set([...S.mine, ...m.bridge.map(b => b.skillId)])).score : m.score;
+    const bridge = m.bridge.filter(b => !m.need.includes(b.skillId));  // a licence is not something you pick up along the way
+    const after = bridge.length ? score([...m.have, ...m.miss], new Set([...S.mine, ...bridge.map(b => b.skillId)])).score : m.score;
     const list = arr => arr.map(b => `<b>${esc(short(b.skillId))}</b>`).reduce((s, x, i, a) => s + (i === 0 ? "" : i === a.length - 1 ? " och " : ", ") + x, "");
     const bars = (arr, kind) => arr.length ? `<ul class="kc__bars ${kind}">${arr.map(s => `<li><span class="n">${esc(short(s.skillId))}</span><span class="kc__bar-i"><i data-w="${Math.min(100, s.share * 100)}"></i></span><span class="v">${pct(s.share)} %</span>${kind === "miss" ? `<button type="button" class="kc__plus" data-add="${s.skillId}" aria-label="Simulera att du lär dig ${esc(short(s.skillId))}">+</button>` : ""}</li>`).join("")}</ul>` : `<p class="kc__h4">${kind === "have" ? "Inga av yrkets kärnkompetenser än." : "Inget saknas."}</p>`;
     const prevWidths = new Map([...$("kc-card").querySelectorAll(".kc__bar-i i")].map(i => [i.closest("li").querySelector(".n").textContent + i.closest("ul").className, i.style.width]));
     $("kc-card").innerHTML = `<div class="${fresh ? "kc__card-in" : ""}" style="display:grid;gap:20px"><div class="kc__head"><div><p class="kc__title">${brk(m.o.label)}</p><p>${esc(m.g.label)}</p></div><div class="kc__score"><span id="kc-score"></span> %<small>matchning</small></div></div>
       <div class="kc__outlook"><i class="kc__sw o-${o}"></i><span>${OUT[o]}${t ? " " + TR[t] : ""}, ${esc(LAN[S.lan] || "län " + S.lan)}.</span></div>
+      ${m.trans ? `<div class="kc__outlook"><i class="kc__tr"></i><span>Vanlig övergång från ditt yrke, enligt Arbetsförmedlingens statistik över yrkesbyten.</span></div>` : ""}
       ${unsure(m.o) ? `<p class="kc__note">${unsure(m.o)}</p>` : ""}
-      ${m.bridge.length ? `<div class="kc__bridge"><span>Lär dig ${list(m.bridge)} så går du från ${pct(m.score)} till ${pct(after)} % matchning.</span><button type="button" class="kc__btn" data-add="${m.bridge.map(b => b.skillId).join(",")}">Simulera att jag lär mig ${m.bridge.length > 1 ? "dem" : "den"}</button></div>` : `<div class="kc__bridge ok">Du täcker redan minst ${pct(TARGET)} % av det annonserna efterfrågar.</div>`}
-      <div><p class="kc__h4">Du har</p>${bars(m.have, "have")}</div><div><p class="kc__h4">Saknas, andel av annonserna</p>${bars(m.miss.slice(0, 7), "miss")}</div></div>`;
+      ${m.need.length ? `<div class="kc__req"><b>Kräver ${m.need.map(id => esc(lower1(short(id)))).join(" och ")}</b><span>Det är en behörighet som regleras i lag. Du behöver den för att få arbeta i yrket, oavsett matchning.</span></div>` : ""}
+      ${bridge.length ? `<div class="kc__bridge"><span>Lär dig ${list(bridge)} så går du från ${pct(m.score)} till ${pct(after)} % matchning.</span><button type="button" class="kc__btn" data-add="${bridge.map(b => b.skillId).join(",")}">Simulera att jag lär mig ${bridge.length > 1 ? "dem" : "den"}</button></div>` : m.need.length && m.bridge.length ? "" : `<div class="kc__bridge ok">Du täcker redan minst ${pct(TARGET)} % av det annonserna efterfrågar.</div>`}
+      <div><p class="kc__h4">Du har</p>${bars(m.have, "have")}</div><div><p class="kc__h4">Saknas, andel av annonserna</p>${bars(m.miss.slice(0, 7), "miss")}</div>
+      ${jobsHtml(m.o)}</div>`;
     $("kc-card").querySelectorAll(".kc__bar-i i").forEach(i => { const key = i.closest("li").querySelector(".n").textContent + i.closest("ul").className; if (!fresh && prevWidths.has(key)) i.style.width = prevWidths.get(key); requestAnimationFrame(() => requestAnimationFrame(() => (i.style.width = i.dataset.w + "%"))); });
     countTo($("kc-score"), fresh ? null : shownScore, pct(m.score));
     shownScore = pct(m.score); shownSel = m.o.id;
@@ -929,7 +985,7 @@ main > .hero { z-index: 3; }
     if (step === 2) {
       const near = ranked.slice(0, 4), k = S.mine.size, note = unsure(me);
       $("kc-chips-sub").textContent = `Det här efterfrågas oftast i annonserna för ${me.label}. Markera det du kan, och lägg till annat du har.${note ? " " + note : ""}`;
-      $("kc-near").innerHTML = near.length ? near.map(x => `<li><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></li>`).join("") : `<li class="none">Inga yrken ligger nära än. Markera fler kompetenser.</li>`;
+      $("kc-near").innerHTML = near.length ? near.map(x => `<li><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}${x.need.length ? " · kräver behörighet" : ""}</span><span class="m">${pct(x.score)} %</span></li>`).join("") : `<li class="none">Inga yrken ligger nära än. Markera fler kompetenser.</li>`;
       $("kc-count").textContent = `${k} ${k === 1 ? "kompetens markerad" : "kompetenser markerade"}. Kartan visar upp till åtta yrken och vägen till vart och ett.`;
     }
     if (step !== 3) return;
@@ -941,7 +997,7 @@ main > .hero { z-index: 3; }
   $("kc-lan").onchange = e => { S.lan = e.target.value; render(); };
 
   $("kc-chips").onclick = e => { const b = e.target.closest("[data-skill]"); if (b) toggle(b.dataset.skill); };
-  $("kc-card").onclick = e => { const b = e.target.closest("[data-add]"); if (b) { b.dataset.add.split(",").forEach(id => S.mine.add(id)); render(); } };
+  $("kc-card").onclick = e => { const j = e.target.closest("[data-jobs]"); if (j) { loadJobs(j.dataset.jobs); return; } const b = e.target.closest("[data-add]"); if (b) { b.dataset.add.split(",").forEach(id => S.mine.add(id)); render(); } };
   $("kc-list").onclick = e => { const b = e.target.closest("[data-occ]"); if (b) { S.sel = b.dataset.occ; render(); } };
   const map = $("kc-map");
   map.addEventListener("click", e => { const c = e.target.closest("[data-occ]"); if (c) { S.sel = c.dataset.occ; S.hover = null; render(); return; } const s = e.target.closest("[data-skill]"); if (s) toggle(s.dataset.skill); });

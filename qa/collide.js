@@ -17,7 +17,7 @@ const measure=()=>p.evaluate(()=>{const svg=document.getElementById('kc-map'),R=
  return out;});
 let total=0,states=0;const bad={};
 for(const lab of labels){
- await p.click('#kc-occ');await p.fill('#kc-occ',lab);await p.waitForTimeout(220);
+ await p.click('#kc-occ');await p.fill('#kc-occ',lab);await p.waitForTimeout(450);
  const opts=await p.$$eval('#kc-occ-list .kc-find__opt .t',e=>e.map(x=>x.textContent.replace(/\u200b/g,'')));const idx=opts.indexOf(lab);
  if(idx<0){bad['finder:'+lab]=['not found'];continue}
  for(let i=0;i<idx;i++)await p.keyboard.press('ArrowDown');await p.keyboard.press('Enter');await p.waitForTimeout(60);

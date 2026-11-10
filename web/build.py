@@ -27,7 +27,9 @@ def pack(d):
     gi = {g["id"]: i for i, g in enumerate(d["groups"])}
     oi = {o["id"]: i for i, o in enumerate(d["occupations"])}
     prof = lambda lst: lst[:EMBED_TOP]
-    used = sorted({x["skillId"] for l in list(d["groupSkills"].values()) + list(d["occSkills"].values()) for x in prof(l)})
+    reg = {k: [s for s in v if s in {x["id"] for x in d["skills"]}] for k, v in (d.get("regulated") or {}).items() if k in oi}
+    used = sorted({x["skillId"] for l in list(d["groupSkills"].values()) + list(d["occSkills"].values()) for x in prof(l)}
+                  | {s for v in reg.values() for s in v})
     by_id = {s["id"]: s for s in d["skills"]}
     si = {sid: i for i, sid in enumerate(used)}
     heads = sorted({by_id[sid].get("headline") or "" for sid in used})
@@ -51,6 +53,8 @@ def pack(d):
         "os": {oi[k]: flat(v) for k, v in d["occSkills"].items() if v},
         "b": {ssyk: {lan: [code(x.get("jobbmojligheter")), code(x.get("prognos"))] for lan, x in v.items()} for ssyk, v in d["barometer"].items()},
         "bv": bv,
+        "r": {oi[k]: [si[s] for s in v] for k, v in reg.items() if v},
+        "t": {oi[k]: [oi[x] for x in v if x in oi] for k, v in (d.get("transitions") or {}).items() if k in oi},
     }
 
 

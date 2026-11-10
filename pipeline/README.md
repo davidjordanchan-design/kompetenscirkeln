@@ -9,7 +9,7 @@ python3 web/build.py             # bygger web/index.html och web/artifact.html
 
 | Fil | Roll |
 |---|---|
-| `hamta.py` | Hämtar taxonomi, annonser och Yrkesbarometern. Avbryter utan att skriva något om hämtningen ser trasig ut. Ett enda yrkesområde: `FIELD_ID=<id>`. Inställningar i `CFG`. |
+| `hamta.py` | Hämtar taxonomi, annonser, Yrkesbarometern samt Arbetsförmedlingens datamängder Kompetensväljaren (reglerade behörigheter) och Närliggande yrken (faktiska yrkesövergångar). Avbryter utan att skriva något om hämtningen ser trasig ut. Ett enda yrkesområde: `FIELD_ID=<id>`. Inställningar i `CFG`. |
 | `kompetens.py` | Hela matchningen och bygget av datafilen (`build_dataset`). Fältmappningen mot Yrkesbarometern finns i `barometer_from_rows`. |
 | `tillagg.json` | Allt som är handgranskat: kompetenser som saknas i taxonomin (`tillagg`), synonymer till befintliga (`synonymer`), kompetensnamn som inte ska matchas i text (`stopp`) och standardfraser vars meningar inte räknas (`standardfraser`). |
 | `recompute.py` | Räknar om `data/dataset.json` ur sparad rådata utan nät (`python3 pipeline/recompute.py data/raw/radata-alla.json.gz`). Används när matchningen eller `tillagg.json` ändrats. |

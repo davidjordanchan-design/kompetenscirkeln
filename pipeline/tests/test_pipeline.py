@@ -49,6 +49,18 @@ class Matchning(unittest.TestCase):
                    [{"id": "z", "label": "Windows Azure"}], extras=extras)
         self.assertEqual(got, {"Kubernetes": 0.6667, "Azure": 0.3333, "React": 0.3333})
 
+    def test_reglerade_och_overgangar(self):
+        raw = {"field": None, "fetched": "2026-01-01T00:00:00+00:00", "groups": [{"id": "g", "label": "G", "ssyk": "1"}],
+               "occupations": [{"id": "o", "label": "O", "groupId": "g"}, {"id": "p", "label": "P", "groupId": "g"}],
+               "skillsByGroup": {"g": [{"id": "a", "label": "Omvårdnad"}]}, "barometerRows": [],
+               "ads": [{"id": 1, "groupId": "g", "occupationId": "o", "text": "Omvårdnad", "skillIds": []}],
+               "regulated": {"o": [{"id": "leg", "label": "Legitimation som sjuksköterska"}], "finns-inte": [{"id": "x", "label": "X"}]},
+               "transitions": {"o": ["p", "o", "finns-inte"], "finns-inte": ["o"]}}
+        ds = k.build_dataset(raw, NONE)
+        self.assertEqual(ds["regulated"], {"o": ["leg"]})          # okända yrken faller bort
+        self.assertEqual(ds["transitions"], {"o": ["p"]})           # bara kända yrken, inte yrket självt
+        self.assertIn("Legitimation som sjuksköterska", {s["label"] for s in ds["skills"]})  # finns med fast ingen annons nämner den
+
     def test_tillaggsfilen_ar_giltig(self):
         x = k.load_extras()
         self.assertTrue(x["tillagg"])
