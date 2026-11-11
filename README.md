@@ -1,8 +1,9 @@
 # Kompetenscirkeln
 
-Kompetenskarta för IT-yrken, byggd på Arbetsförmedlingens öppna data. Du väljer ditt yrke och markerar vad du kan. Kartan visar då:
+Kompetenskarta för alla yrkesområden, byggd på Arbetsförmedlingens öppna data. Du väljer ditt yrke och markerar vad du kan. Kartan visar då:
 
-- vilka närliggande yrken du når;
+- vilka närliggande yrken du når, i ordning och på avstånd efter hur mycket du redan kan;
+- vilka av dem som är vanliga yrkesbyten från ditt yrke;
 - vad som saknas;
 - hur jobbmöjligheterna ser ut i ditt län.
 

@@ -6,12 +6,12 @@ await p.goto('http://127.0.0.1:8811/index.html',{waitUntil:'networkidle'});
 await p.click('#kc-occ');await p.fill('#kc-occ','Backend-utvecklare');await p.waitForTimeout(300);await p.keyboard.press('Enter');await p.click('#kc-go');await p.waitForTimeout(300);
 const STEP=+process.argv[3]||1;const labels=(await p.evaluate(()=>{const c=JSON.parse(document.getElementById('kc-data').textContent);return c.o.filter((o,i)=>c.os[i]||c.gs[o[2]]).map(o=>o[1])})).filter((_,i)=>i%STEP===0);
 const measure=()=>p.evaluate(()=>{const svg=document.getElementById('kc-map'),R=e=>e.getBoundingClientRect(),S=svg.getBoundingClientRect();
- const items=[];const vis=e=>{const cs=getComputedStyle(e);return cs.display!=='none'&&+cs.opacity>0.05&&!e.closest('.out')};
- svg.querySelectorAll('.occ:not(.out)').forEach(g=>{const id=g.dataset.occ;items.push({k:'dot',id,r:R(g.querySelector('.dot'))});const n=g.querySelector('.name');if(vis(n))items.push({k:'name',id,t:n.textContent,r:R(n)});const s=g.querySelector('.sub');if(+getComputedStyle(s).opacity>0.5&&getComputedStyle(s).display!=='none'&&R(s).width>0)items.push({k:'sub',id,t:s.textContent,r:R(s)});});
- svg.querySelectorAll('.sk:not(.out)').forEach(g=>{if(vis(g))items.push({k:'pill',id:g.dataset.skill,t:g.textContent,r:R(g.querySelector('rect'))})});
+ const items=[];const vis=e=>{const cs=getComputedStyle(e);return e.getClientRects().length>0&&cs.display!=='none'&&+cs.opacity>0.05&&!e.closest('.out')};
+ svg.querySelectorAll('.occ:not(.out)').forEach(g=>{const id=g.dataset.occ;items.push({k:'dot',id,r:R(g.querySelector('.track'))});const n=g.querySelector('.name');if(vis(n))items.push({k:'name',id,t:n.textContent,r:R(n)});const s=g.querySelector('.sub');if(+getComputedStyle(s).opacity>0.5&&s.getClientRects().length>0&&R(s).width>0)items.push({k:'sub',id,t:s.textContent,r:R(s)});});
+ svg.querySelectorAll('.ring-l').forEach((t,i)=>{if(getComputedStyle(t).display!=='none'&&+getComputedStyle(t).opacity>0.5&&+t.parentNode.getAttribute('opacity')>0.5)items.push({k:'ring',id:'ring'+i,t:t.textContent,r:R(t)})});
  items.push({k:'me',id:'me',r:R(svg.querySelector('.me-dot'))});const mn=svg.querySelector('.me-name');if(vis(mn))items.push({k:'mename',id:'me',t:mn.textContent,r:R(mn)});
  const hit=(a,b)=>a.left<b.right-1&&b.left<a.right-1&&a.top<b.bottom-1&&b.top<a.bottom-1;const out=[];
- for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){const A=items[i],B=items[j];if(A.id===B.id)continue;if(hit(A.r,B.r))out.push(`${A.k}:${A.t||A.id} × ${B.k}:${B.t||B.id}`);}
+ for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){const A=items[i],B=items[j];if(A.id===B.id)continue;if(A.k==='dot'&&B.k==='dot'&&Math.hypot(A.r.left+A.r.width/2-B.r.left-B.r.width/2,A.r.top+A.r.height/2-B.r.top-B.r.height/2)>=(A.r.width+B.r.width)/2-1)continue;if(hit(A.r,B.r))out.push(`${A.k}:${A.t||A.id} × ${B.k}:${B.t||B.id}`);}
  const col=document.querySelector('.kc__mapcol').getBoundingClientRect();
  items.filter(x=>x.k==='name'||x.k==='sub').forEach(x=>{if(x.r.left<col.left-1||x.r.right>col.right+1)out.push(`clipped ${x.k}:${x.t}`)});
  return out;});
@@ -25,5 +25,5 @@ for(const lab of labels){
  for(let k=0;k<Math.min(n,8);k++){await p.locator('#kc-map .occ:not(.out)').nth(k).click({force:true});await p.mouse.move(5,5);await p.waitForTimeout(40);
   const o=await measure();states++;if(o.length){total+=o.length;bad[lab+' #'+k]=o;}}
 }
-console.log('states',states,'collisions',total);const agg={};for(const v of Object.values(bad))for(const x of v){const t=x.startsWith('clipped')?'clipped':x.replace(/:[^×]*/g,'').trim();agg[t]=(agg[t]||0)+1;}console.log(agg);const nc=Object.entries(bad);for(const [k,v] of nc.slice(0,20))console.log(k,'->',v.slice(0,3).join(' ; '));
+console.log('states',states,'collisions',total);const agg={};for(const v of Object.values(bad))for(const x of v){const t=x.startsWith('clipped')?'clipped':x.replace(/:[^×]*/g,'').trim();agg[t]=(agg[t]||0)+1;}console.log(agg);const nc=Object.entries(bad);const seen=new Set();for(const [k,v] of nc){const who=k.replace(/ #\d+$/,'');if(seen.has(who)||seen.size>=+(process.argv[4]||12))continue;seen.add(who);console.log(k,'->',v.slice(0,3).join(' ; '));}
 console.log('ERR',errs);await b.close();})();

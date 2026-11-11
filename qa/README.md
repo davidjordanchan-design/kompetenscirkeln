@@ -4,12 +4,14 @@ Alla skript utom mock-servern förutsätter att sidan serveras på port 8811 fr�
 
 ```bash
 cd web && python3 -m http.server 8811 &
-node ../qa/collide.js 1440 6  # vart 6:e yrke; även 1024 och 390. Förväntat: "collisions 0". Utan steg körs alla yrken
+node ../qa/collide.js 1440 6  # vart 6:e yrke; även 1200, 1024, 800 och 390. Förväntat: "collisions 0". Utan steg körs alla yrken (lång tid)
+node ../qa/anim.js            # animationerna och sökmenyerna i kartläget
 ```
 
 | Skript | Vad det kontrollerar |
 |---|---|
-| `collide.js <bredd>` | Varje yrke som eget yrke × 8 fokuslägen. Kontrollerar att etiketter, prickar och kompetenser inte överlappar och inte klipps av SVG-kanten |
+| `collide.js <bredd> [steg] [antal]` | Varje yrke som eget yrke × 8 fokuslägen. Kontrollerar att yrkesnamn, prickar och ringarnas procenttal inte överlappar och att namn inte klipps av kartans kant. `antal` är hur många yrken med fynd som skrivs ut |
+| `anim.js [bredd]` | Följer kartan bildruta för bildruta när man visar den, väljer yrke, simulerar lärande, bockar av en kompetens, klickar snabbt och byter yrke. Förväntat: `blinks 0`, `stillMoving false`, `maxJump` under cirka 30 px. Kontrollerar också att sökmenyerna i kartläget går att klicka |
 | `popcheck.js` | Sökförslagens layout (namn mot annonsantal) på 1440, 1024 och 390 |
 | `t3.js` | Sökrutorna: stavfel ("suport", "kubernets", "pyton", "javscript" med flera), tangentbord, val. Sparar skärmdumpar i `shots/` |
 | `t2.js` | Skärmdumpar av hero och karta före och efter ett val, i `shots/` |
@@ -18,3 +20,5 @@ node ../qa/collide.js 1440 6  # vart 6:e yrke; även 1024 och 390. Förväntat: 
 
 Playwright kräver `npm i playwright` och `npx playwright install chromium` om det inte redan finns.
 Skripten som sparar skärmdumpar skriver till `shots/` i den katalog du står i. Skapa den först (`mkdir -p shots`).
+
+`finder: not found` i `collide.js` är ett tidsfel i skriptet (sökförslagen hann inte ritas), inte ett fel på sidan.

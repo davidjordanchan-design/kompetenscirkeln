@@ -64,64 +64,67 @@
 .hw-map svg { display: block; width: 100%; height: auto; }
 @media (max-width: 639px) { .d-win__body { grid-template-columns: 1fr; } .hw-map { display: none; } .d-win__bar .sp ~ span { display: none; } }
 
-/* the map, drawn by the page's script: soft zones, one focused job at a time, everything moves into place */
+/* the map, drawn by the page's script: you in the middle, the jobs in order clockwise, nearer the middle the more you
+   already have. One loop in the script moves everything, so nothing here animates position */
 .kc-colours { --kc-have: #2f7a4a; --kc-have-t: #e4f1e7; --kc-miss: #b45a32; --kc-miss-t: #fbefe8;
   --kc-high: #dcefe0; --kc-high-s: #a9d1b2; --kc-mid: #f7edd4; --kc-mid-s: #e2cc93; --kc-low: #f7e2dc; --kc-low-s: #e2ae9f; --kc-unk: #efefed; --kc-unk-s: #cfcfcb;
   --kc-ink: #1b1d1c; --kc-soft: #6b706c; --kc-ease: cubic-bezier(.22, .8, .24, 1); }
-.kc-map { overflow: visible; }
+.kc-map { overflow: visible; --fs: 1; }
+.hw-map { overflow: hidden; }
 .kc-map text { font-family: var(--font-text); }
-.kc-map .z1 { fill: #2f7a4a; fill-opacity: .07; }
-.kc-map .z2 { fill: #2f7a4a; fill-opacity: .045; }
-.kc-map .z3 { fill: #2f7a4a; fill-opacity: .025; }
-.kc-map .zline { fill: none; stroke: #2f7a4a; stroke-opacity: .12; stroke-dasharray: 2 6; }
+.kc-map .ring { fill: none; stroke: #2f7a4a; stroke-opacity: .26; stroke-dasharray: 2 6; }
+.kc-map .ring-l { fill: #5a7262; font-size: calc(13px * var(--fs)); font-variant-numeric: tabular-nums; transition: opacity .3s ease; }
+.kc-map .ring-l.hide { opacity: 0; }
+.kc-map :is(.me-name, .name, .sub, .ring-l, .msg) { paint-order: stroke; stroke: #f6faf7; stroke-width: 5px; stroke-linejoin: round; }
 .kc-map .me-dot { fill: var(--kc-ink); }
 .kc-map .me-du { fill: #fff; font-size: 17px; font-weight: 500; }
-.kc-map .me-name { fill: var(--kc-ink); font-size: 17px; font-weight: 500; }
-.kc-map :is(.me-name, .name, .sub) { paint-order: stroke; stroke: #f3f8f4; stroke-width: 5px; stroke-linejoin: round; }
-.kc-map .occ { transition: transform .7s var(--kc-ease), opacity .45s ease; }
-.kc-map .sk { transition: transform .6s var(--kc-ease), opacity .3s ease; }
-.kc-map .occ.out, .kc-map .sk.out { opacity: 0; }
-.kc-map .occ .dot { stroke-width: 1.5; transition: r .3s var(--kc-ease), stroke-width .3s ease, fill .4s ease; }
+.kc-map :is(.me-name, .msg) { fill: var(--kc-ink); font-size: calc(17px * var(--fs)); font-weight: 500; transition: opacity .3s ease; }
+.kc-map .me-name.hide { opacity: 0; }
+/* lines from you to each job: a hairline, a worn path with people moving along it where the move is common, and the course to the chosen job */
+.kc-map .spoke { stroke: var(--kc-ink); stroke-opacity: .1; stroke-width: 1.25; }
+.kc-map :is(.flow, .flow-dots) { stroke: var(--kc-ink); stroke-opacity: 0; stroke-linecap: round; transition: stroke-opacity .4s ease; }
+.kc-map .flow { stroke-width: 13; }
+.kc-map .flow-dots { stroke-width: 4.5; stroke-dasharray: 0 17; animation: kc-flow 1.5s linear infinite; }
+.kc-map .sp.is-trans .flow { stroke-opacity: .06; }
+.kc-map .sp.is-trans .flow-dots { stroke-opacity: .42; }
+@keyframes kc-flow { to { stroke-dashoffset: -17; } }
+.kc-map .course { stroke: var(--kc-ink); stroke-width: 2.25; stroke-linecap: round; }
+.kc-map .stone { fill: #fff; stroke: var(--kc-miss); stroke-width: 1.75; stroke-dasharray: 3 2.2; }
+.kc-map .occ.out { pointer-events: none; }
+.kc-map .occ :is(.core, .name) { transition: opacity .25s ease; }
+.kc-map .occ .dot { stroke-width: 1.5; transition: fill .4s ease, stroke .4s ease; }
 .kc-map .occ.o-high .dot { fill: var(--kc-high); stroke: var(--kc-high-s); }
 .kc-map .occ.o-mid .dot { fill: var(--kc-mid); stroke: var(--kc-mid-s); }
 .kc-map .occ.o-low .dot { fill: var(--kc-low); stroke: var(--kc-low-s); }
 .kc-map .occ.o-unknown .dot { fill: var(--kc-unk); stroke: var(--kc-unk-s); }
+.kc-map .occ .track { fill: none; stroke: var(--kc-ink); stroke-opacity: .1; stroke-width: 4; }
+.kc-map .occ .arc { fill: none; stroke: var(--kc-ink); stroke-width: 4; stroke-linecap: round; }
+.kc-map .occ .halo { fill: var(--kc-ink); fill-opacity: 0; transition: fill-opacity .3s ease; }
+.kc-map .occ.is-hover .halo { fill-opacity: .05; }
+.kc-map .occ.is-sel .halo { fill-opacity: .09; }
 .kc-map .occ .pct { fill: var(--kc-ink); font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.kc-map .occ .name { fill: var(--kc-ink); font-size: 16px; font-weight: 400; transition: opacity .3s ease; }
-.kc-map .occ .sub { fill: var(--kc-soft); font-size: 14px; opacity: 0; transition: opacity .3s ease; }
-.kc-map .occ .halo { fill: none; stroke: var(--kc-ink); stroke-width: 2; opacity: 0; transition: opacity .3s ease; }
-.kc-map .occ .tr { fill: var(--kc-ink); stroke: #f3f8f4; stroke-width: 2.5; opacity: 0; transition: opacity .3s ease; }
-.kc-map .occ.is-trans .tr { opacity: 1; }
-.kc-map .occ.is-sel .halo, .kc-map .occ.is-hover .halo { opacity: 1; }
-.kc-map .occ.is-hover:not(.is-sel) .halo { stroke-opacity: .35; }
+.kc-map .occ .name { fill: var(--kc-ink); font-size: calc(16px * var(--fs)); font-weight: 400; }
+.kc-map .occ .sub { fill: var(--kc-soft); font-size: calc(14px * var(--fs)); opacity: 0; transition: opacity .3s ease; }
 .kc-map .occ.is-sel .name, .kc-map .occ.is-hover .name { font-weight: 500; }
 .kc-map .occ.is-sel .sub, .kc-map .occ.is-hover .sub { opacity: 1; }
-.kc-map.is-hovering .occ:not(.is-hover):not(.is-sel) { opacity: .55; }
-.kc-map .sk rect { stroke-width: 1.25; transition: fill .3s ease, stroke .3s ease; }
-.kc-map .sk text { font-size: 15px; font-weight: 500; }
-.kc-map .sk.have rect { fill: var(--kc-have-t); stroke: #b9d9c1; } .kc-map .sk.have text { fill: #1f5333; }
-.kc-map .sk.miss rect { fill: #fff; stroke: #e7b9a3; stroke-dasharray: 4 3; } .kc-map .sk.miss text { fill: var(--kc-miss); }
-.kc-map .ln { fill: none; stroke-linecap: round; animation: kc-fade .5s ease both; }
-.kc-map .ln.have { stroke: var(--kc-have); stroke-opacity: .35; stroke-width: 1.5; }
-.kc-map .ln.miss { stroke: var(--kc-miss); stroke-opacity: .45; stroke-width: 1.5; stroke-dasharray: 4 5; }
-.kc-map .ln.course { stroke: var(--kc-ink); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: kc-draw .7s var(--kc-ease) both; }
-.kc-map .ln.gone { animation: none; opacity: 0; transition: opacity .15s ease; }
-@keyframes kc-fade { from { opacity: 0; } }
-@keyframes kc-draw { to { stroke-dashoffset: 0; } }
-.kc-map [data-occ], .kc-map [data-skill] { cursor: pointer; outline: none; }
-.kc-map [data-occ]:focus-visible .halo { opacity: 1; stroke: var(--action); }
-.kc-map [data-skill]:focus-visible rect { stroke: var(--action); stroke-width: 2.5; }
-.kc-map [data-skill]:hover rect { stroke-width: 2; }
-.kc-map.static .occ, .kc-map.static .sk, .kc-map.static .ln { transition: none; animation: none; }
-.kc-map.static .ln.course { stroke-dashoffset: 0; }
-@media (prefers-reduced-motion: reduce) { .kc-map .occ, .kc-map .sk, .kc-map .ln, .kc-map .dot { transition: none !important; animation: none !important; } .kc-map .ln.course { stroke-dashoffset: 0; } }
+.kc-map .occ .lock { opacity: 0; transition: opacity .3s ease; }
+.kc-map .occ.is-need .lock { opacity: 1; }
+.kc-map .lock circle { fill: #fff; stroke: #d9c48c; stroke-width: 1.25; }
+.kc-map .lock rect { fill: var(--kc-ink); }
+.kc-map .lock path { fill: none; stroke: var(--kc-ink); stroke-width: 1.5; }
+.kc-map.is-hovering .occ:not(.is-hover):not(.is-sel) :is(.core, .name) { opacity: .5; }
+.kc-map [data-occ] { cursor: pointer; outline: none; }
+.kc-map [data-occ]:focus-visible .halo { fill-opacity: .05; stroke: var(--action); stroke-width: 2.5; }
+.kc-map.static .flow-dots { animation: none; }
+@media (prefers-reduced-motion: reduce) { .kc-map * { transition: none !important; animation: none !important; } }
 
 /* the app frame: the whole tool in one window across the wrap */
 .app.ui { --fx-muted: #555555; display: grid; grid-template-rows: auto auto minmax(0, 1fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); overflow: visible; scroll-margin-top: calc(var(--nav, 72px) + 16px); }
 .kc__bar { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-bottom: 1px solid var(--u-line); font-size: 13px; color: var(--u-muted); }
 .kc__bar b { color: var(--u-ink); font-weight: 500; } .kc__bar .sp { flex: 1; }
 .kc__bar select, .kc__tools select, .kc__tools input { font: 400 14px var(--font-text); color: var(--u-ink); height: 36px; border: 1px solid var(--u-border); border-radius: 8px; background: #fff; padding: 0 10px; }
-.kc__tools { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px 24px; padding: 16px; border-bottom: 1px solid var(--u-line); }
+.kc__tools { position: relative; z-index: 3; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px 24px; padding: 16px; border-bottom: 1px solid var(--u-line); }
+.kc__field:focus-within { position: relative; z-index: 2; }
 .kc__field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; align-content: start; font-size: 13px; color: var(--u-muted); min-width: 0; }
 .kc__chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .kc__chip { transition: background .25s ease, border-color .25s ease; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 9px; border-radius: 15px; border: 1px solid var(--u-border); background: #fff; color: var(--u-ink); font: 400 14px var(--font-text); cursor: pointer; }
@@ -145,18 +148,21 @@
 .kc-find__opt mark { background: none; color: inherit; font-weight: 600; }
 .kc-find__opt[aria-selected="true"], .kc-find__opt:hover { background: #eef5f0; }
 @media (prefers-reduced-motion: reduce) { .kc-find__list { animation: none; } }
-.kc__body { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); min-height: 0; overflow: hidden; border-radius: 0 0 var(--u-r) var(--u-r); }
+.kc__body { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); min-height: 0; overflow: hidden; border-radius: 0 0 var(--u-r) var(--u-r); }
 .kc__mapcol { min-width: 0; display: grid; align-content: start; }
-.kc__mapcol svg { display: block; width: 100%; height: auto; }
+.kc__mapcol > svg { display: block; width: 100%; height: auto; }
 .kc__legend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 4px 20px 20px; font-size: 13px; color: var(--u-muted); }
 .kc__legend span { display: inline-flex; align-items: center; gap: 7px; }
 .kc__hint { margin: 0; padding: 18px 24px 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 62ch; }
 .kc__zone { width: 14px; height: 14px; border-radius: 50%; display: inline-block; background: #2f7a4a; }
 .kc__sw { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid; display: inline-block; flex: none; }
 .kc__sw.o-high { background: var(--kc-high); border-color: var(--kc-high-s); } .kc__sw.o-mid { background: var(--kc-mid); border-color: var(--kc-mid-s); } .kc__sw.o-low { background: var(--kc-low); border-color: var(--kc-low-s); } .kc__sw.o-unknown { background: var(--kc-unk); border-color: var(--kc-unk-s); }
-.kc__pill { width: 22px; height: 12px; border-radius: 6px; display: inline-block; border: 1.5px solid; }
-.kc__tr { width: 10px; height: 10px; margin: 2px; border-radius: 50%; background: var(--kc-ink); display: inline-block; flex: none; }
-.kc__outlook .kc__tr { margin-top: 5px; }
+.kc__ring { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid rgb(27 29 28 / .14); border-top-color: var(--kc-ink); border-right-color: var(--kc-ink); transform: rotate(45deg); display: inline-block; flex: none; }
+.kc__flow { width: 27px; height: 8px; border-radius: 4px; background: radial-gradient(circle, rgb(27 29 28 / .6) 2px, transparent 2.6px) 0 0 / 9px 8px, rgb(27 29 28 / .08); display: inline-block; flex: none; }
+.kc__stone { width: 11px; height: 11px; border-radius: 50%; border: 1.5px dashed var(--kc-miss); background: #fff; display: inline-block; flex: none; }
+.kc__lock { width: 14px; height: 14px; display: inline-block; flex: none; fill: var(--kc-ink); stroke: var(--kc-ink); }
+.kc__outlook .kc__flow { margin-top: 7px; }
+.kc__list .kc__flow, .kc__near .kc__flow { margin-right: 8px; vertical-align: 1px; }
 .kc__req { display: grid; gap: 4px; padding: 14px 16px; border: 1px solid #e2cc93; border-radius: 12px; background: #fdf8ea; font-size: 14px; line-height: 1.45; color: var(--u-ink); }
 .kc__req b { font-weight: 500; }
 .kc__req span { color: #5c5539; font-size: 13px; }
@@ -173,7 +179,7 @@
 .kc__more { font-size: 14px; color: var(--u-ink); text-underline-offset: 3px; }
 .kc__side { border-left: 1px solid var(--u-line); padding: 24px; display: grid; gap: 20px; align-content: start; min-width: 0; }
 .kc__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; }
-.kc__head .kc__title { margin: 0; font: 500 20px/1.25 var(--font-display); letter-spacing: -0.01em; overflow-wrap: anywhere; color: var(--u-ink); }
+.kc__head .kc__title { margin: 0; font: 500 20px/1.25 var(--font-display); letter-spacing: -0.01em; overflow-wrap: anywhere; hyphens: auto; color: var(--u-ink); }
 .kc__head p { margin: 4px 0 0; font-size: 13px; color: var(--u-muted); }
 .kc__score { font: 500 32px/1 var(--font-display); text-align: right; font-variant-numeric: tabular-nums; color: var(--u-ink); }
 .kc__score small { display: block; font: 400 12px var(--font-text); color: var(--u-muted); margin-top: 4px; }
@@ -187,7 +193,7 @@
 @media (prefers-reduced-motion: reduce) { .kc__card-in { animation: none; } .kc__bar-i i { transition: none; } }
 .kc__bridge.ok { color: var(--kc-have); }
 .kc__btn { transition: transform .15s ease, background .2s ease; justify-self: start; height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--u-ink); color: #fff; font: 500 14px var(--font-text); cursor: pointer; }
-.kc__body.kc__reveal { animation: kc-card .5s var(--kc-ease) both; }
+.kc__body.kc__reveal { animation: kc-card .5s var(--kc-ease) backwards; }
 
 /* the tool in three steps: the same controls, laid out for the step you are on */
 main > #kartan { --h: 1; --hm: 1; height: auto; min-height: calc(var(--h) * 100svh); }
@@ -209,7 +215,7 @@ main > .hero { z-index: 3; }
 .app:not([data-step="1"]) .kc__s1, .app:not([data-step="2"]) .kc__s2, .app:not([data-step="3"]) .kc__s3, .app[data-step="1"] .kc__not1, .app[data-step="3"] .kc__s12 { display: none !important; }
 .kc__q { margin: 0; font: 500 26px/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--u-ink); }
 .kc__sub { margin: 0; font-size: 14px; line-height: 1.5; color: var(--u-muted); max-width: 58ch; }
-.kc__tools.kc__in > * { animation: kc-card .4s var(--kc-ease) both; }
+.kc__tools.kc__in > * { animation: kc-card .4s var(--kc-ease) backwards; }
 .kc__tools.kc__in > :nth-child(2) { animation-delay: 60ms; } .kc__tools.kc__in > :nth-child(n+3) { animation-delay: 110ms; }
 @media (prefers-reduced-motion: reduce) { .kc__tools.kc__in > * { animation: none; } }
 .app[data-step="1"] .kc__tools, .app[data-step="2"] .kc__tools { padding: 36px 40px 40px; gap: 28px 56px; min-height: 468px; align-content: start; border-bottom: 0; }
@@ -283,7 +289,7 @@ main > .hero { z-index: 3; }
 .kc__list button[aria-current="true"] { background: var(--u-fill-2); }
 .kc__list .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kc__list .m { color: var(--u-muted); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-@media (max-width: 1279px) { .kc__list { grid-template-columns: minmax(0, 1fr); } .kc__list li:nth-child(n+8) { display: none; } }
+@media (max-width: 1279px) { .kc__list { grid-template-columns: minmax(0, 1fr); } .kc__list li:nth-child(n+9) { display: none; } }
 @media (max-width: 1279px) { .kc__bars li { grid-template-columns: minmax(0, 1fr) 52px 44px 24px; gap: 6px; } .kc__bars.have li { grid-template-columns: minmax(0, 1fr) 52px 44px; } }
 @media (max-width: 1023px) {
   .kc__chips .kc__chip:nth-child(n+11):not([aria-pressed="true"]) { display: none; }
@@ -297,16 +303,13 @@ main > .hero { z-index: 3; }
   .kc__chips .kc__chip:nth-child(n+9):not([aria-pressed="true"]) { display: none; }
   .kc__legend { display: none; }
   .kc__list { display: grid; grid-template-columns: minmax(0, 1fr); padding: 8px 12px 16px; }
-  .kc__list li:nth-child(n+5) { display: none; }
+  .kc__list li:nth-child(n+9) { display: none; }
   .kc__bars.miss li:nth-child(n+5) { display: none; }
   .kc__bars.have li:nth-child(n+5) { display: none; }
   .kc__hint { display: none; }
-  .kc-map#kc-map :is(.name, .sub, .sk, .lines, .me-name) { display: none; }
-  .kc-map#kc-map .occ .dot { r: 46px; }
-  .kc-map#kc-map .occ .tr { cx: 34px; cy: -34px; r: 11px; stroke-width: 4; }
-  .kc-map#kc-map .occ .halo { r: 56px; stroke-width: 4; }
-  .kc-map#kc-map .occ .pct { font-size: 32px; }
-  .kc-map#kc-map .me-dot { r: 40px; } .kc-map#kc-map .me-du { font-size: 30px; }
+  .kc-map#kc-map :is(.lab, .me-name) { display: none; }
+  .kc-map#kc-map .ring-l { font-size: 22px; stroke-width: 9px; }
+  .kc-map#kc-map .msg { font-size: 26px; }
   .kc__hint { padding: 12px 16px 0; }
   .kc__bar .sp ~ * { display: none; }
 }
@@ -351,7 +354,7 @@ main > .hero { z-index: 3; }
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Backend-utvecklare</b></span><span class="sp"></span><span>Prognos för hela riket</span></div>
           <div class="d-win__body">
             <div class="hw-list" id="hw-list"></div>
-            <div class="hw-map"><svg class="kc-map" id="hw-map" viewBox="170 0 760 420"></svg></div>
+            <div class="hw-map"><svg class="kc-map" id="hw-map" viewBox="96 176 908 500"></svg></div>
           </div>
         </div>
       </div>
@@ -381,15 +384,16 @@ main > .hero { z-index: 3; }
         </div>
         <div class="kc__body" id="kc-body" hidden>
           <div class="kc__mapcol">
-            <p class="kc__hint">Du står i mitten. Ju närmare mitten ett yrke ligger, desto mer av det annonserna efterfrågar kan du redan. Klicka på ett yrke för att se vägen dit.</p>
-            <svg class="kc-map" id="kc-map" viewBox="0 0 1100 860" role="img" aria-label="Karta: du i mitten, närliggande yrken närmare mitten ju mer du redan kan, och kompetenserna för det valda yrket i inre ringen"></svg>
+            <p class="kc__hint">Du står i mitten. Yrkena ligger i ordning medurs, det närmaste uppe till höger, och närmare mitten ju mer du redan kan. Välj ett yrke för att se vad som återstår.</p>
+            <svg class="kc-map" id="kc-map" viewBox="0 0 1100 860" role="img" aria-label="Karta: du i mitten och närliggande yrken runt om, i ordning medurs och närmare mitten ju mer du redan kan"></svg>
             <div class="kc__legend">
-              <span><i class="kc__pill" style="background:var(--kc-have-t);border-color:#b9d9c1"></i>Du har</span>
-              <span><i class="kc__pill" style="background:#fff;border-color:#e7b9a3;border-style:dashed"></i>Saknas</span>
+              <span><i class="kc__ring"></i>Ringen visar matchning</span>
               <span><i class="kc__sw o-high"></i>Stora jobbmöjligheter</span>
               <span><i class="kc__sw o-mid"></i>Medelstora</span>
               <span><i class="kc__sw o-low"></i>Små</span>
-              <span><i class="kc__tr"></i>Vanlig övergång</span>
+              <span><i class="kc__flow"></i>Vanligt byte från ditt yrke</span>
+              <span><i class="kc__stone"></i>Kompetens kvar att lära</span>
+              <span><svg class="kc__lock" viewBox="-7 -7 14 14" aria-hidden="true"><rect x="-4" y="-1" width="8" height="6" rx="1.2" stroke="none"/><path d="M-2.4 -1v-1.6a2.4 2.4 0 0 1 4.8 0v1.6" fill="none" stroke-width="1.5"/></svg>Kräver behörighet</span>
             </div>
             <ol class="kc__list" id="kc-list"></ol>
           </div>
@@ -548,8 +552,8 @@ main > .hero { z-index: 3; }
       barometer: Object.fromEntries(Object.entries(c.b).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([l, x]) => [l, { jobbmojligheter: c.bv[x[0]], prognos: c.bv[x[1]] }]))])),
     };
   })(JSON.parse(document.getElementById("kc-data").textContent));
-  const CORE = 15, TARGET = 0.7, MIN_SCORE = 0.05, N_MAP = 8, MAX_SKILLS = 8, PRESELECT = 6;
-  const CX = 550, CY = 420, R0 = 250, R1 = 352, SRX = 178, SRY = 138, TAU = Math.PI * 2, NS = "http://www.w3.org/2000/svg";
+  const CORE = 15, TARGET = 0.7, MIN_SCORE = 0.05, N_MAP = 8, PRESELECT = 6;
+  const CX = 550, CY = 430, R_OUT = 372, RD = 36, LX = 46, ARC = Math.PI * 62, TAU = Math.PI * 2, A0 = -3 * Math.PI / 8, NS = "http://www.w3.org/2000/svg";
   const LAN = { "00": "hela riket", "01": "Stockholms län", "03": "Uppsala län", "04": "Södermanlands län", "05": "Östergötlands län", "06": "Jönköpings län", "07": "Kronobergs län", "08": "Kalmar län", "09": "Gotlands län", "10": "Blekinge län", "12": "Skåne län", "13": "Hallands län", "14": "Västra Götalands län", "17": "Värmlands län", "18": "Örebro län", "19": "Västmanlands län", "20": "Dalarnas län", "21": "Gävleborgs län", "22": "Västernorrlands län", "23": "Jämtlands län", "24": "Västerbottens län", "25": "Norrbottens län" };
   const groups = new Map(DS.groups.map(g => [g.id, g]));
   const skills = new Map(DS.skills.map(s => [s.id, s]));
@@ -603,182 +607,190 @@ main > .hero { z-index: 3; }
     return out.filter(m => DS.occSkills[m.o.id] || best.get(m.o.groupId) === m).sort((a, b) => b.key - a.key || (b.subst || 0) - (a.subst || 0));
   }
 
-  const ang = (i, n) => -Math.PI / 2 + (i * TAU) / n;
-  const adist = (a, b) => { const d = Math.abs(((a - b) % TAU + TAU) % TAU); return Math.min(d, TAU - d); };
-  const rOf = s => R0 + (1 - Math.min(1, s)) * (R1 - R0);
+  const near = (from, to) => from + ((((to - from) % TAU) + TAU + Math.PI) % TAU) - Math.PI;  // the same angle, reached the short way round
   // a long job name goes on two lines, broken after a slash, a space or a hyphen
-  const SUFFIX = /(utvecklare|arkitekt|tekniker|ingenjör|analytiker|administratör|förvaltare|specialist|ansvarig|designer|konsult|strateg|samordnare|testare|programmerare|ledare|chef|säljare)$/;
-  function splitName(label) {
-    if (label.length <= 18) return [label];
-    let i = [label.indexOf("/") + 1, label.lastIndexOf(" ", 18) + 1, label.lastIndexOf("-", 17) + 1].find(k => k > 3 && k <= 19);
-    if (!i) { const m = label.match(SUFFIX); if (m && m.index > 3) return [trunc(label.slice(0, m.index) + "-", 19), m[0]]; return [trunc(label, 19)]; }
-    return [label.slice(0, i).trim(), trunc(label.slice(i).trim(), 19)];
+  const SUFFIX = /(utvecklare|arkitekt|tekniker|ingenjör|analytiker|administratör|förvaltare|specialist|ansvarig|designer|konsult|strateg|samordnare|testare|programmerare|ledare|chef|säljare|sjuksköterska|sköterska|assistent|biträde|arbetare|handläggare|montör|operatör|förare|lärare|läkare|mekaniker|reparatör|inspektör|rådgivare|vårdare|terapeut|pedagog|kommunikatör|planerare|ekonom|sekreterare|elektriker|förmedlare|utredare|vägledare|maskinist|personal)$/;
+  function splitName(label, n = 19) {
+    if (label.length <= n - 1) return [label];
+    let i = [label.indexOf("/") + 1, label.lastIndexOf(" ", n - 1) + 1, label.lastIndexOf("-", n - 2) + 1].find(k => k > 3 && k <= n);
+    if (!i) { const m = label.match(SUFFIX); if (m && m.index > 3) return [trunc(label.slice(0, m.index) + "-", n), m[0]]; return [trunc(label, n)]; }
+    return [label.slice(0, i).trim(), trunc(label.slice(i).trim(), n)];
   }
+  // text and dots are drawn larger when the map is shown small, so a name is never under about 11 px on screen
+  const mapFs = svg => { const k = svg.clientWidth / 1100; return k ? Math.min(1.35, Math.max(1, Math.round((11.2 / (16 * k)) * 20) / 20)) : 1; };
   const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
-  const place = (g, x, y, s = 1) => { g.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${s})`; };
+  // the words under a job: how many skills are left. The stones on the course show the same number, and the card names them
+  const left = m => m.bridge.filter(b => !m.need.includes(b.skillId)).length;
+  const subOf = m => m.need.length ? "kräver behörighet" : left(m) ? `${left(m)} ${left(m) > 1 ? "kompetenser" : "kompetens"} kvar` : "redo att söka";
 
-  // the map: zones, the person in the middle, eight jobs placed by how much of them you already have,
-  // and the skills of the job in focus, drawn as one connected picture that moves into its new place
+  // the map. You are in the middle. The jobs sit in ranked order clockwise from one o'clock, and nearer the middle the more
+  // of the job you already have: the scale zooms in on the jobs shown, and the rings carry the percentages. A line runs
+  // to every job; where Arbetsförmedlingen records a common move it is a worn path with people moving along it. The
+  // course to the chosen job carries one stone per skill left to learn. One loop moves everything, so a change glides.
   function Orbit(svg, live) {
     svg.innerHTML = "";
-    if (!live) svg.classList.add("static");
-    [[0, "z3"], [0.33, "z2"], [0.66, "z1"]].forEach(([s, c]) => mk("circle", { class: c, cx: CX, cy: CY, r: rOf(s) + 34 }, svg));
-    mk("circle", { class: "zline", cx: CX, cy: CY, r: rOf(0.66) + 34 }, svg);
-    mk("ellipse", { class: "zline", cx: CX, cy: CY, rx: SRX, ry: SRY }, svg);
-    const gLines = mk("g", { class: "lines" }, svg), gSk = mk("g", { class: "skills" }, svg), gOcc = mk("g", { class: "occs" }, svg);
-    const gMe = mk("g", { class: "me" }, svg);
-    mk("circle", { class: "me-dot", cx: CX, cy: CY, r: 30 }, gMe);
-    mk("text", { class: "me-du", x: CX, y: CY + 6, "text-anchor": "middle" }, gMe).textContent = "Du";
-    const meName = mk("text", { class: "me-name", x: CX, y: CY + 58, "text-anchor": "middle" }, gMe);
-    const occNodes = new Map(), skNodes = new Map(), pos = new Map();
-    let first = true;
+    const still = !live || reduced, small = live ? matchMedia("(max-width: 639px)") : { matches: false };
+    if (still) svg.classList.add("static");
+    const glow = mk("radialGradient", { id: svg.id + "-glow" }, mk("defs", {}, svg));
+    mk("stop", { offset: 0, "stop-color": "#2f7a4a", "stop-opacity": 0.15 }, glow); mk("stop", { offset: 1, "stop-color": "#2f7a4a", "stop-opacity": 0 }, glow);
+    mk("circle", { cx: CX, cy: CY, r: 410, fill: `url(#${svg.id}-glow)` }, svg);
+    const gRings = mk("g", { class: "rings" }, svg), gLines = mk("g", { class: "lines" }, svg), course = mk("line", { class: "course", opacity: 0 }, svg);
+    const gStones = mk("g", { class: "stones" }, svg), gOcc = mk("g", { class: "occs" }, svg);
+    const gMe = mk("g", { class: "me", transform: `translate(${CX} ${CY})` }, svg), meCore = mk("g", {}, gMe);
+    mk("circle", { class: "me-dot", r: 30 }, meCore);
+    mk("text", { class: "me-du", y: 6, "text-anchor": "middle" }, meCore).textContent = "Du";
+    const meName = mk("text", { class: "me-name", y: 62, "text-anchor": "middle" }, gMe);
+    const msg = mk("text", { class: "msg", x: CX, y: CY + 116, "text-anchor": "middle" }, svg);
+    const nodes = new Map(), rings = new Map(), anims = new Set(), needle = { cur: { a: A0, r: 0, o: 0 } };
+    let stones = [], raf = 0, lastMe = null, lastSel = null, sc = null, axis = Math.PI / 2, big = 1;
 
-    function occNode(id) {
-      let g = occNodes.get(id);
-      if (g) { g.classList.remove("out"); return g; }
-      g = mk("g", { class: "occ", "data-occ": id }, gOcc);
-      if (live) { g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); }
-      mk("circle", { class: "halo", r: 33 }, g);
-      mk("circle", { class: "dot", r: 26 }, g);
-      mk("text", { class: "pct", y: 5, "text-anchor": "middle" }, g);
-      mk("text", { class: "name" }, g);
-      mk("text", { class: "sub" }, g);
-      mk("circle", { class: "tr", cx: 19, cy: -19, r: 7 }, g);
-      if (live && !reduced) { g.style.transition = "none"; place(g, CX, CY, 0.4); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = ""; }
-      occNodes.set(id, g);
-      return g;
+    // every moving thing has `cur`, the numbers it is drawn from. go() glides them to new values from wherever they are
+    function go(it, to, dur, delay, done) {
+      it.done = done;
+      if (still) { Object.assign(it.cur, to); anims.delete(it); if (done) done(); return; }
+      it.from = { ...it.cur }; it.to = to; it.t0 = performance.now() + (delay || 0); it.dur = dur;
+      anims.add(it); if (!raf) raf = requestAnimationFrame(tick);
     }
-    function skNode(id) {
-      let g = skNodes.get(id);
-      if (g) { g.classList.remove("out"); return g; }
-      g = mk("g", { class: "sk", "data-skill": id }, gSk);
-      if (live) { g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); }
-      mk("rect", { height: 30, y: -15, rx: 15 }, g);
-      mk("text", { y: 5.5, "text-anchor": "middle" }, g);
-      g._new = true;
-      skNodes.set(id, g);
-      return g;
-    }
-    function retire(map, keep) {
-      for (const [id, g] of map) if (!keep.has(id) && !g.classList.contains("out")) {
-        g.classList.add("out");
-        setTimeout(() => { if (g.classList.contains("out")) { g.remove(); map.delete(id); } }, live && !reduced ? 450 : 0);
+    function tick(t) {
+      raf = 0;
+      for (const it of [...anims]) {
+        const k = Math.min(1, Math.max(0, (t - it.t0) / it.dur)), e = 1 - Math.pow(1 - Math.pow(k, 1.5), 3);  // a soft start and a long, settling end
+        for (const p in it.to) it.cur[p] = it.from[p] + (it.to[p] - it.from[p]) * e;
+        if (k === 1) { anims.delete(it); if (it.done) it.done(); }
       }
+      paint();
+      if (anims.size) raf = requestAnimationFrame(tick);
+    }
+    const seg = (l, a, r0, r1) => { const c = Math.cos(a), s = Math.sin(a);
+      l.setAttribute("x1", (CX + r0 * c).toFixed(1)); l.setAttribute("y1", (CY + r0 * s).toFixed(1)); l.setAttribute("x2", (CX + r1 * c).toFixed(1)); l.setAttribute("y2", (CY + r1 * s).toFixed(1)); };
+    function paint() {
+      const r0 = RD * big;
+      for (const nd of nodes.values()) {
+        const c = nd.cur;
+        nd.g.setAttribute("transform", `translate(${(CX + c.r * Math.cos(c.a)).toFixed(1)} ${(CY + c.r * Math.sin(c.a)).toFixed(1)})`);
+        nd.g.setAttribute("opacity", c.o.toFixed(3));
+        nd.core.setAttribute("transform", `scale(${c.s.toFixed(3)})`);
+        nd.arc.setAttribute("stroke-dasharray", `${(c.v * ARC).toFixed(1)} ${ARC}`); nd.arc.setAttribute("opacity", c.v > 0.004 ? 1 : 0);
+        const p = Math.round(c.v * 100); if (p !== nd.p) nd.pct.textContent = nd.p = p;
+        nd.lab.setAttribute("transform", `translate(0 ${c.ly.toFixed(1)})`); nd.lab.setAttribute("opacity", nd.lb.cur.o.toFixed(3));
+        const r1 = c.r - 35 * c.s;
+        nd.sp.setAttribute("opacity", r1 > r0 + 2 ? c.o.toFixed(3) : 0);
+        if (r1 > r0) for (const l of nd.sp.children) seg(l, c.a, r0, r1);
+      }
+      const nc = needle.cur, n1 = nc.r - 41 * big, on = n1 > r0 + 4;
+      course.setAttribute("opacity", on ? nc.o.toFixed(3) : 0); if (on) seg(course, nc.a, r0, n1);
+      for (const s of stones) { const rr = r0 + s.cur.t * (n1 - r0);
+        s.el.setAttribute("cx", (CX + rr * Math.cos(nc.a)).toFixed(1)); s.el.setAttribute("cy", (CY + rr * Math.sin(nc.a)).toFixed(1)); s.el.setAttribute("opacity", on ? (s.cur.o * nc.o).toFixed(3) : 0); }
+      for (const rg of rings.values()) { const r = rg.cur.r;
+        rg.c.setAttribute("r", r.toFixed(1)); rg.g.setAttribute("opacity", rg.cur.o.toFixed(3));
+        rg.t.setAttribute("x", (CX + r * Math.cos(axis)).toFixed(1)); rg.t.setAttribute("y", (CY + r * Math.sin(axis) + 4.5).toFixed(1)); }
+    }
+    function node(id) {
+      const g = mk("g", { class: "occ", "data-occ": id, opacity: 0 }, gOcc);
+      if (live) { g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); }
+      const core = mk("g", { class: "core" }, g);
+      mk("circle", { class: "halo", r: 40 }, core); mk("circle", { class: "dot", r: 26 }, core); mk("circle", { class: "track", r: 31 }, core);
+      const arc = mk("circle", { class: "arc", r: 31, transform: "rotate(-90)" }, core), pct = mk("text", { class: "pct", y: 5.5, "text-anchor": "middle" }, core);
+      const lock = mk("g", { class: "lock", transform: "translate(25 -25)" }, core);
+      mk("circle", { r: 9.5 }, lock); mk("rect", { x: -4, y: -1, width: 8, height: 6, rx: 1.2 }, lock); mk("path", { d: "M-2.4 -1v-1.6a2.4 2.4 0 0 1 4.8 0v1.6" }, lock);
+      const lab = mk("g", { class: "lab" }, g), sp = mk("g", { class: "sp", opacity: 0 }, gLines);
+      mk("line", { class: "flow" }, sp); mk("line", { class: "flow-dots" }, sp); mk("line", { class: "spoke" }, sp);
+      const nd = { g, core, arc, pct, lab, sp, name: mk("text", { class: "name" }, lab), sub: mk("text", { class: "sub" }, lab), lb: { cur: { o: 1 } }, p: -1 };
+      nodes.set(id, nd);
+      return nd;
     }
 
     return function update(S, ranked) {
-      const me = occs.get(S.me);
+      const me = occs.get(S.me), top = ranked.slice(0, N_MAP).sort((a, b) => b.score - a.score || b.key - a.key), n = top.length, mob = small.matches, restart = lastMe !== S.me;
+      const fs = live && !mob ? mapFs(svg) : 1, nmax = fs > 1.15 ? 16 : 19;
+      lastMe = S.me; big = mob ? 1.42 : fs; update.fs = fs; svg.style.setProperty("--fs", fs);
+      if (live) svg.setAttribute("viewBox", mob ? "150 30 800 800" : "0 0 1100 860");  // a phone shows the jobs without their names, so the circle can fill the width
+      meCore.setAttribute("transform", `scale(${mob ? 1.3 : fs})`); meName.setAttribute("y", 62 * fs);
       meName.textContent = trunc(me.label, 26);
-      const top = ranked.slice(0, N_MAP).sort((a, b) => a.g.label.localeCompare(b.g.label, "sv") || b.score - a.score);
-      const n = top.length, focus = S.sel;
-      const nodes = top.map((m, i) => { const a = ang(i, n), r = rOf(m.score); return { m, a, x: CX + r * Math.cos(a), y: CY + r * Math.sin(a) }; });
-      const fNode = nodes.find(nd => nd.m.o.id === focus);
+      msg.textContent = n ? "" : "Markera fler kompetenser så visas närliggande yrken.";
       svg.classList.toggle("is-hovering", Boolean(S.hover) && S.hover !== S.sel);
 
-      let moved = false;
-      // everything a skill pill must keep clear of: the person, its name, each job and its name
-      const meW = Math.min(26, me.label.length) * 9.6;
-      const obs = [[CX - 36, CY - 36, CX + 36, CY + 36], [CX - meW / 2 - 4, CY + 40, CX + meW / 2 + 4, CY + 64]];
-      nodes.forEach(({ m, a, x, y }, i) => {
-        const id = m.o.id, g = occNode(id), o = outlook(m.b), t = trend(m.b);
-        const prev = pos.get(id); if (prev && Math.hypot(prev[0] - x, prev[1] - y) > 2) moved = true; pos.set(id, [x, y]);
-        g.setAttribute("class", `occ o-${o}${id === S.sel ? " is-sel" : ""}${id === S.hover ? " is-hover" : ""}${m.trans ? " is-trans" : ""}`);
-        const c = Math.cos(a), sn = Math.sin(a), vertical = Math.abs(c) < 0.38;
-        const anchor = vertical ? "middle" : c > 0 ? "start" : "end", lx = vertical ? 0 : c > 0 ? 42 : -42, ly = vertical ? (sn < 0 ? -62 : 58) : 0;
-        const [pctEl, nameEl, subEl] = g.querySelectorAll("text");
-        const lines = splitName(m.o.label), two = lines.length > 1;
-        // first baseline: beside the dot the lines sit centred on it; above it the block ends where one line used to
-        const y1 = vertical ? (sn < 0 ? ly - (two ? 18 : 0) : ly) : (two ? -4 : 5), yEnd = y1 + (two ? 18 : 0);
-        const nw = Math.max(...lines.map(l => l.length)) * 8.8, bx = x + lx, x0 = anchor === "start" ? bx : anchor === "end" ? bx - nw : bx - nw / 2;
-        obs.push([x - 36, y - 36, x + 36, y + 36], [x0 - 4, y + y1 - 16, x0 + nw + 4, y + yEnd + (id === focus ? 26 : 6)]);
-        pctEl.textContent = pct(m.score);
-        nameEl.textContent = ""; nameEl.setAttribute("text-anchor", anchor);
-        lines.forEach((l, i) => { const t = mk("tspan", { x: lx, y: y1 + i * 18 }, nameEl); t.textContent = l; });
-        const arrow = t === "up" ? ", ökar" : t === "down" ? ", minskar" : "";
-        const subText = m.need.length ? "kräver behörighet" : m.bridge.length ? `${m.bridge.length} kompetens${m.bridge.length > 1 ? "er" : ""} till` : "redo att söka";
-        subEl.textContent = subText + (subText.length + arrow.length > 24 ? "" : arrow);
-        subEl.setAttribute("x", lx); subEl.setAttribute("y", yEnd + 20); subEl.setAttribute("text-anchor", anchor);
-        if (live) g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning${m.trans ? ", vanlig övergång" : ""}${m.need.length ? ", kräver behörighet" : ""}`);
-        if (first && live && !reduced) { g.style.transitionDelay = `${120 + i * 55}ms`; requestAnimationFrame(() => requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; })); setTimeout(() => (g.style.transitionDelay = ""), 1400); }
-        else { place(g, x, y); g.style.opacity = ""; }
-      });
-      retire(occNodes, new Set(top.map(m => m.o.id)));
+      // the scale: the best job shown sits on the inner edge, the weakest on the outer. The inner edge itself moves in as
+      // the best job nears 100 %, so learning something always brings a job closer to you
+      const prev = sc, angs = top.map((_, i) => A0 + (i * TAU) / n);
+      if (n) {
+        const v = top.map(m => m.score), lim = mob ? [336, 336] : [542 - LX * fs - nmax * 8.6 * fs, 420 - 40 * fs];
+        let hi = Math.min(1, Math.ceil(Math.max(...v) * 20 - 1e-6) / 20), lo = Math.floor(Math.min(...v) * 20 + 1e-6) / 20;
+        if (hi - lo < 0.2) lo = Math.max(0, hi - 0.2); if (hi - lo < 0.2) hi = lo + 0.2;
+        sc = { lo, hi, rIn: 102 * big + (1 - hi) * (mob ? 70 : 100 / fs),
+          rOut: Math.min(R_OUT, ...angs.map(a => Math.min(lim[0] / Math.abs(Math.cos(a)), lim[1] / Math.abs(Math.sin(a))))) };
+      }
+      const rAt = (s, q = sc) => q.rIn + ((q.hi - s) / (q.hi - q.lo)) * (q.rOut - q.rIn), clampR = r => Math.max(40, Math.min(440, r));
+      const want = new Set();
+      if (n) { const span = sc.hi - sc.lo, gap = x => (x / span) * (sc.rOut - sc.rIn) >= (mob ? 46 : 30 * fs);  // rings no closer than their percentages can be read
+        const d = span <= 0.25 && gap(0.05) ? 0.05 : span <= 0.5 && gap(0.1) ? 0.1 : 0.2; for (let p = Math.ceil(sc.lo / d - 1e-6) * d; p <= sc.hi + 1e-6; p += d) want.add(Math.round(p * 100)); }
+      // the percentages go straight down, or straight up when a job sits closer to that line
+      if (n) axis = [Math.PI / 2, -Math.PI / 2].map(c => [Math.round(Math.min(...angs.map(a => Math.abs(near(c, a) - c))) * 100), c]).sort((p, q) => q[0] - p[0])[0][1];
+      for (const p of want) {
+        let rg = rings.get(p); const r = rAt(p / 100);
+        if (!rg) { const g = mk("g", { opacity: 0 }, gRings); rg = { g, c: mk("circle", { class: "ring", cx: CX, cy: CY }, g), t: mk("text", { class: "ring-l", "text-anchor": "middle" }, g), cur: { r: prev && !restart ? clampR(rAt(p / 100, prev)) : r, o: 0 } }; rg.t.textContent = p + " %"; rings.set(p, rg); }
+        go(rg, { r, o: 1 }, 700, restart ? 250 : 0);
+      }
+      for (const [p, rg] of rings) if (!want.has(p)) go(rg, { r: n ? clampR(rAt(p / 100)) : rg.cur.r, o: 0 }, 500, 0, () => { rg.g.remove(); if (rings.get(p) === rg) rings.delete(p); });
 
-      // the skills of the job in focus: missing ones on the side that faces it, the ones you have around them
-      let items;
-      if (fNode) items = [...fNode.m.have.map(s => ({ ...s, have: true })), ...fNode.m.miss.map(s => ({ ...s, have: false }))].sort((a, b) => b.share - a.share).slice(0, MAX_SKILLS);
-      else items = [...S.mine].filter(id => skills.has(id)).slice(0, MAX_SKILLS).map(id => ({ skillId: id, have: true }));
-      const base = fNode ? fNode.a : -Math.PI / 2;
-      const pillW = s => Math.round(34 + trunc(short(s.skillId), 14).length * 8.2);
+      const tgt = top.map((m, i) => { const a = angs[i], r = rAt(m.score); return { m, a, r, x: CX + r * Math.cos(a), y: CY + r * Math.sin(a), side: Math.cos(a) > -0.02 ? 1 : -1 }; });
       const hit = (A, B) => A[0] < B[2] && B[0] < A[2] && A[1] < B[3] && B[1] < A[3];
-      // try the most skills that fit with nothing touching: turn the ring a little, then drop the least asked-for skill
-      let best = null;
-      for (let k = items.length; k >= Math.min(2, items.length) && !(best && best.clash === 0); k--) {
-        const pickd = items.slice(0, k), ord = [...pickd.filter(s => !s.have), ...pickd.filter(s => s.have)];
-        for (const rot of [0, 0.12, -0.12, 0.24, -0.24, 0.36, -0.36]) {
-          const slots = Array.from({ length: k }, (_, i) => ang(i, k) + Math.PI / k + base + Math.PI / 2 + rot).sort((p, q) => adist(p, base + rot) - adist(q, base + rot));
-          // a pill that is already on the map takes the free slot nearest to where it is, so it glides instead of crossing the ring
-          const nMiss = ord.filter(s => !s.have).length, asg = new Map();
-          for (const [list, sl] of [[ord.slice(0, nMiss), slots.slice(0, nMiss)], [ord.slice(nMiss), slots.slice(nMiss)]]) {
-            const free = sl.map(a => ({ a, x: CX + SRX * Math.cos(a), y: CY + SRY * Math.sin(a) }));
-            for (const s of list) {
-              const g = skNodes.get(s.skillId), q = g && !g.classList.contains("out") ? pos.get("s:" + s.skillId) : null; if (!q) continue;
-              let bi = 0, bd = Infinity; free.forEach((f, i) => { const d = Math.hypot(f.x - q[0], f.y - q[1]); if (d < bd) { bd = d; bi = i; } });
-              asg.set(s.skillId, free.splice(bi, 1)[0]);
-            }
-            for (const s of list) if (!asg.has(s.skillId)) asg.set(s.skillId, free.shift());
+      const dots = tgt.map(t => [t.x - 38 * big, t.y - 38 * big, t.x + 38 * big, t.y + 38 * big]), meW = Math.min(26, me.label.length) * 9.2 * fs;
+      // a name is kept clear of you, the ring percentages, the other jobs and the names already placed
+      const taken = [[CX - 38 * big, CY - 38 * big, CX + 38 * big, CY + 38 * big]];
+      for (const p of want) { const r = rAt(p / 100), x = CX + r * Math.cos(axis), y = CY + r * Math.sin(axis), bw = mob ? 30 : 22 * fs, bh = mob ? 15 : 11 * fs, box = [x - bw, y - bh, x + bw, y + bh], off = dots.some(d => hit(d, box));
+        rings.get(p).t.classList.toggle("hide", off); if (!off) taken.push(box); }  // a percentage gives way to a job that sits on it
+      meName.classList.toggle("hide", dots.some(d => hit(d, [CX - meW / 2, CY + 44 * fs, CX + meW / 2, CY + 68 * fs])));
+      tgt.forEach((t, i) => {
+        const m = t.m, id = m.o.id, lines = splitName(m.o.label, nmax), two = lines.length > 1, y1 = (two ? -4 : 5) * fs, yEnd = y1 + (two ? 18 : 0) * fs, sub = subOf(m), lx = LX * fs;
+        const w = Math.max(...lines.map(l => l.length * 8.6), sub.length * 7.2) * fs;
+        let ly = 0, side = t.side;
+        if (!mob) {
+          // the name sits beside the job, on the side that faces outward. If something is in the way it moves up or down a little, and failing that to the other side
+          let least = Infinity, box;
+          for (const [sd, d] of [[1, 0], [1, -12], [1, 12], [1, -24], [1, 24], [-1, 0], [-1, -12], [-1, 12], [-1, -24], [-1, 24], [1, -36], [1, 36], [-1, -36], [-1, 36]]) {
+            const dy = d * fs, x0 = sd * t.side > 0 ? t.x + lx : t.x - lx - w, b = [x0 - 4, t.y + dy + y1 - 16 * fs, x0 + w + 4, t.y + dy + yEnd + 27 * fs];
+            let c = (b[1] < 6 || b[3] > 854 ? 2 : 0) + (b[0] < 4 || b[2] > 1096 ? 2 : 0); dots.forEach((d, j) => { if (j !== i && hit(b, d)) c++; }); taken.forEach(o => { if (hit(b, o)) c++; });
+            if (c < least) { least = c; ly = dy; side = sd * t.side; box = b; } if (!c) break;
           }
-          const rects = ord.map(s => { const { a, x, y } = asg.get(s.skillId), w = pillW(s); return { s, a, x, y, r: [x - w / 2 - 5, y - 20, x + w / 2 + 5, y + 20] }; });
-          let clash = 0;
-          rects.forEach((p, i) => { rects.slice(i + 1).forEach(q => { if (hit(p.r, q.r)) clash++; }); obs.forEach(o => { if (hit(p.r, o)) clash++; }); });
-          if (!best || clash < best.clash) best = { clash, rects };
-          if (clash === 0) break;
+          taken.push(box);
         }
-      }
-      const placed = best ? best.rects : [], ordered = placed.map(p => p.s), at = new Map(placed.map(p => [p.s.skillId, p]));
-      const skPos = new Map(); let skMoved = false, nNew = 0;
-      ordered.forEach(s => {
-        const { x, y } = at.get(s.skillId), g = skNode(s.skillId), label = trunc(short(s.skillId), 14), w = pillW(s);
-        const isNew = g._new; g._new = false;
-        const was = pos.get("s:" + s.skillId); if (isNew || !was || Math.hypot(was[0] - x, was[1] - y) > 2) skMoved = true;
-        skPos.set(s.skillId, [x, y]); pos.set("s:" + s.skillId, [x, y]); g._xy = [x, y];
-        g.setAttribute("class", `sk ${s.have ? "have" : "miss"}`);
-        const r = g.querySelector("rect"), tx = g.querySelector("text");
-        r.setAttribute("width", w); r.setAttribute("x", -w / 2);
-        tx.textContent = (s.have ? "" : "+ ") + label;
-        if (live) g.setAttribute("aria-label", `${short(s.skillId)}: ${s.have ? "du har den" : "saknas, välj för att simulera att du lär dig den"}`);
-        if (live && !reduced && isNew) {
-          // a new pill unfolds from where it belongs: what you have comes from you, what is missing comes from the job
-          const [sx, sy] = !s.have && fNode ? [fNode.x, fNode.y] : [CX, CY];
-          g.style.transition = "none"; place(g, sx + (x - sx) * 0.25, sy + (y - sy) * 0.25, 0.5); g.style.opacity = 0; g.getBoundingClientRect(); g.style.transition = "";
-          g.style.transitionDelay = `${first ? 500 + nNew * 45 : nNew * 35}ms`; nNew++;
-          setTimeout(() => (g.style.transitionDelay = ""), 1300);
-        }
-        requestAnimationFrame(() => { place(g, x, y); g.style.opacity = 1; });
+        t.side = side;
+        let nd = nodes.get(id); const fresh = !nd;
+        if (fresh) { nd = node(id); nd.side = t.side;
+          // a new occupation unfolds from you; a job that only now makes the list comes in from further out
+          nd.cur = restart ? { a: t.a, r: 0, o: 0, s: 0.5 * big, v: 0, ly } : { a: t.a, r: t.r + 70, o: 0, s: big, v: m.score, ly }; }
+        nd.g.setAttribute("class", `occ o-${outlook(m.b)}${id === S.sel ? " is-sel" : ""}${id === S.hover ? " is-hover" : ""}${m.need.length ? " is-need" : ""}`);
+        nd.sp.setAttribute("class", "sp" + (m.trans ? " is-trans" : ""));
+        nd.name.textContent = ""; nd.name.setAttribute("text-anchor", t.side > 0 ? "start" : "end");
+        lines.forEach((l, j) => { mk("tspan", { x: t.side * lx, y: y1 + j * 18 * fs }, nd.name).textContent = l; });
+        nd.sub.textContent = sub; nd.sub.setAttribute("x", t.side * lx); nd.sub.setAttribute("y", yEnd + 20 * fs); nd.sub.setAttribute("text-anchor", t.side > 0 ? "start" : "end");
+        if (live) nd.g.setAttribute("aria-label", `${m.o.label}, ${pct(m.score)} procent matchning${m.trans ? ", vanligt yrkesbyte" : ""}${m.need.length ? ", kräver behörighet" : ""}`);
+        if (!fresh && nd.side !== t.side) { nd.lb.cur.o = 0; go(nd.lb, { o: 1 }, 320, 380); }  // the name changes side: let it fade in once the job has crossed
+        nd.side = t.side;
+        go(nd, { a: near(nd.cur.a, t.a), r: t.r, o: 1, s: (id === S.sel ? 1.12 : 1) * big, v: m.score, ly }, restart ? 900 : 700, restart ? 100 + i * 60 : 0);
       });
-      const keepSk = new Set(ordered.map(s => s.skillId));
-      // a pill that leaves shrinks where it stands
-      for (const [id, g] of skNodes) if (!keepSk.has(id) && !g.classList.contains("out")) { skMoved = true; if (live && !reduced && g._xy) { g.style.transitionDelay = ""; place(g, g._xy[0], g._xy[1], 0.8); } }
-      retire(skNodes, keepSk);
-
-      // lines: drawn once everything has settled, and left alone when nothing changed
-      const sig = [S.me, focus, n, ...ordered.map(s => `${s.skillId}${s.have ? 1 : 0}${skPos.get(s.skillId).map(Math.round)}`), fNode ? `${Math.round(fNode.x)},${Math.round(fNode.y)}` : ""].join("|");
-      if (sig === update.sig && !first) return;
-      update.sig = sig;
-      for (const l of [...gLines.children]) { if (live && !reduced && !first) { l.classList.add("gone"); setTimeout(() => l.remove(), 180); } else l.remove(); }
-      if (fNode) {
-        const delay = live && !reduced ? (first ? 900 : moved || skMoved ? 520 : 0) : 0;
-        const dx = fNode.x - CX, dy = fNode.y - CY, L = Math.hypot(dx, dy);
-        ordered.forEach(s => {
-          const p = skPos.get(s.skillId), ux = fNode.x - p[0], uy = fNode.y - p[1], d = Math.hypot(ux, uy);
-          const l = mk("line", { class: `ln ${s.have ? "have" : "miss"}`, x1: p[0], y1: p[1], x2: (fNode.x - ux / d * 34).toFixed(1), y2: (fNode.y - uy / d * 34).toFixed(1) }, gLines);
-          l.style.animationDelay = `${delay + 120}ms`;
-        });
-        const c = mk("line", { class: "ln course", pathLength: 1, x1: (CX + dx / L * 34).toFixed(1), y1: (CY + dy / L * 34).toFixed(1), x2: (fNode.x - dx / L * 36).toFixed(1), y2: (fNode.y - dy / L * 36).toFixed(1) }, gLines);
-        c.style.animationDelay = `${delay}ms`;
+      const keep = new Set(top.map(m => m.o.id));
+      for (const [id, nd] of nodes) if (!keep.has(id) && !nd.g.classList.contains("out")) {
+        nd.g.setAttribute("class", "occ out");
+        go(nd, { ...nd.cur, r: nd.cur.r + 46, o: 0 }, 420, 0, () => { nd.g.remove(); nd.sp.remove(); if (nodes.get(id) === nd) nodes.delete(id); });
       }
-      if (!n) { const t = mk("text", { class: "me-name", x: CX, y: CY + 110, "text-anchor": "middle" }, gLines); t.textContent = "Markera fler kompetenser så visas närliggande yrken."; }
-      first = false;
+
+      // the course to the chosen job: it swings round like a needle when you choose another, and follows the job when the job moves
+      const st = tgt.find(t => t.m.o.id === S.sel), sn = st && nodes.get(S.sel), sameSel = lastSel === S.sel && !restart;
+      lastSel = S.sel;
+      if (st) {
+        if (restart) needle.cur = { a: st.a, r: 0, o: 0 }; else if (needle.cur.o < 0.02) needle.cur = { a: sn.cur.a, r: sn.cur.r, o: 0 };
+        go(needle, { a: near(needle.cur.a, st.a), r: st.r, o: 1 }, restart ? 900 : 700, restart ? 100 + tgt.indexOf(st) * 60 : 0);
+      } else go(needle, { ...needle.cur, o: 0 }, 300);
+      // one stone on the course per skill left to learn. A skill you learn is drawn in to you; new ones come out from the job
+      const k = st ? Math.max(0, Math.min(8, left(st.m), Math.floor((st.r - (41 + RD) * big) / (14 * big)) - 1)) : 0;
+      const act = stones.filter(s => !s.leaving);
+      while (act.length > k) { const s = act.shift(); s.leaving = true; go(s, sameSel ? { t: 0, o: 0 } : { t: s.cur.t, o: 0 }, sameSel ? 520 : 260, 0, () => { s.el.remove(); stones = stones.filter(x => x !== s); }); }
+      while (act.length < k) { const s = { el: mk("circle", { class: "stone" }, gStones), cur: { t: 1, o: 0 } }; stones.push(s); act.push(s); }
+      for (const s of stones) s.el.setAttribute("r", 5.5 * big);
+      act.forEach((s, i) => go(s, { t: (i + 1) / (k + 1), o: 1 }, 700, restart ? 650 + i * 50 : 0));
+      paint();
     };
   }
 
@@ -961,7 +973,7 @@ main > .hero { z-index: 3; }
     const prevWidths = new Map([...$("kc-card").querySelectorAll(".kc__bar-i i")].map(i => [i.closest("li").querySelector(".n").textContent + i.closest("ul").className, i.style.width]));
     $("kc-card").innerHTML = `<div class="${fresh ? "kc__card-in" : ""}" style="display:grid;gap:20px"><div class="kc__head"><div><p class="kc__title">${brk(m.o.label)}</p><p>${esc(m.g.label)}</p></div><div class="kc__score"><span id="kc-score"></span> %<small>matchning</small></div></div>
       <div class="kc__outlook"><i class="kc__sw o-${o}"></i><span>${OUT[o]}${t ? " " + TR[t] : ""}, ${esc(LAN[S.lan] || "län " + S.lan)}.</span></div>
-      ${m.trans ? `<div class="kc__outlook"><i class="kc__tr"></i><span>Vanlig övergång från ditt yrke, enligt Arbetsförmedlingens statistik över yrkesbyten.</span></div>` : ""}
+      ${m.trans ? `<div class="kc__outlook"><i class="kc__flow"></i><span>Vanligt yrkesbyte från ditt yrke, enligt Arbetsförmedlingens statistik över yrkesbyten.</span></div>` : ""}
       ${unsure(m.o) ? `<p class="kc__note">${unsure(m.o)}</p>` : ""}
       ${m.need.length ? `<div class="kc__req"><b>Kräver ${m.need.map(id => esc(lower1(short(id)))).join(" och ")}</b><span>Det är en behörighet som regleras i lag. Du behöver den för att få arbeta i yrket, oavsett matchning.</span></div>` : ""}
       ${bridge.length ? `<div class="kc__bridge"><span>Lär dig ${list(bridge)} så går du från ${pct(m.score)} till ${pct(after)} % matchning.</span><button type="button" class="kc__btn" data-add="${bridge.map(b => b.skillId).join(",")}">Simulera att jag lär mig ${bridge.length > 1 ? "dem" : "den"}</button></div>` : m.need.length && m.bridge.length ? "" : `<div class="kc__bridge ok">Du täcker redan minst ${pct(TARGET)} % av det annonserna efterfrågar.</div>`}
@@ -991,7 +1003,7 @@ main > .hero { z-index: 3; }
     if (step !== 3) return;
     orbit(S, ranked);
     drawCard();
-    $("kc-list").innerHTML = ranked.slice(0, 10).map(x => `<li><button type="button" data-occ="${x.o.id}" aria-current="${x.o.id === S.sel}"><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${pct(x.score)} %</span></button></li>`).join("");
+    $("kc-list").innerHTML = ranked.slice(0, 10).map(x => `<li><button type="button" data-occ="${x.o.id}" aria-current="${x.o.id === S.sel}"><i class="kc__sw o-${outlook(x.b)}" aria-hidden="true"></i><span class="n">${esc(x.o.label)}</span><span class="m">${x.trans ? `<i class="kc__flow" title="Vanligt byte från ditt yrke"></i>` : ""}${pct(x.score)} %</span></button></li>`).join("");
   }
   const toggle = id => { S.mine.has(id) ? S.mine.delete(id) : S.mine.add(id); render(); };
   $("kc-lan").onchange = e => { S.lan = e.target.value; render(); };
@@ -1031,6 +1043,8 @@ main > .hero { z-index: 3; }
   }
   $("kc-steps").onclick = e => { const b = e.target.closest("[data-go]"); if (b && !b.disabled) setStep(Number(b.dataset.go)); };
   $("kc-go").onclick = () => { if (S.me) setStep(3, "frame"); };
+  matchMedia("(max-width: 639px)").addEventListener("change", () => render());
+  new ResizeObserver(() => { if (step === 3 && !matchMedia("(max-width: 639px)").matches && mapFs(map) !== orbit.fs) render(); }).observe(map);
   drawFields();
   setStep(1);
 })();

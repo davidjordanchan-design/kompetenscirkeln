@@ -65,7 +65,7 @@ Hämtas i `fetch_af_extras` (`hamta.py`) från GitLab, senaste taxonomiversion (
 - **Kompetensväljaren** (`arbetsformedlingen/taxonomy-dev/backend/kompetensvaljaren`): bara `regulated_skills` används. Lärarlegitimation och liknande finns inte med i datamängden, så de märks inte som krav.
 - **Närliggande yrken** (`.../narliggande-yrken`): filerna `narliggande-yrken.json` och `narliggande-yrken-gyr.json` slås ihop.
 
-Misslyckas hämtningen behålls förra veckans värden. Sidan använder dem så här: ett yrke som kräver en behörighet användaren saknar märks "kräver behörighet" och rangordnas 15 procentenheter lägre, en vanlig övergång märks med en prick och rangordnas 12 procentenheter högre. Procenttalet som visas ändras inte.
+Misslyckas hämtningen behålls förra veckans värden. Sidan använder dem så här: ett yrke som kräver en behörighet användaren saknar märks "kräver behörighet" och rangordnas 15 procentenheter lägre, en vanlig övergång ritas som ett stråk med rörliga punkter från "Du" till yrket och rangordnas 12 procentenheter högre. Procenttalet som visas ändras inte.
 
 Lediga jobb finns inte i datafilen. Sidan hämtar dem från JobSearch (`occupation-name`, `region`) först när användaren trycker på knappen.
 
