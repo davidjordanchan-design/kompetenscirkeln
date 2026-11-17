@@ -201,6 +201,17 @@ main > #kartan.is-map { --h: 2; --hm: 2; }
 main > #kartan > .wrap { z-index: 2; }
 main > .hero { z-index: 3; }
 @media (max-width: 639px) { main > #kartan { height: auto; min-height: calc(var(--hm) * 100lvh); } }
+/* a phone: the other sections keep their screens too, but grow past them rather than run into the next one
+   (the steps' cards and the questions are taller than a short phone's screen) */
+@media (max-width: 639px) {
+  main > :is(#steg, #faq, #data) { height: auto; min-height: calc(var(--hm, var(--h, 1)) * 100vh); min-height: calc(var(--hm, var(--h, 1)) * 100lvh); display: flex; flex-direction: column; }
+  main > :is(#steg, #faq, #data) > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
+}
+/* the same on a wide but low screen (a 1366 x 768 laptop leaves about 650 px for the page) */
+@media (min-width: 1280px) and (max-height: 800px) {
+  main > :is(#steg, #faq, #data) { height: auto; min-height: calc(var(--h, 1) * 100vh); min-height: calc(var(--h, 1) * 100svh); display: flex; flex-direction: column; }
+  main > :is(#steg, #faq, #data) > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
+}
 .kc__steps { display: flex; align-items: center; list-style: none; margin: 0 0 0 -6px; padding: 0; }
 .kc__steps li { display: flex; align-items: center; }
 .kc__steps li + li::before { content: ""; width: 18px; height: 1px; background: var(--u-line-2); margin: 0 4px; }
@@ -527,7 +538,7 @@ main > .hero { z-index: 3; }
         <div class="span-2 footer__col"><h4>Frågor</h4><ul><li><a href="#faq">Vanliga frågor</a></li></ul></div>
       </div>
       <div class="footer__legal">
-        <span>&copy; 2026 Kompetenscirkeln</span>
+        <span>En prototyp från Ramboll Management Consulting, 2026</span>
         <div class="socials"></div>
       </div>
     </div>
